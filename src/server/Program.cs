@@ -23,3 +23,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+// https://benfoster.io/blog/mvc-to-minimal-apis-aspnet-6/
