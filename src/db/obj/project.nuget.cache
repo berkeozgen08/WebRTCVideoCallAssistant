@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "HJiK3EOiTqr45UHPBH6wQzWwtCy+kjgTzrcPviCt8jErIY3pl0G6lqMIJVqHOhDntAGYfRx6n1zpgvrXr0hcSA==",
+  "success": true,
+  "projectFilePath": "c:\\Users\\berke\\Desktop\\ytu\\3x2\\blm3010\\proje\\WebRTCVideoCallAssistant\\src\\db\\WebRTCVideoCallAssistant.DB.sqlproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\berke\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.0\\microsoft.netframework.referenceassemblies.1.0.0.nupkg.sha512",
+    "C:\\Users\\berke\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net46\\1.0.0\\microsoft.netframework.referenceassemblies.net46.1.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
