@@ -7,6 +7,6 @@ CREATE TABLE [dbo].[Meeting]
 	[CustomerConnId] CHAR(36) NOT NULL,
 	[UserSlug] CHAR(10) NOT NULL,
 	[CustomerSlug] CHAR(10) NOT NULL,
-	[StartsAt] DATETIME NOT NULL
-	[CreatedAt] DATETIME NOT NULL DEFAULT GETDATE(),
+	[StartsAt] DATETIME NOT NULL,
+	[CreatedAt] DATETIME NOT NULL DEFAULT GETDATE()
 )
