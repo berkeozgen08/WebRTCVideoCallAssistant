@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold --force Name=default Microsoft.EntityFrameworkCore.SqlServer -o Models -c AppDbContext
