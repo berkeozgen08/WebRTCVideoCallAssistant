@@ -30,3 +30,8 @@ app.MapControllers();
 app.Run();
 
 // https://benfoster.io/blog/mvc-to-minimal-apis-aspnet-6/
+
+public static class Constants {
+	public const int MAX_STRING_LENGTH = 64;
+	public const int MIN_PASSWORD_LENGTH = 8;
+}

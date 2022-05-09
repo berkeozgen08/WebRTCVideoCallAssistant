@@ -1,1 +1,1 @@
-dotnet ef dbcontext scaffold Name=WebRTCVideoCallAssistant.DB Microsoft.EntityFrameworkCore.SqlServer -o Models -c DB
+dotnet ef dbcontext scaffold --force Name=default Microsoft.EntityFrameworkCore.SqlServer -o Models -c AppDbContext
