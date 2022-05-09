@@ -1,34 +1,48 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebRTCVideoCallAssistant.Server.Models;
+using WebRTCVideoCallAssistant.Server.Models.Dto;
+using WebRTCVideoCallAssistant.Server.Services;
 
 namespace WebRTCVideoCallAssistant.Server.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/[action]")]
 public class UserController : ControllerBase
 {
-	private readonly ILogger<UserController> _logger;
-	private readonly AppDbContext _db;
+	private readonly UserService _userService;
 
-	public UserController(ILogger<UserController> logger, AppDbContext db)
+	public UserController(UserService userService)
 	{
-		_logger = logger;
-		_db = db;
+		_userService = userService;
 	}
 
-	[HttpPost("[action]")]
-	public ActionResult<User> Create(User user)
+	[HttpPut]
+	public ActionResult<User> Create(CreateUserDto user)
 	{
-		var res = _db.Users.Add(user).Entity;
-		try
-		{
-			_db.SaveChanges();
-		}
-		catch (DbUpdateException e)
-		{
-			return BadRequest(new Error(e.Message));
-		}
-		return Ok(res);
+		return CreatedAtAction(nameof(Create), _userService.Create(user));
+	}
+
+	[HttpGet("{id}")]
+	public ActionResult<User> Get(int id)
+	{
+		return Ok(_userService.Get(id));
+	}
+
+	[HttpGet]
+	public ActionResult<IEnumerable<User>> GetAll()
+	{
+		return Ok(_userService.GetAll());
+	}
+
+	[HttpPatch("{id}")]
+	public ActionResult<User> Update(int id, UpdateUserDto dto)
+	{
+		return Ok(_userService.Update(id, dto));
+	}
+
+	[HttpDelete("{id}")]
+	public ActionResult<User> Delete(int id)
+	{
+		return Ok(_userService.Delete(id));
 	}
 }
