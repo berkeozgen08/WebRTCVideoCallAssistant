@@ -12,7 +12,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
+    defaults:
+      run:
+        working-directory: ./src/server
     steps:
       - uses: actions/checkout@v2
 
@@ -36,6 +38,9 @@ jobs:
 
   deploy:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: ./src/server
     needs: build
     environment:
       name: 'Production'
