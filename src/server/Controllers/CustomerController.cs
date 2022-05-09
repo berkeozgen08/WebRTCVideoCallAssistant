@@ -1,34 +1,48 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebRTCVideoCallAssistant.Server.Models;
+using WebRTCVideoCallAssistant.Server.Models.Dto;
+using WebRTCVideoCallAssistant.Server.Services;
 
 namespace WebRTCVideoCallAssistant.Server.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/[action]")]
 public class CustomerController : ControllerBase
 {
-	private readonly ILogger<CustomerController> _logger;
-	private readonly AppDbContext _db;
+	private readonly CustomerService _customerService;
 
-	public CustomerController(ILogger<CustomerController> logger, AppDbContext db)
+	public CustomerController(CustomerService customerService)
 	{
-		_logger = logger;
-		_db = db;
+		_customerService = customerService;
 	}
 
-	[HttpPost("[action]")]
-	public ActionResult<Customer> Create(Customer customer)
+	[HttpPut]
+	public ActionResult<Customer> Create(CreateCustomerDto customer)
 	{
-		var res = _db.Customers.Add(customer).Entity;
-		try
-		{
-			_db.SaveChanges();
-		}
-		catch (DbUpdateException e)
-		{
-			return BadRequest(new Error(e.Message));
-		}
-		return Ok(res);
+		return CreatedAtAction(nameof(Create), _customerService.Create(customer));
+	}
+
+	[HttpGet("{id}")]
+	public ActionResult<Customer> Get(int id)
+	{
+		return Ok(_customerService.Get(id));
+	}
+
+	[HttpGet]
+	public ActionResult<IEnumerable<Customer>> GetAll()
+	{
+		return Ok(_customerService.GetAll());
+	}
+
+	[HttpPatch("{id}")]
+	public ActionResult<Customer> Update(int id, UpdateCustomerDto dto)
+	{
+		return Ok(_customerService.Update(id, dto));
+	}
+
+	[HttpDelete("{id}")]
+	public ActionResult<Customer> Delete(int id)
+	{
+		return Ok(_customerService.Delete(id));
 	}
 }

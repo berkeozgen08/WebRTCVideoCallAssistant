@@ -1,50 +1,60 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebRTCVideoCallAssistant.Server.Models;
+using WebRTCVideoCallAssistant.Server.Models.Dto;
+using WebRTCVideoCallAssistant.Server.Services;
 
 namespace WebRTCVideoCallAssistant.Server.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/[action]")]
 public class MeetingController : ControllerBase
 {
-	private readonly ILogger<MeetingController> _logger;
-	private readonly AppDbContext _db;
+	private readonly MeetingService _meetingService;
 
-	public MeetingController(ILogger<MeetingController> logger, AppDbContext db)
+	public MeetingController(MeetingService meetingService)
 	{
-		_logger = logger;
-		_db = db;
+		_meetingService = meetingService;
 	}
 
-	[HttpPost("[action]")]
-	public ActionResult<Meeting> Create(Meeting meeting)
+	[HttpPut]
+	public ActionResult<Meeting> Create(CreateMeetingDto meeting)
 	{
-		var res = _db.Meetings.Add(meeting).Entity;
-		try
-		{
-			_db.SaveChanges();
-		}
-		catch (DbUpdateException e)
-		{
-			return BadRequest(new Error(e.Message));
-		}
-		return Ok(res);
+		return CreatedAtAction(nameof(Create), _meetingService.Create(meeting));
 	}
 
-	[HttpGet("[action]")]
-	public ActionResult<MeetingDto> ForUser(string userSlug)
+	[HttpGet("{id}")]
+	public ActionResult<Meeting> Get(int id)
 	{
-		var res = _db.Meetings.FirstOrDefault(meeting => meeting.UserSlug == userSlug);
-		if (res is null) return NotFound(new Error("Meeting not found."));
-		return Ok(new MeetingDto(res) { ConnId = res.CustomerConnId });
+		return Ok(_meetingService.Get(id));
 	}
 
-	[HttpGet("[action]")]
-	public ActionResult<MeetingDto> ForCustomer(string customerSlug)
+	[HttpGet]
+	public ActionResult<IEnumerable<Meeting>> GetAll()
 	{
-		var res = _db.Meetings.FirstOrDefault(meeting => meeting.CustomerSlug == customerSlug);
-		if (res is null) return NotFound(new Error("Meeting not found."));
-		return Ok(new MeetingDto(res) { ConnId = res.UserConnId });
+		return Ok(_meetingService.GetAll());
+	}
+
+	[HttpPatch("{id}")]
+	public ActionResult<Meeting> Update(int id, UpdateMeetingDto dto)
+	{
+		return Ok(_meetingService.Update(id, dto));
+	}
+
+	[HttpDelete("{id}")]
+	public ActionResult<Meeting> Delete(int id)
+	{
+		return Ok(_meetingService.Delete(id));
+	}
+	
+	[HttpGet("{userSlug}")]
+	public IActionResult ResolveUserSlug(string userSlug)
+	{
+		return Ok(new { connId = _meetingService.ResolveUserSlug(userSlug).CustomerConnId });
+	}
+
+	[HttpGet("{customerSlug}")]
+	public IActionResult ResolveCustomerSlug(string customerSlug)
+	{
+		return Ok(new { connId = _meetingService.ResolveUserSlug(customerSlug).UserConnId });
 	}
 }
