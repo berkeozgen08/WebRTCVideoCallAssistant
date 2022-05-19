@@ -4,10 +4,16 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { SetMeetingComponent } from './components/set-meeting/set-meeting.component';
+import { MeetingComponent } from './components/meeting/meeting.component';
+import { MeetingStatsComponent } from './components/meeting-stats/meeting-stats.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SetMeetingComponent,
+    MeetingComponent,
+    MeetingStatsComponent
   ],
   imports: [
     BrowserModule,
