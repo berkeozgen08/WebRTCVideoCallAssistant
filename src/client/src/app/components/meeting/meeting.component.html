@@ -1,26 +1,46 @@
 <div class="meeting-container">
   <div id="video-wrapper">
 
-    <div class="offline-remote-video d-flex justify-content-center align-items-center">
-      <div class="user-initial text-center">
-        <h1>B</h1>
+    <div class="local-video-wrapper">
+
+      <div class="offline-local-video d-flex justify-content-center align-items-center">
+        <div class="user-initial text-center">
+          <h1>B</h1>
+        </div>
       </div>
+
+      <!-- 
+        <video #localVideo class="local-video" autoplay playsinline [muted]=true>
+        </video>
+      -->
+      <div class="client-name">
+        <h4>You</h4>
+      </div>
+      
     </div>
 
-    <div class="offline-local-video d-flex justify-content-center align-items-center">
-      <div class="user-initial text-center">
-        <h1>B</h1>
+    <div class="remote-video-wrapper">
+
+
+      <div class="offline-remote-video d-flex justify-content-center align-items-center">
+        <div class="user-initial text-center">
+          <h1>B</h1>
+        </div>
+      </div>
+
+      <!--
+        <video #remoteVideo class="remote-video" autoplay playsinline>
+        </video>
+      -->
+
+      <div class="client-name">
+        <h3>John Doe</h3>
+      </div>
+
+      <div class="micropohone-status">
+        <i class="fa fa-microphone-slash" aria-hidden="true"></i>
       </div>
     </div>
-
-    <div class="remote-client-name"><h3>John Doe</h3></div>
-    <!-- 
-    <video #remoteVideo class="remote-video" autoplay playsinline>
-    </video>
-    <video #localVideo class="local-video" autoplay playsinline [muted]=true>
-    </video>
-  
-  -->
 
   </div>
   <div class="control-buttons">

@@ -24,6 +24,27 @@ $remote-initial-height:5rem;
     // background-color: #343434;
     height: 80vh;
 
+    .local-video-wrapper{
+        z-index: 1;
+        position: absolute;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        width: 20vw;
+        height: 12vw;
+        max-width: 20rem;
+        max-height: 20rem;
+        border-radius: 4px;
+        background-color: #4a4e51;
+    }
+
+    .remote-video-wrapper{
+
+        height: 100%;
+        background-color: #343434;
+        border-radius: 20px;
+
+    }
+
     .user-initial{
         display: inline-block;
         color: white;
@@ -38,18 +59,20 @@ $remote-initial-height:5rem;
         }
     }
 
-    .remote-client-name{
+    .client-name{
         position: absolute;
         left: 0;
         bottom: 0;
-        margin:10px 20px;
-        & > h3{
+        margin:10px 15px;
+        & > h3,h4{
             color: #f5f5f5;
+            margin: 0;
         }
     }
 
 
     .offline-remote-video{
+
         height: 100%;
         background-color: #343434;
         border-radius: 20px;
@@ -57,6 +80,7 @@ $remote-initial-height:5rem;
         .user-initial{
             height: 100px;
             width: 100px;
+
             & > h1 {
                 font-size: $remote-initial-height;
             }
@@ -65,13 +89,11 @@ $remote-initial-height:5rem;
 
     .offline-local-video{
         z-index: 1;
-        position: absolute;
-        right: 1.5rem;
-        bottom: 1.5rem;
-        width: 20vw;
-        height: 12vw;
-        max-width: 20rem;
-        max-height: 20rem;
+        //position: absolute;
+        width: 100%;
+        height: 100%;
+        // max-width: 20rem;
+        // max-height: 20rem;
         border-radius: 4px;
         background-color: #4a4e51;
     }
@@ -95,6 +117,27 @@ $remote-initial-height:5rem;
         max-height: 20rem;
         border-radius: 4px;
         background-color: #4a4e51;
+    }
+
+
+    .micropohone-status{
+        position: absolute;
+        right: 0;
+        top: 0;
+        margin: 10px 10px;
+        background-color: #303033;
+        border-radius: 50%;
+        
+        height: 32px;
+        width: 32px;
+        
+        text-align: center;
+
+        &>i{
+           color: #fff;            
+           line-height: 32px;
+        }
+
     }
 }
 
