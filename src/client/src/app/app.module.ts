@@ -7,13 +7,15 @@ import { AppComponent } from './app.component';
 import { SetMeetingComponent } from './components/set-meeting/set-meeting.component';
 import { MeetingComponent } from './components/meeting/meeting.component';
 import { MeetingStatsComponent } from './components/meeting-stats/meeting-stats.component';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SetMeetingComponent,
     MeetingComponent,
-    MeetingStatsComponent
+    MeetingStatsComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
