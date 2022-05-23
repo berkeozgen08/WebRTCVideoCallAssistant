@@ -24,6 +24,8 @@ jobs:
         with:
           github_access_token: ${{ secrets.ACCESS_TOKEN }} # see the Configuration section for how you can create secrets
           build_configuration: production # The build environment for the app. please look configurations in your angular.json
+          angular_project_dir: src/client
           base_href: /WebRTCVideoCallAssistant/
           deploy_branch: gh-pages 
-          angular_dist_build_folder: dist/web-rtcvideo-call-assistant.client
+          angular_dist_build_folder: src/client/dist/web-rtcvideo-call-assistant.client
+          
