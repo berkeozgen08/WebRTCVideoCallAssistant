@@ -7,7 +7,7 @@
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <span class="text-muted">Jane Austin 02.05.2022 17:02</span>
             <div class="actions">
-                <button type="button" class="btn btn-sm btn-secondary">Review</button>
+                <button type="button" [routerLink]="['/meeting-stats']" [queryParams]="{meetingId:5}" class="btn btn-sm btn-secondary">Review</button>
             </div>
         </li>
 
@@ -15,7 +15,7 @@
             <span>John Doe 24.05.2022 19:00</span>
             <div class="actions">
                 <button type="button" class="btn btn-sm btn-danger">Delete</button>
-                <button type="button" class="btn btn-sm btn-warning">Edit</button>
+                <button type="button" [routerLink]="['/set-meeting']" [queryParams]="{meetingId:1}" class="btn btn-sm btn-warning">Edit</button>
                 <button type="button" class="btn btn-sm btn-primary">Join</button>
             </div>
         </li>
@@ -26,7 +26,7 @@
             </span>
             <div class="actions">
                 <button type="button" class="btn btn-sm btn-danger">Delete</button>
-                <button type="button" class="btn btn-sm btn-warning">Edit</button>
+                <button type="button" [routerLink]="['/set-meeting']" [queryParams]="{meetingId:2}" class="btn btn-sm btn-warning">Edit</button>
                 <button type="button" class="btn btn-sm btn-primary">Join</button>
             </div>
         </li>
@@ -35,11 +35,11 @@
             <span>Hera Dwarf 30.06.2022 19:00</span>
             <div class="actions">
                 <button type="button" class="btn btn-sm btn-danger">Delete</button>
-                <button type="button" class="btn btn-sm btn-warning">Edit</button>
+                <button type="button" [routerLink]="['/set-meeting']" [queryParams]="{meetingId:3}" class="btn btn-sm btn-warning">Edit</button>
                 <button type="button" class="btn btn-sm btn-primary">Join</button>
             </div>
         </li>
     </ul>
 
-    <button type="button" class="btn btn-primary">Create Meeting</button>
+    <button type="button" routerLink="set-meeting" class="btn btn-primary">Create Meeting</button>
 </div>
