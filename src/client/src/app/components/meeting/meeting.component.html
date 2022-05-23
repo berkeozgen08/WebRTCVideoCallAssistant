@@ -2,36 +2,36 @@
   <div id="video-wrapper">
 
     <div class="local-video-wrapper">
-
-      <div class="offline-local-video d-flex justify-content-center align-items-center">
+      
+      <div *ngIf="!isLocalCamOpen"  class="offline-local-video d-flex justify-content-center align-items-center">
         <div class="user-initial text-center">
           <h1>B</h1>
         </div>
       </div>
 
-      <!-- 
-        <video #localVideo class="local-video" autoplay playsinline [muted]=true>
-        </video>
-      -->
+
+      <video #localVideo *ngIf="isLocalCamOpen" class="local-video" autoplay playsinline [muted]=true>
+      </video>
+
       <div class="client-name">
         <h4>You</h4>
       </div>
-      
+
     </div>
 
     <div class="remote-video-wrapper">
 
 
-      <div class="offline-remote-video d-flex justify-content-center align-items-center">
+      <div *ngIf="!isRemoteCamOpen" class="offline-remote-video d-flex justify-content-center align-items-center">
         <div class="user-initial text-center">
           <h1>B</h1>
         </div>
       </div>
 
-      <!--
-        <video #remoteVideo class="remote-video" autoplay playsinline>
-        </video>
-      -->
+
+      <video *ngIf="isRemoteCamOpen" #remoteVideo class="remote-video" autoplay playsinline>
+      </video>
+
 
       <div class="client-name">
         <h3>John Doe</h3>

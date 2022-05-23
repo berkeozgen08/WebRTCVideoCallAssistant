@@ -22,38 +22,38 @@ export class AppComponent implements OnDestroy, AfterViewInit, OnInit {
   /**
    *
    */
-  constructor(private callService: CallService) {
+  constructor() {
   }
 
   ngOnInit(): void {
-    this.isCallStarted$ = this.callService.isCallStarted$;
-    this.peerID = this.callService.initPeer();
+    // this.isCallStarted$ = this.callService.isCallStarted$;
+    // this.peerID = this.callService.initPeer();
   }
 
   ngAfterViewInit(): void {
-    this.callService.localStream$
-      .pipe(filter(res => !!res))
-      .subscribe(stream => {
-        this.localVideo.nativeElement.srcObject = stream
-      });
+    // this.callService.localStream$
+    //   .pipe(filter(res => !!res))
+    //   .subscribe(stream => {
+    //     this.localVideo.nativeElement.srcObject = stream
+    //   });
 
-    this.callService.remoteStream$
-      .pipe(filter(res => !!res))
-      .subscribe(stream => {
-        this.remoteVideo.nativeElement.srcObject = stream
-      });
+    // this.callService.remoteStream$
+    //   .pipe(filter(res => !!res))
+    //   .subscribe(stream => {
+    //     this.remoteVideo.nativeElement.srcObject = stream
+    //   });
   }
 
   ngOnDestroy(): void {
-    this.callService.destroyPeer();
+    //this.callService.destroyPeer();
   }
 
   showModal(join: boolean) {
-    of(join ? this.callService.establishMediaCall(this.targetID) : this.callService.enableCallAnswer()).subscribe(_ => { });
+    //of(join ? this.callService.establishMediaCall(this.targetID) : this.callService.enableCallAnswer()).subscribe(_ => { });
   }
 
   public endCall() {
-    this.callService.closeMediaCall();
+    //this.callService.closeMediaCall();
   }
 
 }

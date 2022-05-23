@@ -22,9 +22,10 @@ export class CallService {
   private isCallStartedBs = new Subject<boolean>();
   public isCallStarted$ = this.isCallStartedBs.asObservable();
 
-  initPeer(): string {
+  initPeer(id:string): string {
 
     if (!this.peer || !this.peer.disconnected) {
+
       const peerJsOptions: Peer.PeerJSOption = {
         debug: 3,
         config: {
@@ -38,7 +39,7 @@ export class CallService {
       };
 
       try {
-        let id = uuidv4();
+        //let id = uuidv4();
         this.peer = new Peer(id, peerJsOptions);
         return id;
       } catch (error) {
