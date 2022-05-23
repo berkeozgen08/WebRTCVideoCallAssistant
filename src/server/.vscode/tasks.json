@@ -36,6 +36,22 @@
 				"${workspaceFolder}/WebRTCVideoCallAssistant.Server.csproj"
 			],
 			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "ef",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"ef",
+				"dbcontext",
+				"scaffold",
+				"--force",
+				"Name=default",
+				"Microsoft.EntityFrameworkCore.SqlServer",
+				"-o", "Models",
+				"-c", "AppDbContext"
+			],
+			"problemMatcher": "$msCompile"
 		}
 	]
 }
