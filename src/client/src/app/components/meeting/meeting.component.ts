@@ -55,24 +55,23 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
     this.callService.localStream$
       .subscribe(stream => {
         if(!!stream){
-          //this.isLocalCamOpen=true;
           this.localVideo.nativeElement.srcObject = stream
-        }else{
-          //this.isLocalCamOpen=false;
-        }
 
-        
-        
+        }else{
+
+        }
       });
 
     this.callService.remoteStream$
       .subscribe(stream => {
+        
         if(!!stream){
-          //this.isRemoteCamOpen=true;
+
+          this.isRemoteCamOpen=true;
 
           this.remoteVideo.nativeElement.srcObject = stream;
         }else{
-          //this.isRemoteCamOpen=false;
+          this.isRemoteCamOpen=false;
         }
 
         
@@ -87,8 +86,17 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
     of(join ? this.callService.establishMediaCall(this.targetID) : this.callService.enableCallAnswer()).subscribe(_ => { });
   }
 
-  public endCall() {
+  endCall() {
     this.callService.closeMediaCall();
+  }
+
+  toggleCamera(){
+    this.isLocalCamOpen=!this.isLocalCamOpen;
+    this.callService.toggleCamera(this.isLocalCamOpen);
+  }
+
+  toggleMicrophone(){
+
   }
 
 }

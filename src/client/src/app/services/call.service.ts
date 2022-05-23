@@ -22,6 +22,10 @@ export class CallService {
   private isCallStartedBs = new Subject<boolean>();
   public isCallStarted$ = this.isCallStartedBs.asObservable();
 
+
+  private isCamOpen=true;
+  private isMicrophoneOpen=true;
+
   initPeer(id:string): string {
 
     if (!this.peer || !this.peer.disconnected) {
@@ -62,6 +66,10 @@ export class CallService {
         console.error(err);
         //this.snackBar.open(err, 'Close');
       });
+
+      stream.getVideoTracks().forEach(t=>t.enabled=this.isCamOpen);
+      stream.getAudioTracks().forEach(t=>t.enabled=this.isMicrophoneOpen);
+
 
       this.mediaCall = this.peer.call(remotePeerId, stream);
       if (!this.mediaCall) {
@@ -142,4 +150,11 @@ export class CallService {
     this.peer?.destroy();
   }
 
+  public toggleMicrophone(isOpen:boolean):void{
+    this.isMicrophoneOpen=isOpen;
+  }
+
+  public toggleCamera(isOpen:boolean):void{
+    this.isCamOpen=isOpen;
+  }
 }
