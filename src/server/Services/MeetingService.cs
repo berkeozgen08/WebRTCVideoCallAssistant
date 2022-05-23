@@ -19,8 +19,8 @@ public class MeetingService
 	{
         var meeting = _mapper.Map<Meeting>(dto);
 
-		string userConnId = Guid.NewGuid().ToString();
-		string customerConnId = Guid.NewGuid().ToString();
+		meeting.UserConnId = Guid.NewGuid().ToString();
+		meeting.CustomerConnId = Guid.NewGuid().ToString();
 		
 		var buffer = new char[8];
 		var random = new Random();
@@ -28,11 +28,11 @@ public class MeetingService
 
 		for (int i = 0; i < 8; i++)
 			buffer[i] = alph[random.Next(alph.Length)];
-		string userSlug = string.Join("", buffer);
+		meeting.UserSlug = string.Join("", buffer);
 
 		for (int i = 0; i < 8; i++)
 			buffer[i] = alph[random.Next(alph.Length)];
-		string customerSlug = string.Join("", buffer);
+		meeting.CustomerSlug = string.Join("", buffer);
 		
         var res = _db.Meetings.Add(meeting).Entity;
         _db.SaveChanges();
