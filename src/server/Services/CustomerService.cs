@@ -4,7 +4,8 @@ using WebRTCVideoCallAssistant.Server.Models.Dto;
 
 namespace WebRTCVideoCallAssistant.Server.Services;
 
-public class CustomerService {
+public class CustomerService
+{
     private readonly AppDbContext _db;
     private readonly IMapper _mapper;
 	
@@ -31,7 +32,7 @@ public class CustomerService {
 
 	public Customer Get(int id)
 	{
-		return getById(id);
+		return GetById(id);
 	}
 
 	public IEnumerable<Customer> GetAll()
@@ -41,7 +42,7 @@ public class CustomerService {
 
 	public Customer Update(int id, UpdateCustomerDto dto)
     {
-        var customer = getById(id);
+        var customer = GetById(id);
 
         if (dto.Phone != customer.Phone && _db.Customers.Any(i => i.Phone == dto.Phone))
             throw new ApplicationException($"Customer with phone '{dto.Phone}' already exists");
@@ -55,7 +56,7 @@ public class CustomerService {
 
 	public Customer Delete(int id)
     {
-        var customer = getById(id);
+        var customer = GetById(id);
 
         var res = _db.Customers.Remove(customer).Entity;
         _db.SaveChanges();
@@ -63,7 +64,7 @@ public class CustomerService {
 		return res;
     }
 
-	private Customer getById(int id)
+	private Customer GetById(int id)
 	{
 		var customer = _db.Customers.Find(id);
         if (customer == null) throw new KeyNotFoundException("Customer not found");

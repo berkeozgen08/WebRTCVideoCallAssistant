@@ -4,20 +4,23 @@ using WebRTCVideoCallAssistant.Server.Helpers;
 
 namespace WebRTCVideoCallAssistant.Server.Models.Dto;
 
-public class CreateCustomerDto {
+public class CreateCustomerDto
+{
 	private string _firstName = null!;
 	private string _lastName = null!;
 
 	[Required]
 	[MaxLength(Constants.MAX_STRING_LENGTH)]
-	public string FirstName {
+	public string FirstName
+	{
 		get => _firstName;
 		set => _firstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.Trim());
 	}
 	
 	[Required]
 	[MaxLength(Constants.MAX_STRING_LENGTH)]
-	public string LastName {
+	public string LastName
+	{
 		get => _lastName;
 		set => _lastName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.Trim());
 	}

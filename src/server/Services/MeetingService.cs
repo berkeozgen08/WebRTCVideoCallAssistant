@@ -4,7 +4,8 @@ using WebRTCVideoCallAssistant.Server.Models.Dto;
 
 namespace WebRTCVideoCallAssistant.Server.Services;
 
-public class MeetingService {
+public class MeetingService
+{
     private readonly AppDbContext _db;
     private readonly IMapper _mapper;
 	
@@ -41,7 +42,7 @@ public class MeetingService {
 
 	public Meeting Get(int id)
 	{
-		return getById(id);
+		return GetById(id);
 	}
 
 	public IEnumerable<Meeting> GetAll()
@@ -51,7 +52,7 @@ public class MeetingService {
 
 	public Meeting Update(int id, UpdateMeetingDto dto)
     {
-        var meeting = getById(id);
+        var meeting = GetById(id);
 
         _mapper.Map(dto, meeting);
         var res = _db.Meetings.Update(meeting).Entity;
@@ -62,7 +63,7 @@ public class MeetingService {
 
 	public Meeting Delete(int id)
     {
-        var meeting = getById(id);
+        var meeting = GetById(id);
 
         var res = _db.Meetings.Remove(meeting).Entity;
         _db.SaveChanges();
@@ -86,7 +87,7 @@ public class MeetingService {
 		return meeting;
 	}
 
-	private Meeting getById(int id)
+	private Meeting GetById(int id)
 	{
 		var meeting = _db.Meetings.Find(id);
         if (meeting == null) throw new KeyNotFoundException("Meeting not found");
