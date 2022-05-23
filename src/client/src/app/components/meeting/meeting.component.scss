@@ -109,12 +109,10 @@ $remote-initial-height:5rem;
     .local-video {
         z-index: 1;
         position: absolute;
-        right: 1.5rem;
-        bottom: 1.5rem;
         width: 20vw;
         height: 12vw;
-        max-width: 20rem;
-        max-height: 20rem;
+        width: 100%;
+        height: 100%;
         border-radius: 4px;
         background-color: #4a4e51;
     }

@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { filter, Observable, of } from 'rxjs';
 import { CallService } from 'src/app/services/call.service';
 
@@ -17,30 +18,64 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
   targetID: string = "";
   peerID: string;
   public isCallStarted$: Observable<boolean>;
+  isUser:boolean;
 
+  isMicOpen=true;
+  isLocalCamOpen=true;
+  isRemoteCamOpen=true;
 
   /**
    *
    */
-  constructor(private callService: CallService) {
+  constructor(private callService: CallService,private route:ActivatedRoute) {
   }
 
   ngOnInit(): void {
     this.isCallStarted$ = this.callService.isCallStarted$;
-    this.peerID = this.callService.initPeer();
+    this.route.queryParams.subscribe({
+      next:(params)=>{
+        //check is user or client
+        
+        const userId=(params['userId']);
+        
+        const clientId=(params['clientId']);
+
+        this.isUser=!(!!clientId);
+
+        this.peerID = this.callService.initPeer(this.isUser?userId:clientId);
+        of(this.isUser?this.callService.enableCallAnswer():this.callService.establishMediaCall(userId)).subscribe();
+        
+      }
+    });
+
+    
   }
 
   ngAfterViewInit(): void {
     this.callService.localStream$
-      .pipe(filter(res => !!res))
       .subscribe(stream => {
-        this.localVideo.nativeElement.srcObject = stream
+        if(!!stream){
+          //this.isLocalCamOpen=true;
+          this.localVideo.nativeElement.srcObject = stream
+        }else{
+          //this.isLocalCamOpen=false;
+        }
+
+        
+        
       });
 
     this.callService.remoteStream$
-      .pipe(filter(res => !!res))
       .subscribe(stream => {
-        this.remoteVideo.nativeElement.srcObject = stream
+        if(!!stream){
+          //this.isRemoteCamOpen=true;
+
+          this.remoteVideo.nativeElement.srcObject = stream;
+        }else{
+          //this.isRemoteCamOpen=false;
+        }
+
+        
       });
   }
 

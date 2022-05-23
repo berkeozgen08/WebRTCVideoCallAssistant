@@ -6,20 +6,30 @@ import { MeetingComponent } from './components/meeting/meeting.component';
 import { SetMeetingComponent } from './components/set-meeting/set-meeting.component';
 
 const routes: Routes = [{
-  path:'',
-  component:HomeComponent
-},{
-  path:'meeting',
-  component:MeetingComponent
-},{
-  path:'meeting-stats',
-  component:MeetingStatsComponent
-},{
-  path:'set-meeting',
-  component:SetMeetingComponent
-},{
-  path:'**',
-  redirectTo:''
+  path: '',
+  component: HomeComponent
+}, {
+  path: 'meeting',
+  component: MeetingComponent
+}, {
+  path: 'meeting-stats',
+  component: MeetingStatsComponent
+}, {
+  path: 'set-meeting',
+  component: SetMeetingComponent
+}, {
+
+  path: 'user/joinMeeting',
+  component: MeetingComponent
+
+}, {
+
+  path: 'client/jointMeeting',
+  component: MeetingComponent
+
+}, {
+  path: '**',
+  redirectTo: ''
 }];
 
 @NgModule({
