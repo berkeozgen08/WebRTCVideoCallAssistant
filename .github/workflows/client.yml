@@ -27,9 +27,12 @@ jobs:
           
       - name: Install Dependencies
         run: npm install
+        working-directory: src/client/
          
       - name: Build
         run: npm run build:prod
-          
+        working-directory: src/client/
+        
       - name: Deploy
         run: npm run deploy
+        working-directory: src/client/
