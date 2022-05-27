@@ -14,8 +14,10 @@ namespace WebRTCVideoCallAssistant.Server.Models
         public string CustomerSlug { get; set; } = null!;
         public DateTime StartsAt { get; set; }
         public DateTime CreatedAt { get; set; }
+        public int? StatId { get; set; }
 
         public virtual User CreatedByNavigation { get; set; } = null!;
         public virtual Customer CreatedForNavigation { get; set; } = null!;
+        public virtual Stat? Stat { get; set; }
     }
 }

@@ -16,6 +16,7 @@ builder.Services.AddAutoMapper(typeof(ModelProfile));
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<MeetingService>();
+builder.Services.AddScoped<StatService>();
 
 builder.Services.AddCors();
 
