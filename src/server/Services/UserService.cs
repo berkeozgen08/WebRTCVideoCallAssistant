@@ -67,6 +67,11 @@ public class UserService {
 		return res;
     }
 
+	public User? GetByEmail(string email)
+	{
+		return _db.Users.FirstOrDefault(i => i.Email == email);
+	}
+
 	private User GetById(int id)
 	{
 		var user = _db.Users.Find(id);
