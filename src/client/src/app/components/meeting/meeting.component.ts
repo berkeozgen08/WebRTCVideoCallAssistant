@@ -91,4 +91,12 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
     this.callService.closeMediaCall();
   }
 
+  toggleVideo(){
+    
+  }
+
+  toggleMicrophone(){
+
+  }
+
 }
