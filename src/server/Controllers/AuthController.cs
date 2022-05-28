@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using WebRTCVideoCallAssistant.Server.Helpers;
 using WebRTCVideoCallAssistant.Server.Models.Dto;
@@ -24,10 +23,11 @@ public class AuthController : ControllerBase
 		var user = _authService.ValidateUser(cred.Email, cred.Password);
 		return Ok(new {
 			token = _authService.GenerateToken(
-				new Claim(ClaimTypes.Email, user.Email),
-				new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-				new Claim(ClaimTypes.MobilePhone, user.Phone),
-				new Claim(ClaimTypes.Role, Role.User)
+				new Claim("email", user.Email),
+				new Claim("firstName", user.FirstName),
+				new Claim("lastName", user.LastName),
+				new Claim("phone", user.Phone),
+				new Claim("role", Role.User)
 			)
 		});
 	}
@@ -38,8 +38,8 @@ public class AuthController : ControllerBase
 		var admin = _authService.ValidateAdmin(cred.Username, cred.Password);
 		return Ok(new {
 			token = _authService.GenerateToken(
-				new Claim(ClaimTypes.Name, admin.Username),
-				new Claim(ClaimTypes.Role, Role.Admin)
+				new Claim("username", admin.Username),
+				new Claim("role", Role.Admin)
 			)
 		});
 	}
