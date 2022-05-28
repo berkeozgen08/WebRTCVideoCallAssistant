@@ -1,5 +1,5 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using WebRTCVideoCallAssistant.Server.Helpers;
 using WebRTCVideoCallAssistant.Server.Models.Dto;
@@ -18,16 +18,29 @@ public class AuthController : ControllerBase
 		_authService = authService;
 	}
 	
-	// TODO: add admin signin
 	[HttpPost]
-	public async Task<IActionResult> SignIn(SignInUserDto cred)
+	public IActionResult SignIn(SignInUserDto cred)
 	{
-		if (!_authService.Validate(cred.Email, cred.Password))
-			throw new UnauthorizedAccessException("Incorrect password");
-		await HttpContext.SignInAsync(
-			CookieAuthenticationDefaults.AuthenticationScheme,
-			_authService.CreateClaim(cred.Email, Role.User)
-		);
-		return Ok();
+		var user = _authService.ValidateUser(cred.Email, cred.Password);
+		return Ok(new {
+			token = _authService.GenerateToken(
+				new Claim(ClaimTypes.Email, user.Email),
+				new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+				new Claim(ClaimTypes.MobilePhone, user.Phone),
+				new Claim(ClaimTypes.Role, Role.User)
+			)
+		});
+	}
+	
+	[HttpPost]
+	public IActionResult SignInAdmin(SignInAdminDto cred)
+	{
+		var admin = _authService.ValidateAdmin(cred.Username, cred.Password);
+		return Ok(new {
+			token = _authService.GenerateToken(
+				new Claim(ClaimTypes.Name, admin.Username),
+				new Claim(ClaimTypes.Role, Role.Admin)
+			)
+		});
 	}
 }
