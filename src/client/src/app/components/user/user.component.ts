@@ -31,7 +31,7 @@ export class UserComponent implements OnInit {
     if (!this.isNewRecord) {
       this.userService.get(id).subscribe({
         next: (v) => {
-          v.password = ''
+          v.password = null
           this.user = v
         }
       })
