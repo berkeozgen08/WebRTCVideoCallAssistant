@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { v4 as uuidv4 } from "uuid";
 
 @Component({
   selector: 'app-home',
@@ -12,4 +13,11 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  get id():string{
+    return uuidv4();
+  }
+
+  getInviteLink(data:string){
+    navigator.clipboard.writeText(data);
+  }
 }
