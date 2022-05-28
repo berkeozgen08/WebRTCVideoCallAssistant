@@ -12,6 +12,8 @@ import { HomeComponent } from './components/home/home.component';
 import { CustomersComponent } from './components/customers/customers.component';
 import { CustomerComponent } from './components/customer/customer.component';
 import { ToastrModule, ToastNoAnimation, ToastNoAnimationModule } from 'ngx-toastr';
+import { UsersComponent } from './components/users/users.component';
+import { UserComponent } from './components/user/user.component';
 
 
 
@@ -23,7 +25,9 @@ import { ToastrModule, ToastNoAnimation, ToastNoAnimationModule } from 'ngx-toas
     MeetingStatsComponent,
     HomeComponent,
     CustomersComponent,
-    CustomerComponent
+    CustomerComponent,
+    UsersComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
