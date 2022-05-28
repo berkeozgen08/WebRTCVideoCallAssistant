@@ -9,12 +9,22 @@ public class ModelProfile : Profile
 	public ModelProfile()
 	{
 		CreateMap<CreateUserDto, User>();
-		CreateMap<UpdateUserDto, User>();
+		CreateMap<UpdateUserDto, User>()
+			.ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
 		CreateMap<CreateCustomerDto, Customer>();
-		CreateMap<UpdateCustomerDto, Customer>();
+		CreateMap<UpdateCustomerDto, Customer>()
+			.ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
 		CreateMap<CreateMeetingDto, Meeting>();
-		CreateMap<UpdateMeetingDto, Meeting>();
+		CreateMap<UpdateMeetingDto, Meeting>()
+			.ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+		CreateMap<UpdateStatDto, Stat>()
+			.ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+		
+		CreateMap<CreateAdminDto, Admin>();
+		CreateMap<UpdateAdminDto, Admin>()
+			.ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 	}
 }

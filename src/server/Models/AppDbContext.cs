@@ -16,8 +16,10 @@ namespace WebRTCVideoCallAssistant.Server.Models
         {
         }
 
+        public virtual DbSet<Admin> Admins { get; set; } = null!;
         public virtual DbSet<Customer> Customers { get; set; } = null!;
         public virtual DbSet<Meeting> Meetings { get; set; } = null!;
+        public virtual DbSet<Stat> Stats { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -30,6 +32,18 @@ namespace WebRTCVideoCallAssistant.Server.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Admin>(entity =>
+            {
+                entity.ToTable("Admin");
+
+                entity.HasIndex(e => e.Username, "UQ__Admin__536C85E463D2C6FB")
+                    .IsUnique();
+
+                entity.Property(e => e.Password).HasMaxLength(64);
+
+                entity.Property(e => e.Username).HasMaxLength(64);
+            });
+
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.ToTable("Customer");
@@ -105,6 +119,22 @@ namespace WebRTCVideoCallAssistant.Server.Models
                     .HasForeignKey(d => d.CreatedFor)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Meeting__Created__6477ECF3");
+
+                entity.HasOne(d => d.Stat)
+                    .WithMany(p => p.Meetings)
+                    .HasForeignKey(d => d.StatId)
+                    .HasConstraintName("FK__Meeting__StatId__03F0984C");
+            });
+
+            modelBuilder.Entity<Stat>(entity =>
+            {
+                entity.ToTable("Stat");
+
+                entity.Property(e => e.EndedAt).HasColumnType("datetime");
+
+                entity.Property(e => e.StartedAt)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<User>(entity =>
