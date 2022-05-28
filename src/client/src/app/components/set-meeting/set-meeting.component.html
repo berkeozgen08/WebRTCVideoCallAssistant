@@ -1,13 +1,20 @@
 <div class="container">
-    <form class="create-meeting-form ">
+    <form class="create-meeting-form" #meetingForm="ngForm" (submit)="onSubmit()">
 
         <div class="form-group">
             <label for="user-list" class="form-label font-weight-bold">Customer</label>
             <div class="input-group mb-3">
-                <select class="form-select user-select form-control" id="user-list" aria-label="Default select example">
-                    <option selected value="1">John Doe</option>
-                    <option value="2">Alex Doe</option>
-                    <option value="3">Huan Lie</option>
+                <select [(ngModel)]="meeting.createdFor" required name="customer" class="form-select user-select form-control" id="user-list" aria-label="Default select example">
+                    <option *ngFor="let customer of customers" [value]="customer.id">{{customer.firstName}} {{customer.lastName}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="user-list" class="form-label font-weight-bold">User</label>
+            <div class="input-group mb-3">
+                <select [(ngModel)]="meeting.createdBy" required name="user" class="form-select user-select form-control" id="user-list" aria-label="Default select example">
+                    <option *ngFor="let user of users" [value]="user.id">{{user.firstName}} {{user.lastName}}</option>
                 </select>
             </div>
         </div>
@@ -16,12 +23,12 @@
             <label for="start-date" class="form-label font-weight-bold">Start Date</label>
             <div class="input-group mb-3">
 
-                <input type="datetime-local" class="form-control" id="start-date">
+                <input type="datetime-local" required [(ngModel)]="meeting.startsAt" name="start-date" class="form-control" id="start-date">
             </div>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" [disabled]="!meetingForm.form.valid" class="btn btn-primary">Save</button>
         </div>
-
+        
     </form>
 </div>

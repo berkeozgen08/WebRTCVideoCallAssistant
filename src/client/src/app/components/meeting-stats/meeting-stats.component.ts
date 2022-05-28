@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Meeting } from 'src/app/models/meeting';
+import { MeetingService } from 'src/app/services/meeting.service';
 
 @Component({
   selector: 'app-meeting-stats',
@@ -7,9 +10,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MeetingStatsComponent implements OnInit {
 
-  constructor() { }
+  meeting:Meeting;
+  constructor(
+    private meetingService:MeetingService,
+    private route:ActivatedRoute
+    ) { }
 
   ngOnInit(): void {
+    let id=+this.route.snapshot.paramMap.get("id");
+    this.meetingService.get(id).subscribe({
+      next:(v)=>this.meeting=v
+    });
+
+    
   }
 
 }

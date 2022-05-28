@@ -3,16 +3,16 @@
     <div class="card no-border">
         <div class="card-body">
             <h5 class="card-title">Meeting Stats</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Customer Representetive:John Green</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Customer:Jane Austing</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Customer Representetive:{{meeting.createdByNavigation.firstName}} {{meeting.createdByNavigation.lastName}}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Customer:{{meeting.createdForNavigation.firstName}} {{meeting.createdForNavigation.lastName}} </h6>
 
             <ul class="list-group">
-                <li class="list-group-item list-group-item-action">Start Date:02.05.2022 17:02</li>
-                <li class="list-group-item list-group-item-action">End Date:02.05.2022 17:38</li>
-                <li class="list-group-item list-group-item-action">User Speak Duration:22m 13s</li>
-                <li class="list-group-item list-group-item-action">User Video Duration:33m 42s</li>
-                <li class="list-group-item list-group-item-action">Client Speak Duration:9m 37s</li>
-                <li class="list-group-item list-group-item-action">Client Video Duration:29m 11sn</li>
+                <li class="list-group-item list-group-item-action">Start Date:{{meeting.stat.startedAt}}</li>
+                <li class="list-group-item list-group-item-action">End Date:{{meeting.stat.endedAt}}</li>
+                <li class="list-group-item list-group-item-action">User Speak Duration:{{meeting.stat.userSpeakTime}}</li>
+                <li class="list-group-item list-group-item-action">User Video Duration:{{meeting.stat.userVideoTime}}</li>
+                <li class="list-group-item list-group-item-action">Client Speak Duration:{{meeting.stat.customerSpeakTime}}</li>
+                <li class="list-group-item list-group-item-action">Client Video Duration:{{meeting.stat.customerVideoTime}}</li>
             </ul>
 
         </div>

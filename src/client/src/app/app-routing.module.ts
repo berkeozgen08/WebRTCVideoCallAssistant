@@ -19,7 +19,10 @@ const routes: Routes = [{
   path: 'meeting-stats',
   component: MeetingStatsComponent
 }, {
-  path: 'set-meeting',
+  path: 'meetings/create',
+  component: SetMeetingComponent
+}, {
+  path: 'meetings/:id',
   component: SetMeetingComponent
 }, {
   path: 'user/joinMeeting',
