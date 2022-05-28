@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using WebRTCVideoCallAssistant.Server.Helpers;
 
 namespace WebRTCVideoCallAssistant.Server.Models.Dto;
 

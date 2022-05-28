@@ -90,9 +90,8 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
     this.callService.closeMediaCall();
   }
 
-  toggleCamera(){
-    this.isLocalCamOpen=!this.isLocalCamOpen;
-    this.callService.toggleCamera(this.isLocalCamOpen);
+  toggleVideo(){
+    
   }
 
   toggleMicrophone(){

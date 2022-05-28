@@ -1,0 +1,26 @@
+<div class="container">
+
+    <h2>Customer</h2>
+
+    <form (ngSubmit)="onSubmit()"  #customerForm="ngForm">
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" required  [(ngModel)]="customer.firstName"  name="firstName" class="form-control" id="firstName" placeholder="First Name">
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" required [(ngModel)]="customer.lastName" name="lastName" class="form-control" id="lastName" placeholder="Last Name">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" required [(ngModel)]="customer.email" name="email" class="form-control"  id="email" placeholder="Email">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="phone" required [(ngModel)]="customer.phone" name="phone" class="form-control" id="phone" placeholder="Phone">
+        </div>
+
+        <button type="submit" [disabled]="!customerForm.form.valid" class="btn btn-primary">Save</button>
+
+    </form>
+</div>

@@ -2,7 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebRTCVideoCallAssistant.Server.Models.Dto;
 
-public class CreateMeetingDto {
+public class CreateMeetingDto
+{
 	[Required]
 	public int CreatedBy { get; set; }
 

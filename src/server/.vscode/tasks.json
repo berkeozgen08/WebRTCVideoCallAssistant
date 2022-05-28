@@ -36,6 +36,63 @@
 				"${workspaceFolder}/WebRTCVideoCallAssistant.Server.csproj"
 			],
 			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "scaffold",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"ef",
+				"dbcontext",
+				"scaffold",
+				"--force",
+				"Name=default",
+				"Microsoft.EntityFrameworkCore.SqlServer",
+				"-o", "Models",
+				"-c", "AppDbContext"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "migrate",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"ef",
+				"migrations",
+				"add",
+				"${input:name}",
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "remove migration",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"ef",
+				"migrations",
+				"remove",
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "update database",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"ef",
+				"database",
+				"update",
+			],
+			"problemMatcher": "$msCompile"
+		}
+	],
+	"inputs": [
+		{
+			"id": "name",
+			"description": "name",
+			"type": "promptString"
 		}
 	]
 }

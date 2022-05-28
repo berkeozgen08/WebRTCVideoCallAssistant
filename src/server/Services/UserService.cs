@@ -32,7 +32,7 @@ public class UserService {
 
 	public User Get(int id)
 	{
-		return getById(id);
+		return GetById(id);
 	}
 
 	public IEnumerable<User> GetAll()
@@ -42,7 +42,7 @@ public class UserService {
 
 	public User Update(int id, UpdateUserDto dto)
     {
-        var user = getById(id);
+        var user = GetById(id);
 
         if (dto.Phone != user.Phone && _db.Users.Any(i => i.Phone == dto.Phone))
             throw new ApplicationException($"User with phone '{dto.Phone}' already exists");
@@ -59,7 +59,7 @@ public class UserService {
 
 	public User Delete(int id)
     {
-        var user = getById(id);
+        var user = GetById(id);
 
         var res = _db.Users.Remove(user).Entity;
         _db.SaveChanges();
@@ -67,7 +67,12 @@ public class UserService {
 		return res;
     }
 
-	private User getById(int id)
+	public User? GetByEmail(string email)
+	{
+		return _db.Users.FirstOrDefault(i => i.Email == email);
+	}
+
+	private User GetById(int id)
 	{
 		var user = _db.Users.Find(id);
         if (user == null) throw new KeyNotFoundException("User not found");

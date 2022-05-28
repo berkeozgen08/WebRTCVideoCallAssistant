@@ -27,11 +27,14 @@ public class ErrorHandlerMiddleware
 
 			switch (error)
 			{
-				case ApplicationException e:
+				case ApplicationException:
 					response.StatusCode = (int) HttpStatusCode.BadRequest;
 					break;
-				case KeyNotFoundException e:
+				case KeyNotFoundException:
 					response.StatusCode = (int) HttpStatusCode.NotFound;
+					break;
+				case UnauthorizedAccessException:
+					response.StatusCode = (int) HttpStatusCode.Unauthorized;
 					break;
 				default:
 					_logger.LogError(error, error.Message);
@@ -42,11 +45,13 @@ public class ErrorHandlerMiddleware
 			string result;
 			if (env.IsDevelopment())
 			{
-				result = JsonSerializer.Serialize(new {
-					message = error?.Message,
-					stack = error?.StackTrace,
-					source = error?.Source
-				});
+				result = JsonSerializer.Serialize(new
+					{
+						message = error?.Message,
+						stack = error?.StackTrace,
+						source = error?.Source
+					}
+				);
 			}
 			else
 			{

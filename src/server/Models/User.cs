@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace WebRTCVideoCallAssistant.Server.Models
 {
@@ -14,6 +15,7 @@ namespace WebRTCVideoCallAssistant.Server.Models
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string Email { get; set; } = null!;
+		[JsonIgnore]
         public string Password { get; set; } = null!;
         public string Phone { get; set; } = null!;
 
