@@ -19,6 +19,7 @@ builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<MeetingService>();
 builder.Services.AddScoped<StatService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AdminService>();
 
 builder.Services
 	.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

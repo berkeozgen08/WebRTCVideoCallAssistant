@@ -16,6 +16,7 @@ namespace WebRTCVideoCallAssistant.Server.Models
         {
         }
 
+        public virtual DbSet<Admin> Admins { get; set; } = null!;
         public virtual DbSet<Customer> Customers { get; set; } = null!;
         public virtual DbSet<Meeting> Meetings { get; set; } = null!;
         public virtual DbSet<Stat> Stats { get; set; } = null!;
@@ -31,6 +32,18 @@ namespace WebRTCVideoCallAssistant.Server.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Admin>(entity =>
+            {
+                entity.ToTable("Admin");
+
+                entity.HasIndex(e => e.Username, "UQ__Admin__536C85E463D2C6FB")
+                    .IsUnique();
+
+                entity.Property(e => e.Password).HasMaxLength(64);
+
+                entity.Property(e => e.Username).HasMaxLength(64);
+            });
+
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.ToTable("Customer");
