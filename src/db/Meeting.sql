@@ -5,8 +5,8 @@ CREATE TABLE [dbo].[Meeting]
 	[CreatedFor] INT NOT NULL REFERENCES [dbo].[Customer](Id),
 	[UserConnId] CHAR(36) UNIQUE NOT NULL,
 	[CustomerConnId] CHAR(36) UNIQUE NOT NULL,
-	[UserSlug] CHAR(10) UNIQUE NOT NULL,
-	[CustomerSlug] CHAR(10) UNIQUE NOT NULL,
+	[UserSlug] CHAR(8) UNIQUE NOT NULL,
+	[CustomerSlug] CHAR(8) UNIQUE NOT NULL,
 	[StartsAt] DATETIME NOT NULL,
 	[CreatedAt] DATETIME NOT NULL DEFAULT GETDATE(),
 	[StatId] INT REFERENCES [dbo].[Stat](Id)

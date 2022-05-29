@@ -5,6 +5,6 @@ CREATE TABLE [dbo].[User]
 	[LastName] NVARCHAR(64) NOT NULL,
 	[Email] NVARCHAR(64) UNIQUE NOT NULL,
 	[Password] NVARCHAR(64) NOT NULL,
-	[Phone] CHAR(13) UNIQUE NOT NULL,
+	[Phone] NVARCHAR(15) UNIQUE NOT NULL,
 	CHECK ([FirstName] <> '' AND [LastName] <> '' AND [Email] <> '')
 )
