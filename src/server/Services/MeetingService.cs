@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WebRTCVideoCallAssistant.Server.Models;
 using WebRTCVideoCallAssistant.Server.Models.Dto;
 
@@ -19,18 +20,22 @@ public class MeetingService
 	{
         var meeting = _mapper.Map<Meeting>(dto);
 
+		if (meeting.StartsAt < DateTime.Now)
+			throw new ApplicationException("Meeting cannot be created for a past time");
+
 		meeting.UserConnId = Guid.NewGuid().ToString();
 		meeting.CustomerConnId = Guid.NewGuid().ToString();
 		
-		var buffer = new char[8];
+		var len = 8;
+		var buffer = new char[len];
 		var random = new Random();
 		var alph = "abcdefghijklmnopqrstuvwxyz";
 
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < len; i++)
 			buffer[i] = alph[random.Next(alph.Length)];
 		meeting.UserSlug = string.Join("", buffer);
 
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < len; i++)
 			buffer[i] = alph[random.Next(alph.Length)];
 		meeting.CustomerSlug = string.Join("", buffer);
 		
@@ -47,7 +52,10 @@ public class MeetingService
 
 	public IEnumerable<Meeting> GetAll()
 	{
-		return _db.Meetings;
+		return _db.Meetings
+			.Include(m => m.CreatedBy)
+			.Include(m => m.CreatedFor)
+			.Include(m => m.Stat);
 	}
 
 	public Meeting Update(int id, UpdateMeetingDto dto)
@@ -89,7 +97,11 @@ public class MeetingService
 
 	private Meeting GetById(int id)
 	{
-		var meeting = _db.Meetings.Find(id);
+		var meeting = _db.Meetings
+			.Include(m => m.CreatedBy)
+			.Include(m => m.CreatedFor)
+			.Include(m => m.Stat)
+			.FirstOrDefault(m => m.Id == id);
         if (meeting == null) throw new KeyNotFoundException("Meeting not found");
         return meeting;
 	}

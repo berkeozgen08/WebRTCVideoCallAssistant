@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WebRTCVideoCallAssistant.Server.Models;
 using WebRTCVideoCallAssistant.Server.Models.Dto;
 
@@ -37,7 +38,11 @@ public class CustomerService
 
 	public IEnumerable<Customer> GetAll()
 	{
-		return _db.Customers;
+		return _db.Customers
+			.Include(c => c.Meetings)
+			.ThenInclude(m => m.CreatedBy)
+			.Include(c => c.Meetings)
+			.ThenInclude(m => m.Stat);
 	}
 
 	public Customer Update(int id, UpdateCustomerDto dto)
@@ -66,7 +71,12 @@ public class CustomerService
 
 	private Customer GetById(int id)
 	{
-		var customer = _db.Customers.Find(id);
+		var customer = _db.Customers
+			.Include(c => c.Meetings)
+			.ThenInclude(m => m.CreatedBy)
+			.Include(c => c.Meetings)
+			.ThenInclude(m => m.Stat)
+			.FirstOrDefault(c => c.Id == id);
         if (customer == null) throw new KeyNotFoundException("Customer not found");
         return customer;
 	}
