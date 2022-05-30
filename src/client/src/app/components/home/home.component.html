@@ -4,7 +4,7 @@
 
     <ul class="list-group mb-2">
 
-        <li *ngFor="let meeting of meetings;index as i"
+        <li *ngFor="let meeting of meetings | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage,totalItems: meetings.length } ;index as i;"
             class="list-group-item d-flex justify-content-between align-items-center">
             <span>{{meeting.createdFor.firstName}} {{meeting.createdFor.lastName}}
                 {{meeting.startsAt | date:"dd/MM/yyyy HH:mm"}}
@@ -24,15 +24,8 @@
                     class="btn btn-sm btn-secondary">Review</button>
             </div>
         </li>
-
-
-        <!-- <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span class="text-muted">Jane Austin 02.05.2022 17:02</span>
-            <div class="actions">
-                <button type="button" [routerLink]="['/meeting-stats',meeting.id]" class="btn btn-sm btn-secondary">Review</button>
-            </div>
-        </li> -->
     </ul>
+    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
 
     <button type="button" [routerLink]="['meetings/create']" class="btn btn-primary">Create Meeting</button>
 </div>

@@ -14,6 +14,7 @@ import { CustomerComponent } from './components/customer/customer.component';
 import { ToastrModule, ToastNoAnimation, ToastNoAnimationModule } from 'ngx-toastr';
 import { UsersComponent } from './components/users/users.component';
 import { UserComponent } from './components/user/user.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 
@@ -35,6 +36,7 @@ import { UserComponent } from './components/user/user.component';
     FormsModule,
     HttpClientModule,
     ToastNoAnimationModule.forRoot(),
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

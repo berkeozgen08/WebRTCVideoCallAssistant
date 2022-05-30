@@ -11,8 +11,11 @@ import { Customer } from "../../models/customer";
 })
 export class CustomersComponent implements OnInit {
 
-  customers: Customer[];
 
+  itemsCountOptions = [10, 20, 50, 100];
+  itemsPerPage: number = this.itemsCountOptions[0];
+  currentPage = 1;
+  customers: Customer[]=[];
   constructor(private cusomerService: CustomerService,private toastService:ToastrService) { }
 
   ngOnInit(): void {
