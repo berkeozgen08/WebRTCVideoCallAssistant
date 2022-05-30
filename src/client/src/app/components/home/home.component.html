@@ -4,18 +4,24 @@
 
     <ul class="list-group mb-2">
 
-        <li *ngFor="let meeting of meetings;index as i" class="list-group-item d-flex justify-content-between align-items-center">
-            <span>{{meeting.createdForNavigation.firstName}} {{meeting.createdForNavigation.lastName}}
-                {{meeting.startsAt}}
+        <li *ngFor="let meeting of meetings;index as i"
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{meeting.createdFor.firstName}} {{meeting.createdFor.lastName}}
+                {{meeting.startsAt | date:"dd/MM/yyyy HH:mm"}}
             </span>
             <div class="actions">
-                <button type="button" class="btn btn-sm btn-danger" (click)="deleteMeeting(i)">Delete</button>
-                <button type="button" [routerLink]="['/set-meeting',meeting.id]"
+                <button type="button" *ngIf="!(!!meeting.statId)" class="btn btn-sm btn-danger"
+                    (click)="deleteMeeting(i)">Delete</button>
+                <button type="button" *ngIf="!(!!meeting.statId)" [routerLink]="['/meetings',meeting.id]"
                     class="btn btn-sm btn-warning">Edit</button>
-                <button type="button" [routerLink]="['/meetings',meeting.id]" class="btn btn-sm btn-primary">Join</button>
-                <button type="button" (click)="getInviteLink('2')" class="btn btn-sm btn-info">Inivte</button>
-                
-                <button type="button" *ngIf="!!meeting.statId"  [routerLink]="['/meeting-stats',meeting.id]" class="btn btn-sm btn-secondary">Review</button>
+                <button type="button" *ngIf="!(!!meeting.statId)" [routerLink]="['/user/joinMeeting']"
+                    [queryParams]="{meetingId:meeting.id,userId:meeting.createdBy.id}"
+                    class="btn btn-sm btn-primary">Join</button>
+                <button type="button" *ngIf="!(!!meeting.statId)" (click)="getInviteLink('2')"
+                    class="btn btn-sm btn-info">Inivte</button>
+
+                <button type="button" *ngIf="!!meeting.statId" [routerLink]="['/meeting-stats',meeting.id]"
+                    class="btn btn-sm btn-secondary">Review</button>
             </div>
         </li>
 
