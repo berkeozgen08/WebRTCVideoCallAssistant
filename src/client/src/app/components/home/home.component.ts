@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
 
 
   itemsCountOptions = [10, 20, 50, 100];
-  itemsPerPage: number = this.itemsCountOptions[0];
+  itemsPerPage: number = this.itemsCountOptions[1];
   currentPage = 1;
   meetings: Meeting[] = [];
 
@@ -37,11 +37,12 @@ export class HomeComponent implements OnInit {
   }
 
   deleteMeeting(index: number) {
-    let meeting = this.meetings[index];
+    let absoluteIndex=this.itemsPerPage*(this.currentPage-1)+index;
+    let meeting = this.meetings[absoluteIndex];
 
     this.meetingService.delete(meeting.id).subscribe({
       next: (v) => {
-        this.meetings.splice(index, 1);
+        this.meetings.splice(absoluteIndex, 1);
         this.toastService.success("Meeting deleted successfully");
       }
     });

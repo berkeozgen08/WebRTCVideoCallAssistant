@@ -25,7 +25,17 @@
             </div>
         </li>
     </ul>
-    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+
+    <div class="d-flex">
+        
+        <pagination-controls (pageChange)="currentPage = $event">
+        </pagination-controls>
+
+        <select [(ngModel)]="itemsPerPage" name="itemsPerPage" class="col-sm-1 mx-5" id="item-count">
+            <option *ngFor="let item of itemsCountOptions" [value]="item" [selected]="item==itemsPerPage">
+                {{item}}</option>
+        </select>
+    </div>
 
     <button type="button" [routerLink]="['meetings/create']" class="btn btn-primary">Create Meeting</button>
 </div>

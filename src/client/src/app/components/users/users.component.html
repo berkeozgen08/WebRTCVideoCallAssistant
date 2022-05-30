@@ -11,11 +11,19 @@
 
             <div class="actions">
                 <button type="button" (click)="deleteUser(i)" class="btn btn-sm btn-danger">Delete</button>
-                <button type="button" [routerLink]="['/users/',user.id]"
-                    class="btn btn-sm btn-warning">Edit</button>
+                <button type="button" [routerLink]="['/users/',user.id]" class="btn btn-sm btn-warning">Edit</button>
             </div>
         </li>
     </ul>
-    <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+    <div class="d-flex">
+        
+        <pagination-controls (pageChange)="currentPage = $event">
+        </pagination-controls>
+
+        <select [(ngModel)]="itemsPerPage" name="itemsPerPage" class="col-sm-1 mx-5" id="item-count">
+            <option *ngFor="let item of itemsCountOptions" [value]="item" [selected]="item==itemsPerPage">
+                {{item}}</option>
+        </select>
+    </div>
     <button type="button" [routerLink]="['/users/create']" class="btn btn-primary">Create User</button>
 </div>

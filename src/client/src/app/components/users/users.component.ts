@@ -29,11 +29,12 @@ export class UsersComponent implements OnInit {
   }
 
   deleteUser(index:number){
-    let user=this.users[index];
+    let absoluteIndex=this.itemsPerPage*(this.currentPage-1)+index;
+    let user=this.users[absoluteIndex];
 
     this.userService.delete(user.id).subscribe({
       next:(v)=>{
-        this.users.splice(index,1);
+        this.users.splice(absoluteIndex,1);
         this.toastService.success("Customer deleted successfully");
       }
     });
