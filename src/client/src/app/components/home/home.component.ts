@@ -16,14 +16,17 @@ export class HomeComponent implements OnInit {
   itemsPerPage: number = this.itemsCountOptions[1];
   currentPage = 1;
   meetings: Meeting[] = [];
-
-  constructor(private meetingService: MeetingService, private toastService: ToastrService) { }
+  isloading:boolean=false;
+  constructor(
+    private meetingService: MeetingService,
+    private toastService: ToastrService) { }
 
   ngOnInit(): void {
+    this.isloading=true;
     this.meetingService.getAll().subscribe({
       next: (v) => {
         this.meetings = v;
-
+        this.isloading=false;
       }
     });
   }
@@ -37,7 +40,7 @@ export class HomeComponent implements OnInit {
   }
 
   deleteMeeting(index: number) {
-    let absoluteIndex=this.itemsPerPage*(this.currentPage-1)+index;
+    let absoluteIndex = this.itemsPerPage * (this.currentPage - 1) + index;
     let meeting = this.meetings[absoluteIndex];
 
     this.meetingService.delete(meeting.id).subscribe({

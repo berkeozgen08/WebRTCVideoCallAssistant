@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { delay } from 'rxjs';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 
@@ -15,14 +16,18 @@ export class UsersComponent implements OnInit {
   itemsPerPage: number = this.itemsCountOptions[0];
   currentPage = 1;
   users:User[]=[];
+  isloading:boolean=false;
   constructor(
     private userService:UserService,
-    private toastService:ToastrService) { }
+    private toastService:ToastrService
+    ) { }
 
   ngOnInit(): void {
+    this.isloading=true;
     this.userService.getAll().subscribe({
       next:(res)=>{
         this.users=res;
+        this.isloading=false;
       }
     });
 

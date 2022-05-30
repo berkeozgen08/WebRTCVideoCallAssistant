@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { delay } from 'rxjs';
 import { CustomerService } from 'src/app/services/customer.service';
 import { Customer } from "../../models/customer";
 
@@ -16,12 +17,16 @@ export class CustomersComponent implements OnInit {
   itemsPerPage: number = this.itemsCountOptions[0];
   currentPage = 1;
   customers: Customer[] = [];
-  constructor(private cusomerService: CustomerService, private toastService: ToastrService) { }
+  isloading:boolean=false;
+  constructor(
+    private cusomerService: CustomerService, 
+    private toastService: ToastrService) { }
 
   ngOnInit(): void {
-
+    this.isloading=true;
     this.cusomerService.getAll().subscribe(res => {
       this.customers = res;
+      this.isloading=false;
     });
 
   }
