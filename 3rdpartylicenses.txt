@@ -16,6 +16,8 @@ MIT
 @angular/router
 MIT
 
+ngx-pagination
+
 ngx-toastr
 MIT
 The MIT License (MIT)
