@@ -10,7 +10,11 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class UsersComponent implements OnInit {
 
-  users:User[];
+
+  itemsCountOptions = [10, 20, 50, 100];
+  itemsPerPage: number = this.itemsCountOptions[0];
+  currentPage = 1;
+  users:User[]=[];
   constructor(
     private userService:UserService,
     private toastService:ToastrService) { }
@@ -25,11 +29,12 @@ export class UsersComponent implements OnInit {
   }
 
   deleteUser(index:number){
-    let user=this.users[index];
+    let absoluteIndex=this.itemsPerPage*(this.currentPage-1)+index;
+    let user=this.users[absoluteIndex];
 
     this.userService.delete(user.id).subscribe({
       next:(v)=>{
-        this.users.splice(index,1);
+        this.users.splice(absoluteIndex,1);
         this.toastService.success("Customer deleted successfully");
       }
     });
