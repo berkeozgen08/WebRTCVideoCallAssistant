@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.meetingService.getAll().subscribe({ next: (v) => {
       this.meetings = v;
-      console.log(v)
 
     } });
   }

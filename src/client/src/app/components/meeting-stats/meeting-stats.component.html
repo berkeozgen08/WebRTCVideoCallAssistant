@@ -3,8 +3,8 @@
     <div class="card no-border">
         <div class="card-body">
             <h5 class="card-title">Meeting Stats</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Customer Representetive:{{meeting.createdByNavigation.firstName}} {{meeting.createdByNavigation.lastName}}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Customer:{{meeting.createdForNavigation.firstName}} {{meeting.createdForNavigation.lastName}} </h6>
+            <h6 class="card-subtitle mb-2 text-muted">Customer Representetive:{{meeting.createdBy.firstName}} {{meeting.createdBy.lastName}}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Customer:{{meeting.createdFor.firstName}} {{meeting.createdFor.lastName}} </h6>
 
             <ul class="list-group">
                 <li class="list-group-item list-group-item-action">Start Date:{{meeting.stat.startedAt}}</li>
