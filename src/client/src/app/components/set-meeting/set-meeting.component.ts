@@ -24,10 +24,11 @@ export class SetMeetingComponent implements OnInit {
     createdBy:null,
     createdFor:null,
     createdById:null,
+    userConnId:null,
+    customerConnId:null,
+    slug:null,
     createdForId:null,
-    customerSlug:null,
     startsAt:null,
-    userSlug:null,
     statId:null,
     stat:null
   };
