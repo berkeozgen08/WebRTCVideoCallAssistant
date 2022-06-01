@@ -19,6 +19,7 @@ namespace WebRTCVideoCallAssistant.Server.Models
         public string Password { get; set; } = null!;
         public string Phone { get; set; } = null!;
 
+		[JsonIgnore]
         public virtual ICollection<Meeting> Meetings { get; set; }
     }
 }

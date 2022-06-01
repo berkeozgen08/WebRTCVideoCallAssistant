@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace WebRTCVideoCallAssistant.Server.Models
 {
@@ -18,6 +19,7 @@ namespace WebRTCVideoCallAssistant.Server.Models
         public DateTime? StartedAt { get; set; }
         public DateTime? EndedAt { get; set; }
 
+		[JsonIgnore]
         public virtual ICollection<Meeting> Meetings { get; set; }
     }
 }
