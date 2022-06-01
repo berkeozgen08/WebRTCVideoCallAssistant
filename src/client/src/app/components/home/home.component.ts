@@ -12,17 +12,23 @@ import { v4 as uuidv4 } from "uuid";
 export class HomeComponent implements OnInit {
 
 
-
-  meetings: Meeting[];
-
-  constructor(private meetingService: MeetingService,private toastService:ToastrService) { }
+  itemsCountOptions = [10, 20, 50, 100];
+  itemsPerPage: number = this.itemsCountOptions[1];
+  currentPage = 1;
+  meetings: Meeting[] = [];
+  isloading:boolean=false;
+  constructor(
+    private meetingService: MeetingService,
+    private toastService: ToastrService) { }
 
   ngOnInit(): void {
-    this.meetingService.getAll().subscribe({ next: (v) => {
-      this.meetings = v;
-      console.log(v)
-
-    } });
+    this.isloading=true;
+    this.meetingService.getAll().subscribe({
+      next: (v) => {
+        this.meetings = v;
+        this.isloading=false;
+      }
+    });
   }
 
   get id(): string {
@@ -33,14 +39,16 @@ export class HomeComponent implements OnInit {
     navigator.clipboard.writeText(data);
   }
 
-  deleteMeeting(index:number){
-    let meeting=this.meetings[index];
+  deleteMeeting(index: number) {
+    let absoluteIndex = this.itemsPerPage * (this.currentPage - 1) + index;
+    let meeting = this.meetings[absoluteIndex];
 
     this.meetingService.delete(meeting.id).subscribe({
-      next:(v)=>{
-        this.meetings.splice(index,1);
+      next: (v) => {
+        this.meetings.splice(absoluteIndex, 1);
         this.toastService.success("Meeting deleted successfully");
       }
     });
   }
+
 }

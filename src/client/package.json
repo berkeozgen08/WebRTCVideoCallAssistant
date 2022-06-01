@@ -19,6 +19,8 @@
     "@angular/platform-browser": "~13.2.0",
     "@angular/platform-browser-dynamic": "~13.2.0",
     "@angular/router": "~13.2.0",
+    "ngx-loading": "^13.0.0",
+    "ngx-pagination": "^6.0.1",
     "ngx-toastr": "^14.3.0",
     "peerjs": "^1.3.2",
     "rxjs": "~7.5.0",

@@ -48,7 +48,7 @@ namespace WebRTCVideoCallAssistant.Server.Models
             {
                 entity.ToTable("Customer");
 
-                entity.HasIndex(e => e.Phone, "UQ__Customer__5C7E359EB15AAB24")
+                entity.HasIndex(e => e.Phone, "UQ__Customer__5C7E359E8970240C")
                     .IsUnique();
 
                 entity.HasIndex(e => e.Email, "UQ__Customer__A9D10534339366D0")
@@ -60,26 +60,23 @@ namespace WebRTCVideoCallAssistant.Server.Models
 
                 entity.Property(e => e.LastName).HasMaxLength(64);
 
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(13)
-                    .IsUnicode(false)
-                    .IsFixedLength();
+                entity.Property(e => e.Phone).HasMaxLength(15);
             });
 
             modelBuilder.Entity<Meeting>(entity =>
             {
                 entity.ToTable("Meeting");
 
-                entity.HasIndex(e => e.UserConnId, "UQ__Meeting__65106B518A32C0A4")
+                entity.HasIndex(e => e.UserConnId, "UQ__tmp_ms_x__65106B517BA0854A")
                     .IsUnique();
 
-                entity.HasIndex(e => e.CustomerSlug, "UQ__Meeting__80B10B703EC23716")
+                entity.HasIndex(e => e.CustomerSlug, "UQ__tmp_ms_x__80B10B7043D8451E")
                     .IsUnique();
 
-                entity.HasIndex(e => e.CustomerConnId, "UQ__Meeting__8C291389006032BC")
+                entity.HasIndex(e => e.CustomerConnId, "UQ__tmp_ms_x__8C2913892F7F2F0D")
                     .IsUnique();
 
-                entity.HasIndex(e => e.UserSlug, "UQ__Meeting__FB26D644CD82A243")
+                entity.HasIndex(e => e.UserSlug, "UQ__tmp_ms_x__FB26D644133595AA")
                     .IsUnique();
 
                 entity.Property(e => e.CreatedAt)
@@ -92,7 +89,7 @@ namespace WebRTCVideoCallAssistant.Server.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.CustomerSlug)
-                    .HasMaxLength(10)
+                    .HasMaxLength(8)
                     .IsUnicode(false)
                     .IsFixedLength();
 
@@ -104,26 +101,26 @@ namespace WebRTCVideoCallAssistant.Server.Models
                     .IsFixedLength();
 
                 entity.Property(e => e.UserSlug)
-                    .HasMaxLength(10)
+                    .HasMaxLength(8)
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.HasOne(d => d.CreatedByNavigation)
+                entity.HasOne(d => d.CreatedBy)
                     .WithMany(p => p.Meetings)
-                    .HasForeignKey(d => d.CreatedBy)
+                    .HasForeignKey(d => d.CreatedById)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Meeting__Created__6383C8BA");
+                    .HasConstraintName("FK__Meeting__Created__236943A5");
 
-                entity.HasOne(d => d.CreatedForNavigation)
+                entity.HasOne(d => d.CreatedFor)
                     .WithMany(p => p.Meetings)
-                    .HasForeignKey(d => d.CreatedFor)
+                    .HasForeignKey(d => d.CreatedForId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Meeting__Created__6477ECF3");
+                    .HasConstraintName("FK__Meeting__Created__245D67DE");
 
                 entity.HasOne(d => d.Stat)
                     .WithMany(p => p.Meetings)
                     .HasForeignKey(d => d.StatId)
-                    .HasConstraintName("FK__Meeting__StatId__03F0984C");
+                    .HasConstraintName("FK__Meeting__StatId__22751F6C");
             });
 
             modelBuilder.Entity<Stat>(entity =>
@@ -141,7 +138,7 @@ namespace WebRTCVideoCallAssistant.Server.Models
             {
                 entity.ToTable("User");
 
-                entity.HasIndex(e => e.Phone, "UQ__User__5C7E359ED77FC445")
+                entity.HasIndex(e => e.Phone, "UQ__User__5C7E359E4BC5450B")
                     .IsUnique();
 
                 entity.HasIndex(e => e.Email, "UQ__User__A9D10534B0F78423")
@@ -155,10 +152,7 @@ namespace WebRTCVideoCallAssistant.Server.Models
 
                 entity.Property(e => e.Password).HasMaxLength(64);
 
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(13)
-                    .IsUnicode(false)
-                    .IsFixedLength();
+                entity.Property(e => e.Phone).HasMaxLength(15);
             });
 
             OnModelCreatingPartial(modelBuilder);

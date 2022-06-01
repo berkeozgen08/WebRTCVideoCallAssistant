@@ -5,10 +5,10 @@ namespace WebRTCVideoCallAssistant.Server.Models.Dto;
 public class CreateMeetingDto
 {
 	[Required]
-	public int CreatedBy { get; set; }
+	public int CreatedById { get; set; }
 
 	[Required]
-	public int CreatedFor { get; set; }
+	public int CreatedForId { get; set; }
 
 	[Required]
 	public DateTime StartsAt { get; set; }

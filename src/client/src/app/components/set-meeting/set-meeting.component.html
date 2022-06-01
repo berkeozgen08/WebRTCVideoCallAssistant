@@ -4,8 +4,8 @@
         <div class="form-group">
             <label for="user-list" class="form-label font-weight-bold">Customer</label>
             <div class="input-group mb-3">
-                <select [(ngModel)]="meeting.createdFor" required name="customer" class="form-select user-select form-control" id="user-list" aria-label="Default select example">
-                    <option *ngFor="let customer of customers" [value]="customer.id">{{customer.firstName}} {{customer.lastName}}</option>
+                <select [(ngModel)]="meeting.createdForId" required name="customer" class="form-select user-select form-control" id="user-list" aria-label="Default select example">
+                    <option *ngFor="let customer of customers" [value]="customer.id" [selected]="customer.id==meeting.createdForId">{{customer.firstName}} {{customer.lastName}}</option>
                 </select>
             </div>
         </div>
@@ -13,8 +13,8 @@
         <div class="form-group">
             <label for="user-list" class="form-label font-weight-bold">User</label>
             <div class="input-group mb-3">
-                <select [(ngModel)]="meeting.createdBy" required name="user" class="form-select user-select form-control" id="user-list" aria-label="Default select example">
-                    <option *ngFor="let user of users" [value]="user.id">{{user.firstName}} {{user.lastName}}</option>
+                <select [(ngModel)]="meeting.createdById" required name="user" class="form-select user-select form-control" id="user-list" aria-label="Default select example">
+                    <option *ngFor="let user of users" [value]="user.id" [selected]="user.id==meeting.createdById">{{user.firstName}} {{user.lastName}}</option>
                 </select>
             </div>
         </div>
