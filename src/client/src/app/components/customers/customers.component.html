@@ -4,7 +4,7 @@
 
     <ul class="list-group mb-2">
 
-        <li *ngFor="let customer of customers;index as i;"
+        <li *ngFor="let customer of customers | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage,totalItems: customers.length } ;index as i;"
             class="list-group-item d-flex justify-content-between align-items-center">
 
             <span>{{customer.firstName}} {{customer.lastName}}</span>
@@ -16,6 +16,19 @@
             </div>
         </li>
     </ul>
+    <div class="d-flex">
 
+        <pagination-controls (pageChange)="currentPage = $event">
+        </pagination-controls>
+
+        <select [(ngModel)]="itemsPerPage" name="itemsPerPage" class="col-sm-1 mx-5" id="item-count">
+            <option *ngFor="let item of itemsCountOptions" [value]="item" [selected]="item==itemsPerPage">
+                {{item}}</option>
+        </select>
+    </div>
     <button type="button" [routerLink]="['/customers/create']" class="btn btn-primary">Create Customer</button>
 </div>
+
+<ngx-loading
+[show]="isloading"
+></ngx-loading>

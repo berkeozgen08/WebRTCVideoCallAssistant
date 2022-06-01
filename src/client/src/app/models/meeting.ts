@@ -4,21 +4,21 @@ import { User } from "./user";
 
 export interface Meeting {
     id: number;
-    createdBy: number;
-    createdFor: number;
+    createdById: number;
+    createdForId: number;
     userSlug: string;
     customerSlug: string;
     startsAt: string;
     createdAt: string;
     statId:number;
     stat:Stat;
-    createdByNavigation:User;
-    createdForNavigation:Customer;
+    createdBy:User;
+    createdFor:Customer;
     
 }
 
 export interface MeetingCreate {
-    createdBy: number;
-    createdFor: number;
+    createdById: number;
+    createdForId: number;
     startsAt: string;
 }
