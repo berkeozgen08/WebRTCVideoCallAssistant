@@ -33,11 +33,7 @@ public class MeetingService
 
 		for (int i = 0; i < len; i++)
 			buffer[i] = alph[random.Next(alph.Length)];
-		meeting.UserSlug = string.Join("", buffer);
-
-		for (int i = 0; i < len; i++)
-			buffer[i] = alph[random.Next(alph.Length)];
-		meeting.CustomerSlug = string.Join("", buffer);
+		meeting.Slug = string.Join("", buffer);
 		
         var res = _db.Meetings.Add(meeting).Entity;
         _db.SaveChanges();
@@ -79,19 +75,15 @@ public class MeetingService
 		return res;
     }
 
-	public Meeting ResolveUserSlug(string userSlug)
+	public Meeting ResolveSlug(string slug)
 	{
-		var meeting = _db.Meetings.FirstOrDefault(i => i.UserSlug == userSlug);
+		var meeting = _db.Meetings		
+			.Include(m => m.CreatedBy)
+			.Include(m => m.CreatedFor)
+			.Include(m => m.Stat)
+			.FirstOrDefault(i => i.Slug == slug);
 		if (meeting == null)
-			throw new KeyNotFoundException($"Meeting with user slug '{userSlug}' not found");
-		return meeting;
-	}
-
-	public Meeting ResolveCustomerSlug(string customerSlug)
-	{
-		var meeting = _db.Meetings.FirstOrDefault(i => i.CustomerSlug == customerSlug);
-		if (meeting == null)
-			throw new KeyNotFoundException($"Meeting with customer slug '{customerSlug}' not found");
+			throw new KeyNotFoundException($"Meeting with slug '{slug}' not found");
 		return meeting;
 	}
 

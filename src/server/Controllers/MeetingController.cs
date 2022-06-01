@@ -46,15 +46,9 @@ public class MeetingController : ControllerBase
 		return Ok(_meetingService.Delete(id));
 	}
 	
-	[HttpGet("{userSlug}")]
-	public IActionResult ResolveUserSlug(string userSlug)
+	[HttpGet("{slug}")]
+	public ActionResult<Meeting> ResolveSlug(string slug)
 	{
-		return Ok(new { connId = _meetingService.ResolveUserSlug(userSlug).CustomerConnId });
-	}
-
-	[HttpGet("{customerSlug}")]
-	public IActionResult ResolveCustomerSlug(string customerSlug)
-	{
-		return Ok(new { connId = _meetingService.ResolveUserSlug(customerSlug).UserConnId });
+		return Ok(_meetingService.ResolveSlug(slug));
 	}
 }
