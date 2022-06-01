@@ -10,6 +10,7 @@ export class CallService {
   constructor() { }
 
   private peer: Peer;
+  private statsInterval;
 
   private mediaCall: Peer.MediaConnection;
 
@@ -98,10 +99,11 @@ export class CallService {
 
         this.mediaCall = call;
         this.isCallStartedBs.next(true);
+		this.statsInterval = setInterval(async () => await this.connectionStats(call.peerConnection), 1000);
 
         this.mediaCall.answer(stream);
         this.mediaCall.on('stream', (remoteStream) => {
-          this.remoteStreamBs.next(remoteStream);
+			this.remoteStreamBs.next(remoteStream);
         });
         this.mediaCall.on('error', err => {
           //this.snackBar.open(err, 'Close');
@@ -126,6 +128,15 @@ export class CallService {
       track.stop();
     });
     //this.snackBar.open('Call Ended', 'Close');
+  }
+
+  public async connectionStats(conn: RTCPeerConnection) {
+	const stats = await conn.getStats(null);
+	stats.forEach(report => {
+		if (report.type === "inbound-rtp" && (report.kind === "video" || report.kind === "audio")) {
+			console.log(report);
+		}
+	});
   }
 
   public closeMediaCall() {
