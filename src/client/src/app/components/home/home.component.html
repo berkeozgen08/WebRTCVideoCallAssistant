@@ -14,11 +14,11 @@
                     (click)="deleteMeeting(i)">Delete</button>
                 <button type="button" *ngIf="!(!!meeting.statId)" [routerLink]="['/meetings',meeting.id]"
                     class="btn btn-sm btn-warning">Edit</button>
-                <button type="button" *ngIf="!(!!meeting.statId)" [routerLink]="['/user/joinMeeting']"
-                    [queryParams]="{meetingId:meeting.id,userId:meeting.createdBy.id}"
+                <button type="button" *ngIf="!(!!meeting.statId)" [routerLink]="['/j/' + meeting.slug]"
+					[queryParams]="{a: 'u'}"
                     class="btn btn-sm btn-primary">Join</button>
-                <button type="button" *ngIf="!(!!meeting.statId)" (click)="getInviteLink('2')"
-                    class="btn btn-sm btn-info">Inivte</button>
+                <button type="button" *ngIf="!(!!meeting.statId)" (click)="getInviteLink(meeting.slug)"
+                    class="btn btn-sm btn-info">Invite</button>
 
                 <button type="button" *ngIf="!!meeting.statId" [routerLink]="['/meeting-stats',meeting.id]"
                     class="btn btn-sm btn-secondary">Review</button>
