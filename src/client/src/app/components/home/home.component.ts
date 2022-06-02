@@ -16,17 +16,17 @@ export class HomeComponent implements OnInit {
   itemsPerPage: number = this.itemsCountOptions[1];
   currentPage = 1;
   meetings: Meeting[] = [];
-  isloading:boolean=false;
+  isloading: boolean = false;
   constructor(
     private meetingService: MeetingService,
     private toastService: ToastrService) { }
 
   ngOnInit(): void {
-    this.isloading=true;
+    this.isloading = true;
     this.meetingService.getAll().subscribe({
       next: (v) => {
         this.meetings = v;
-        this.isloading=false;
+        this.isloading = false;
       }
     });
   }
@@ -35,8 +35,10 @@ export class HomeComponent implements OnInit {
     return uuidv4();
   }
 
-  getInviteLink(data: string) {
-    navigator.clipboard.writeText(data);
+  getInviteLink(meeting: Meeting) {
+    let inviteLink = window.location.toString() + `client/joinMeeting?meetingId=${meeting.id}&userId=${meeting.createdById}&clientId=${meeting.createdForId}`;
+    navigator.clipboard.writeText(inviteLink);
+    this.toastService.success("Invite link copied");
   }
 
   deleteMeeting(index: number) {

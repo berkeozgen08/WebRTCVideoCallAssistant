@@ -17,7 +17,7 @@
                 <button type="button" *ngIf="!(!!meeting.statId)" [routerLink]="['/user/joinMeeting']"
                     [queryParams]="{meetingId:meeting.id,userId:meeting.createdBy.id}"
                     class="btn btn-sm btn-primary">Join</button>
-                <button type="button" *ngIf="!(!!meeting.statId)" (click)="getInviteLink('2')"
+                <button type="button" *ngIf="!(!!meeting.statId)" (click)="getInviteLink(meeting)"
                     class="btn btn-sm btn-info">Inivte</button>
 
                 <button type="button" *ngIf="!!meeting.statId" [routerLink]="['/meeting-stats',meeting.id]"

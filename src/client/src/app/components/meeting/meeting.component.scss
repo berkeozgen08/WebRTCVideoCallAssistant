@@ -17,6 +17,9 @@ $remote-initial-height:5rem;
     border-radius: 50%;
 
 }
+.hide{
+    display: none;
+}
 
 #video-wrapper {
     
@@ -128,7 +131,7 @@ $remote-initial-height:5rem;
         
         height: 32px;
         width: 32px;
-        
+        z-index: 100;
         text-align: center;
 
         &>i{

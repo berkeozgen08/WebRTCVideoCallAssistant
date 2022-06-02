@@ -2,19 +2,24 @@
   <div id="video-wrapper">
 
     <div class="local-video-wrapper">
-      
-      <div *ngIf="!isLocalCamOpen"  class="offline-local-video d-flex justify-content-center align-items-center">
+
+      <div *ngIf="!isLocalCamOpen" class="offline-local-video d-flex justify-content-center align-items-center">
         <div class="user-initial text-center">
           <h1>B</h1>
         </div>
       </div>
 
 
-      <video #localVideo *ngIf="isLocalCamOpen" class="local-video" autoplay playsinline [muted]=true>
+      <video #localVideo [ngClass]="{'hide':!isLocalCamOpen}" class="local-video" autoplay playsinline [muted]="true">
       </video>
 
       <div class="client-name">
         <h4>You</h4>
+      </div>
+
+      <div class="micropohone-status">
+        <i *ngIf="!isMicOpen==true" class="fa fa-microphone-slash" aria-hidden="true"></i>
+        <i *ngIf="isMicOpen==true" class="fa fa-microphone" aria-hidden="true"></i>
       </div>
 
     </div>
@@ -29,7 +34,7 @@
       </div>
 
 
-      <video *ngIf="isRemoteCamOpen" #remoteVideo class="remote-video" autoplay playsinline>
+      <video [ngClass]="{'hide':!isRemoteCamOpen}" #remoteVideo class="remote-video" autoplay playsinline>
       </video>
 
 
@@ -54,24 +59,4 @@
       <i class="fas fa-phone"></i>
     </button>
   </div>
-
-  <!--
-        offline-remote-video-cover
-        offline-local-video-cover
-    -->
-  <!-- <div class="row p-2">
-      <div class="col-6">
-        <button class="btn btn-primary m-2" [disabled]="isCallStarted$ | async" (click)="showModal(false)">Start
-          Call</button>
-        <button class="btn btn-success m-2" [disabled]="isCallStarted$ | async" (click)="showModal(true)">Join
-          Call</button>
-        <button class="btn btn-danger m-2" [disabled]="!(isCallStarted$ | async)" (click)="endCall()">End
-          Call</button>
-      </div>
-      <div class="col-2"> <input #target [(ngModel)]="targetID" placeholder="Target Id"> </div>
-      <div class="col-4">
-        <p>User Id: <span>{{peerID}}</span></p>
-      </div>
-    </div> -->
-
 </div>

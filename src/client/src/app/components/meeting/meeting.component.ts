@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { filter, Observable, of } from 'rxjs';
+import { PeerData } from 'src/app/models/data';
 import { CallService } from 'src/app/services/call.service';
 
 @Component({
@@ -18,84 +19,143 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
   targetID: string = "";
   peerID: string;
   public isCallStarted$: Observable<boolean>;
-  isUser:boolean;
+  isUser: boolean;
 
-  isMicOpen=true;
-  isLocalCamOpen=true;
-  isRemoteCamOpen=true;
+
+  isMicOpen = true;
+  isLocalCamOpen = true;
+  isRemoteCamOpen = true;
+  isRemoteMicOpen = true;
 
   /**
    *
    */
-  constructor(private callService: CallService,private route:ActivatedRoute) {
+  constructor(private callService: CallService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
+
     this.isCallStarted$ = this.callService.isCallStarted$;
     this.route.queryParams.subscribe({
-      next:(params)=>{
+      next: (params) => {
+
         //check is user or client
-        
-        const userId=(params['userId']);
-        
-        const clientId=(params['clientId']);
 
-        this.isUser=!(!!clientId);
+        const userId = (params['userId']);
 
-        this.peerID = this.callService.initPeer(this.isUser?userId:clientId);
-        of(this.isUser?this.callService.enableCallAnswer():this.callService.establishMediaCall(userId)).subscribe();
-        
+        const clientId = (params['clientId']);
+
+        this.isUser = !(!!clientId);
+
+        this.peerID = this.callService.initPeer(this.isUser ? userId : clientId);
+
+        of(this.isUser ? this.callService.enableCallAnswer() : this.callService.establishMediaCall(userId)).subscribe();
+
+
       }
     });
-
-    
   }
 
   ngAfterViewInit(): void {
+
     this.callService.localStream$
-      .subscribe(stream => {
-        if(!!stream){
-          this.localVideo.nativeElement.srcObject = stream
+      .subscribe({
+        next: (stream) => {
 
-        }else{
+          if (!!stream) {
+      
+            this.localVideo.nativeElement.srcObject = stream;
 
+          }
+
+
+          this.cdr.detectChanges();
+
+
+        },
+        error: (err) => {
+          console.log(err);
+        },
+        complete: () => {
+          console.log('completed');
         }
       });
 
     this.callService.remoteStream$
-      .subscribe(stream => {
-        
-        if(!!stream){
+      .subscribe({
+        next: stream => {
+          
+          if (!!stream) {
 
-          this.isRemoteCamOpen=true;
+            this.remoteVideo.nativeElement.srcObject = stream;
+          }
 
-          this.remoteVideo.nativeElement.srcObject = stream;
-        }else{
-          this.isRemoteCamOpen=false;
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.log(err);
+        },
+        complete: () => {
+            console.log("remote completed")
+        }
+      });
+
+    this.callService.remotePeerData$.subscribe({
+      next: (data) => {
+
+        if (data.meta == "audio") {
+          this.isRemoteMicOpen = ("true" === data.data) ? true : false;
+
         }
 
-        
-      });
+        if (data.meta == "video") {
+          this.isRemoteCamOpen = ("true" === data.data) ? true : false;
+        }
+
+        this.cdr.detectChanges();
+
+      }
+    })
+
   }
 
   ngOnDestroy(): void {
+
     this.callService.destroyPeer();
+
   }
 
   showModal(join: boolean) {
+
     of(join ? this.callService.establishMediaCall(this.targetID) : this.callService.enableCallAnswer()).subscribe(_ => { });
+
   }
 
   endCall() {
+
     this.callService.closeMediaCall();
-  }
-
-  toggleVideo(){
-    
-  }
-
-  toggleMicrophone(){
 
   }
+
+  toggleCamera() {
+
+    this.isLocalCamOpen = !this.isLocalCamOpen;
+
+    this.callService.toggleCamera(this.isLocalCamOpen);
+
+    this.cdr.detectChanges();
+
+  }
+
+  toggleMicrophone() {
+
+    this.isMicOpen = !this.isMicOpen;
+
+    this.callService.toggleMicrophone(this.isMicOpen);
+
+    this.cdr.detectChanges();
+
+  }
+
 
 }
