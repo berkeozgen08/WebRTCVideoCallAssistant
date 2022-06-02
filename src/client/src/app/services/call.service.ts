@@ -23,6 +23,14 @@ export class CallService {
   private isCallStartedBs = new Subject<boolean>();
   public isCallStarted$ = this.isCallStartedBs.asObservable();
 
+  public getUserMedia: ({ video, audio }: { video?: boolean, audio?: boolean }) => Promise<MediaStream> =
+    navigator.mediaDevices.getUserMedia ||
+    (navigator as any).mediaDevices.webkitGetUserMedia ||
+    (navigator as any).mediaDevices.mozGetUserMedia ||
+    (navigator as any).getUserMedia ||
+    (navigator as any).webkitGetUserMedia ||
+    (navigator as any).mozGetUserMedia
+  
   initPeer(id:string): string {
 
     if (!this.peer || !this.peer.disconnected) {
@@ -56,7 +64,7 @@ export class CallService {
     console.log(remotePeerId);
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const stream = await this.getUserMedia({ video: true, audio: true });
 
       const connection = this.peer.connect(remotePeerId);
       connection.on('error', err => {

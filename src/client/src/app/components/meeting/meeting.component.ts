@@ -99,11 +99,13 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
   }
 
   toggleVideo(){
-    
+    this.isLocalCamOpen = !this.isLocalCamOpen;
+    this.callService.localStream$.subscribe(async (stream) => stream.getVideoTracks()[0].enabled = this.isLocalCamOpen);
   }
-
+  
   toggleMicrophone(){
-
+    this.isMicOpen = !this.isMicOpen;
+    this.callService.localStream$.subscribe(async (stream) => stream.getAudioTracks()[0].enabled = this.isMicOpen);
   }
 
 }
