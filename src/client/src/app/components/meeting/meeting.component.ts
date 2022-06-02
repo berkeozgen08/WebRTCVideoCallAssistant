@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { filter, Observable, of } from 'rxjs';
 import { CallService } from 'src/app/services/call.service';
@@ -28,7 +28,7 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
   /**
    *
    */
-  constructor(private callService: CallService,private route:ActivatedRoute, private meetingService: MeetingService) {
+  constructor(private callService: CallService,private route:ActivatedRoute, private meetingService: MeetingService, private changeDetector: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -100,12 +100,18 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 
   toggleVideo(){
     this.isLocalCamOpen = !this.isLocalCamOpen;
-    this.callService.localStream$.subscribe(async (stream) => stream.getVideoTracks()[0].enabled = this.isLocalCamOpen);
+    this.callService.localStream$.subscribe((stream) => {
+      stream.getVideoTracks()[0].enabled = this.isLocalCamOpen;
+      if (this.isLocalCamOpen) {
+        this.changeDetector.detectChanges();
+        this.localVideo.nativeElement.srcObject = stream;
+      }
+    });
   }
   
   toggleMicrophone(){
     this.isMicOpen = !this.isMicOpen;
-    this.callService.localStream$.subscribe(async (stream) => stream.getAudioTracks()[0].enabled = this.isMicOpen);
+    this.callService.localStream$.subscribe((stream) => stream.getAudioTracks()[0].enabled = this.isMicOpen);
   }
 
 }

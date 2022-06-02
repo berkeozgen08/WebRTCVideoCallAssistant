@@ -101,17 +101,16 @@ export class CallService {
 
   public async enableCallAnswer() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const stream = await this.getUserMedia({ video: true, audio: true });
       this.localStreamBs.next(stream);
       this.peer.on('call', async (call) => {
-
         this.mediaCall = call;
         this.isCallStartedBs.next(true);
-		this.statsInterval = setInterval(async () => await this.connectionStats(call.peerConnection), 1000);
+        this.statsInterval = setInterval(async () => await this.connectionStats(call.peerConnection), 1000);
 
         this.mediaCall.answer(stream);
         this.mediaCall.on('stream', (remoteStream) => {
-			this.remoteStreamBs.next(remoteStream);
+          this.remoteStreamBs.next(remoteStream);
         });
         this.mediaCall.on('error', err => {
           //this.snackBar.open(err, 'Close');
