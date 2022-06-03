@@ -12,6 +12,7 @@ export class CallService {
   constructor() { }
 
   private peer: Peer;
+  private statsInterval;
 
   private mediaCall: Peer.MediaConnection;
   private dataConnection: Peer.DataConnection;
@@ -24,7 +25,6 @@ export class CallService {
 
   private isCallStartedBs = new Subject<boolean>();
   public isCallStarted$ = this.isCallStartedBs.asObservable();
-
   private remotePeerData = new Subject<PeerData>();
   public remotePeerData$ = this.remotePeerData.asObservable();
 
@@ -34,7 +34,6 @@ export class CallService {
   private remotePeerId: string
 
   initPeer(id: string): string {
-
     if (!this.peer || !this.peer.disconnected) {
 
       const peerJsOptions: Peer.PeerJSOption = {
@@ -64,8 +63,6 @@ export class CallService {
   public async establishMediaCall(remotePeerId: string) {
     this.remotePeerId = remotePeerId;
     try {
-
-
       this.establishMedia().then(() => {
 
         this.dataConnection = this.peer.connect(this.remotePeerId);
@@ -191,6 +188,15 @@ export class CallService {
 
   private onCallClose() {
 
+  }
+
+  public async connectionStats(conn: RTCPeerConnection) {
+	const stats = await conn.getStats(null);
+	stats.forEach(report => {
+		if (report.type === "inbound-rtp" && (report.kind === "video" || report.kind === "audio")) {
+			console.log(report);
+		}
+	});
   }
 
   public closeMediaCall() {
