@@ -112,6 +112,11 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
           this.isRemoteCamOpen = ("true" === data.data) ? true : false;
         }
 
+        if(data.meta=="reconnect"){
+
+          //this.callService.call();
+        }
+
         this.cdr.detectChanges();
 
       }

@@ -135,9 +135,14 @@ export class CallService {
 
           this.isCallStartedBs.next(true);
           
+          
+          //
+          
           this.mediaCall.answer(this.stream);
           
           this.mediaCall.on('stream', (remoteStream) => {
+
+            console.log(remoteStream.id);
 
             this.remoteStreamBs.next(remoteStream);
 
@@ -219,6 +224,12 @@ export class CallService {
 
   }
 
+  public call(){
+    this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[0]);
+    this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[1]);
+    //this.mediaCall = this.peer.call(this.remotePeerId, this.stream);//
+  }
+
   public async toggleCamera(isOpen: boolean) {
     this.isCamOpen = isOpen;
 
@@ -237,8 +248,16 @@ export class CallService {
 
       } else if (isOpen) {
 
-        //if 
-        //this.mediaCall.answer(this.stream);
+        //this.mediaCall?.close();
+        this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[0]);
+        this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[1]);
+
+        this.sendText({
+          meta: 'reconnect',
+          data: `${isOpen}`
+        });
+
+        
 
       }
 
