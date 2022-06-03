@@ -1,7 +1,9 @@
+import { ConstantPool } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import Peer from 'peerjs';
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
+import { PeerData } from '../models/data';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,26 +15,25 @@ export class CallService {
   private statsInterval;
 
   private mediaCall: Peer.MediaConnection;
+  private dataConnection: Peer.DataConnection;
 
   private localStreamBs = new BehaviorSubject<MediaStream>(null);
-
   public localStream$: Observable<MediaStream> = this.localStreamBs.asObservable();
+
   private remoteStreamBs = new BehaviorSubject<MediaStream>(null);
   public remoteStream$: Observable<MediaStream> = this.remoteStreamBs.asObservable();
 
   private isCallStartedBs = new Subject<boolean>();
   public isCallStarted$ = this.isCallStartedBs.asObservable();
+  private remotePeerData = new Subject<PeerData>();
+  public remotePeerData$ = this.remotePeerData.asObservable();
 
-  public getUserMedia: ({ video, audio }: { video?: boolean, audio?: boolean }) => Promise<MediaStream> =
-    navigator.mediaDevices.getUserMedia ||
-    (navigator as any).mediaDevices.webkitGetUserMedia ||
-    (navigator as any).mediaDevices.mozGetUserMedia ||
-    (navigator as any).getUserMedia ||
-    (navigator as any).webkitGetUserMedia ||
-    (navigator as any).mozGetUserMedia
-  
-  initPeer(id:string): string {
+  private isCamOpen = true;
+  private isMicOpen = true;
+  private stream: MediaStream;
+  private remotePeerId: string
 
+  initPeer(id: string): string {
     if (!this.peer || !this.peer.disconnected) {
 
       const peerJsOptions: Peer.PeerJSOption = {
@@ -60,37 +61,58 @@ export class CallService {
   }
 
   public async establishMediaCall(remotePeerId: string) {
-    
-    console.log(remotePeerId);
-
+    this.remotePeerId = remotePeerId;
     try {
-      const stream = await this.getUserMedia({ video: true, audio: true });
+      this.establishMedia().then(() => {
 
-      const connection = this.peer.connect(remotePeerId);
-      connection.on('error', err => {
-        console.error(err);
-        //this.snackBar.open(err, 'Close');
-      });
-
-      this.mediaCall = this.peer.call(remotePeerId, stream);
-      if (!this.mediaCall) {
-        let errorMessage = 'Unable to connect to remote peer';
-        //this.snackBar.open(errorMessage, 'Close');
-        throw new Error(errorMessage);
-      }
-      this.localStreamBs.next(stream);
-      this.isCallStartedBs.next(true);
-
-      this.mediaCall.on('stream',
-        (remoteStream) => {
-          this.remoteStreamBs.next(remoteStream);
+        this.dataConnection = this.peer.connect(this.remotePeerId);
+        this.dataConnection.on('error', err => {
+          console.error(err);
+          //this.snackBar.open(err, 'Close');
         });
-      this.mediaCall.on('error', err => {
-        //this.snackBar.open(err, 'Close');
-        console.error(err);
-        this.isCallStartedBs.next(false);
+        this.dataConnection.on('data', (data) => {
+
+          let receivedData = (data) as PeerData;
+          this.remotePeerData.next(receivedData);
+        })
+
+        this.mediaCall = this.peer.call(this.remotePeerId, this.stream);//
+
+        if (!this.mediaCall) {
+          let errorMessage = 'Unable to connect to remote peer';
+          //this.snackBar.open(errorMessage, 'Close');
+          throw new Error(errorMessage);
+        }
+
+        //this.localStreamBs.next(this.stream);
+        this.isCallStartedBs.next(true);
+
+        this.mediaCall.on('stream', (remoteStream) => {
+          
+          //receive remote stream
+
+          console.log(`received stream id:${remoteStream.id} open:${remoteStream.active}`);
+
+          //this.stream=remoteStream;
+          
+          this.remoteStreamBs.next(remoteStream);
+          
+        });
+
+        this.mediaCall.on('error', err => {
+          //this.snackBar.open(err, 'Close');
+          console.error(err);
+          this.isCallStartedBs.next(false);
+        });
+
+
+        this.mediaCall.on('close', () => {
+          console.log("Close remote connection");
+        });
+
       });
-      this.mediaCall.on('close', () => this.onCallClose());
+
+
     }
     catch (ex) {
       console.error(ex);
@@ -101,24 +123,57 @@ export class CallService {
 
   public async enableCallAnswer() {
     try {
-      const stream = await this.getUserMedia({ video: true, audio: true });
-      this.localStreamBs.next(stream);
-      this.peer.on('call', async (call) => {
-        this.mediaCall = call;
-        this.isCallStartedBs.next(true);
-        this.statsInterval = setInterval(async () => await this.connectionStats(call.peerConnection), 1000);
 
-        this.mediaCall.answer(stream);
-        this.mediaCall.on('stream', (remoteStream) => {
-          this.remoteStreamBs.next(remoteStream);
+      this.establishMedia().then(() => {
+
+        this.peer.on('call', async (call) => {
+
+          this.mediaCall = call;
+
+          this.isCallStartedBs.next(true);
+          
+          
+          //
+          
+          this.mediaCall.answer(this.stream);
+          
+          this.mediaCall.on('stream', (remoteStream) => {
+
+            console.log(remoteStream.id);
+
+            this.remoteStreamBs.next(remoteStream);
+
+          });
+
+          this.mediaCall.on('error', err => {
+            //this.snackBar.open(err, 'Close');
+            this.isCallStartedBs.next(false);
+
+            console.error(err);
+          });
+
+          this.mediaCall.on('close', () => {
+
+          });
+
+
+
         });
-        this.mediaCall.on('error', err => {
-          //this.snackBar.open(err, 'Close');
-          this.isCallStartedBs.next(false);
-          console.error(err);
-        });
-        this.mediaCall.on('close', () => this.onCallClose());
+
+        //receive data
+        this.peer.on('connection', (connnection) => {
+          this.dataConnection = connnection;
+
+          connnection.on('data', (data) => {
+
+            let receivedData = (data) as PeerData;
+            this.remotePeerData.next(receivedData);
+
+          })
+        })
+
       });
+
     }
     catch (ex) {
       console.error(ex);
@@ -127,14 +182,12 @@ export class CallService {
     }
   }
 
+  public sendText(data: PeerData) {
+    this.dataConnection.send(data);
+  }
+
   private onCallClose() {
-    this.remoteStreamBs.value!.getTracks().forEach(track => {
-      track.stop();
-    });
-    this.localStreamBs.value!.getTracks().forEach(track => {
-      track.stop();
-    });
-    //this.snackBar.open('Call Ended', 'Close');
+
   }
 
   public async connectionStats(conn: RTCPeerConnection) {
@@ -158,6 +211,76 @@ export class CallService {
     this.mediaCall?.close();
     this.peer?.disconnect();
     this.peer?.destroy();
+  }
+
+  public async toggleMicrophone(isOpen: boolean) {
+
+    this.isMicOpen = isOpen;
+    //await this.establishMedia();
+    this.stream.getAudioTracks().forEach(v => {
+      v.enabled = isOpen;
+    });
+
+    this.sendText({
+      meta: 'audio',
+      data: `${isOpen}`
+    });
+
+    //this.localStreamBs.next(this.stream);
+
+  }
+
+  public call(){
+    this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[0]);
+    this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[1]);
+    //this.mediaCall = this.peer.call(this.remotePeerId, this.stream);//
+  }
+
+  public async toggleCamera(isOpen: boolean) {
+    this.isCamOpen = isOpen;
+
+    await this.establishMedia().then((v) => {
+      this.sendText({
+        meta: 'video',
+        data: `${isOpen}`
+      });
+    }).then(v => {
+
+      //if open close and connect same user again it works perfect
+      if (!!this.remotePeerId) { // this works fine
+
+
+        this.mediaCall = this.peer.call(this.remotePeerId, this.stream);//
+
+      } else if (isOpen) {
+
+        //this.mediaCall?.close();
+        this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[0]);
+        this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[1]);
+
+        this.sendText({
+          meta: 'reconnect',
+          data: `${isOpen}`
+        });
+
+        
+
+      }
+
+    })
+
+
+  }
+
+  public async establishMedia() {
+
+    if (!!this.stream && this.stream.getTracks()[0].enabled) {
+      this.stream.getTracks().forEach(v => v.stop());
+    }
+
+    this.stream = await navigator.mediaDevices.getUserMedia({ video: this.isCamOpen, audio: this.isMicOpen });
+    this.localStreamBs.next(this.stream);
+
   }
 
 }

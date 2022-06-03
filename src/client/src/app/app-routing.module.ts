@@ -28,7 +28,7 @@ const routes: Routes = [{
   path: 'j/:slug',
   component: MeetingComponent
 }, {
-  path: 'client/jointMeeting',
+  path: 'client/joinMeeting',
   component: MeetingComponent
 }, {
   path: 'customers',

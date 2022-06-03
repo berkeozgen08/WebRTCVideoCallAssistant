@@ -21,6 +21,9 @@ video {
     border-radius: 50%;
 
 }
+.hide{
+    display: none;
+}
 
 #video-wrapper {
     
@@ -132,7 +135,7 @@ video {
         
         height: 32px;
         width: 32px;
-        
+        z-index: 100;
         text-align: center;
 
         &>i{
