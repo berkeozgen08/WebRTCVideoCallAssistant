@@ -16,17 +16,17 @@ export class HomeComponent implements OnInit {
   itemsPerPage: number = this.itemsCountOptions[1];
   currentPage = 1;
   meetings: Meeting[] = [];
-  isloading:boolean=false;
+  isloading: boolean = false;
   constructor(
     private meetingService: MeetingService,
     private toastService: ToastrService) { }
 
   ngOnInit(): void {
-    this.isloading=true;
+    this.isloading = true;
     this.meetingService.getAll().subscribe({
       next: (v) => {
         this.meetings = v;
-        this.isloading=false;
+        this.isloading = false;
       }
     });
   }
@@ -34,6 +34,7 @@ export class HomeComponent implements OnInit {
   get id(): string {
     return uuidv4();
   }
+
 
   getInviteLink(data: string) {
     navigator.clipboard.writeText(`${window.location.toString()}j/${data}`);
