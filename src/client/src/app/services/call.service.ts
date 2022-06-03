@@ -137,13 +137,21 @@ export class CallService {
     //this.snackBar.open('Call Ended', 'Close');
   }
 
+  public stats = { "remote": { "video": [], "audio": [] }, "local": { "video": [], "audio": [] } };
   public async connectionStats(conn: RTCPeerConnection) {
-	const stats = await conn.getStats(null);
-	stats.forEach(report => {
-		if (report.type === "inbound-rtp" && (report.kind === "video" || report.kind === "audio")) {
-			console.log(report);
-		}
-	});
+    const stats = await conn.getStats(null);
+    stats.forEach(report => {
+      if (report.type !== "inbound-rtp") return;
+      // TODO: remove outbound and calculate from streams
+      if (report.kind === "video") {
+        console.log(report);
+        this.stats["remote"]["video"].push(new Date().toISOString());
+      }
+      else if (report.kind === "audio") {
+        this.stats["remote"]["audio"].push(new Date().toISOString());
+      }
+    });
+    console.log(this.stats);
   }
 
   public closeMediaCall() {
@@ -152,6 +160,7 @@ export class CallService {
       this.onCallClose()
     }
     this.isCallStartedBs.next(false);
+	  clearInterval(this.statsInterval);
   }
 
   public destroyPeer() {

@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
 
   getInviteLink(data: string) {
     navigator.clipboard.writeText(`${window.location.toString()}j/${data}`);
-	this.toastService.success(`Invite link copied to clipboard.\ndata`)
+	this.toastService.success(`Invite link copied to clipboard.\n${data}`)
   }
 
   deleteMeeting(index: number) {
