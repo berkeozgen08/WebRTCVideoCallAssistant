@@ -32,7 +32,7 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
    *
    */
 
-  constructor(private callService: CallService,private route:ActivatedRoute, private meetingService: MeetingService) {
+  constructor(private callService: CallService,private route:ActivatedRoute, private meetingService: MeetingService,private cdr:ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
