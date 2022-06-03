@@ -118,7 +118,7 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 
         if(data.meta=="reconnect"){
 
-          //this.callService.call();
+          this.callService.call();
         }
 
         this.cdr.detectChanges();

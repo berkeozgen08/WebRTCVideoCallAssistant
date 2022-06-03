@@ -225,9 +225,7 @@ export class CallService {
   }
 
   public call(){
-    this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[0]);
-    this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[1]);
-    //this.mediaCall = this.peer.call(this.remotePeerId, this.stream);//
+    this.mediaCall = this.peer.call(this.remotePeerId, this.stream);
   }
 
   public async toggleCamera(isOpen: boolean) {
@@ -242,25 +240,15 @@ export class CallService {
 
       //if open close and connect same user again it works perfect
       if (!!this.remotePeerId) { // this works fine
-
-
         this.mediaCall = this.peer.call(this.remotePeerId, this.stream);//
-
       } else if (isOpen) {
-
-        //this.mediaCall?.close();
-        this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[0]);
-        this.mediaCall.peerConnection.addTrack(this.stream.getTracks()[1]);
-
+        this.mediaCall.close();
+        this.enableCallAnswer();
         this.sendText({
           meta: 'reconnect',
           data: `${isOpen}`
         });
-
-        
-
       }
-
     })
 
 
