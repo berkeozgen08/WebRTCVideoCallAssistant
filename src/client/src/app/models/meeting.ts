@@ -6,8 +6,9 @@ export interface Meeting {
     id: number;
     createdById: number;
     createdForId: number;
-    userSlug: string;
-    customerSlug: string;
+	userConnId: string;
+	customerConnId: string;
+    slug: string;
     startsAt: string;
     createdAt: string;
     statId:number;

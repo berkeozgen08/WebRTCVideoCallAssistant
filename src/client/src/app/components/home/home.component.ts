@@ -35,10 +35,10 @@ export class HomeComponent implements OnInit {
     return uuidv4();
   }
 
-  getInviteLink(meeting: Meeting) {
-    let inviteLink = window.location.toString() + `client/joinMeeting?meetingId=${meeting.id}&userId=${meeting.createdById}&clientId=${meeting.createdForId}`;
-    navigator.clipboard.writeText(inviteLink);
-    this.toastService.success("Invite link copied");
+
+  getInviteLink(data: string) {
+    navigator.clipboard.writeText(`${window.location.toString()}j/${data}`);
+	this.toastService.success(`Invite link copied to clipboard.\ndata`)
   }
 
   deleteMeeting(index: number) {

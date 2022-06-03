@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace WebRTCVideoCallAssistant.Server.Models
 {
@@ -16,6 +17,7 @@ namespace WebRTCVideoCallAssistant.Server.Models
         public string Email { get; set; } = null!;
         public string Phone { get; set; } = null!;
 
+		[JsonIgnore]
         public virtual ICollection<Meeting> Meetings { get; set; }
     }
 }

@@ -1,6 +1,10 @@
 $local-initial-height:2.5rem;
 $remote-initial-height:5rem;
 
+video {
+	-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);
+}
 
 .meeting-container{
 

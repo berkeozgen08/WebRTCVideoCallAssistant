@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { filter, Observable, of } from 'rxjs';
 import { PeerData } from 'src/app/models/data';
 import { CallService } from 'src/app/services/call.service';
+import { MeetingService } from "src/app/services/meeting.service";
 
 @Component({
   selector: 'app-meeting',
@@ -30,28 +31,31 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
   /**
    *
    */
-  constructor(private callService: CallService, private route: ActivatedRoute, private cdr: ChangeDetectorRef) {
+
+  constructor(private callService: CallService,private route:ActivatedRoute, private meetingService: MeetingService) {
   }
 
   ngOnInit(): void {
-
+	const slug = this.route.snapshot.paramMap.get("slug");
     this.isCallStarted$ = this.callService.isCallStarted$;
     this.route.queryParams.subscribe({
-      next: (params) => {
-
-        //check is user or client
-
-        const userId = (params['userId']);
-
-        const clientId = (params['clientId']);
-
-        this.isUser = !(!!clientId);
-
-        this.peerID = this.callService.initPeer(this.isUser ? userId : clientId);
-
-        of(this.isUser ? this.callService.enableCallAnswer() : this.callService.establishMediaCall(userId)).subscribe();
-
-
+      next:(params)=>{
+		// TODO:
+        // this.isUser = jwt.role == "user";
+        this.isUser = params["a"] == "u";
+		
+		this.meetingService.resolveSlug(slug).subscribe({
+			next: ({ userConnId, customerConnId }) => {
+				if (this.isUser) {
+					this.peerID = this.callService.initPeer(userConnId);
+					of(this.callService.enableCallAnswer()).subscribe();
+				} else {
+					this.peerID = this.callService.initPeer(customerConnId);
+					of(this.callService.establishMediaCall(userConnId)).subscribe();
+				}
+			},
+			error: console.error
+		});
       }
     });
   }

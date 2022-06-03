@@ -30,4 +30,8 @@ export class MeetingService {
   public delete(id: number) {
     return this.http.delete<Meeting>(`${environment.API_URL}Meeting/Delete/${id}`);
   }
+
+  public resolveSlug(slug: string) {
+    return this.http.get<Meeting>(`${environment.API_URL}Meeting/ResolveSlug/${slug}`);
+  }
 }
