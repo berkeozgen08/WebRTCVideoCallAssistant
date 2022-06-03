@@ -1,170 +1,134 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { filter, Observable, of } from 'rxjs';
-import { PeerData } from 'src/app/models/data';
+import { Customer } from "src/app/models/customer";
+import { Meeting } from "src/app/models/meeting";
+import { User } from "src/app/models/user";
 import { CallService } from 'src/app/services/call.service';
 import { MeetingService } from "src/app/services/meeting.service";
 
 @Component({
-  selector: 'app-meeting',
-  templateUrl: './meeting.component.html',
-  styleUrls: ['./meeting.component.scss']
+	selector: 'app-meeting',
+	templateUrl: './meeting.component.html',
+	styleUrls: ['./meeting.component.scss']
 })
 export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 
-  title = 'WebRTCVideoCallAssistant.Client';
+	title = 'WebRTCVideoCallAssistant.Client';
 
-  @ViewChild('localVideo') localVideo: ElementRef<HTMLVideoElement>;
-  @ViewChild('remoteVideo') remoteVideo: ElementRef<HTMLVideoElement>;
+	@ViewChild('localVideo') localVideo: ElementRef<HTMLVideoElement>;
+	@ViewChild('remoteVideo') remoteVideo: ElementRef<HTMLVideoElement>;
 
-  targetID: string = "";
-  peerID: string;
-  public isCallStarted$: Observable<boolean>;
-  isUser: boolean;
+	targetID: string = "";
+	peerID: string;
+	public isCallStarted$: Observable<boolean>;
+	isUser: boolean;
 
+	isLocalMicOpen = true;
+	isLocalCamOpen = true;
+	isRemoteMicOpen = true;
+	isRemoteCamOpen = true;
+	meeting: Meeting;
+	local: User | Customer;
+	remote: User | Customer;
+	isloading: boolean = false;
 
-  isMicOpen = true;
-  isLocalCamOpen = true;
-  isRemoteCamOpen = true;
-  isRemoteMicOpen = true;
+	/**
+	 *
+	 */
+	constructor(private callService: CallService, private route: ActivatedRoute, private meetingService: MeetingService, private changeDetector: ChangeDetectorRef) {
+	}
 
-  /**
-   *
-   */
+	ngOnInit(): void {
+		this.isloading = true;
+		const slug = this.route.snapshot.paramMap.get("slug");
+		this.isCallStarted$ = this.callService.isCallStarted$;
+		this.route.queryParams.subscribe({
+			next: (params) => {
+				// TODO:
+				// this.isUser = jwt.role == "user";
+				this.isUser = params["a"] == "u";
 
-  constructor(private callService: CallService,private route:ActivatedRoute, private meetingService: MeetingService,private cdr:ChangeDetectorRef) {
-  }
-
-  ngOnInit(): void {
-	const slug = this.route.snapshot.paramMap.get("slug");
-    this.isCallStarted$ = this.callService.isCallStarted$;
-    this.route.queryParams.subscribe({
-      next:(params)=>{
-		// TODO:
-        // this.isUser = jwt.role == "user";
-        this.isUser = params["a"] == "u";
-		
-		this.meetingService.resolveSlug(slug).subscribe({
-			next: ({ userConnId, customerConnId }) => {
-				if (this.isUser) {
-					this.peerID = this.callService.initPeer(userConnId);
-					of(this.callService.enableCallAnswer()).subscribe();
-				} else {
-					this.peerID = this.callService.initPeer(customerConnId);
-					of(this.callService.establishMediaCall(userConnId)).subscribe();
-				}
-			},
-			error: console.error
+				this.meetingService.resolveSlug(slug).subscribe({
+					next: (meeting) => {
+						this.meeting = meeting;
+						this.local = this.isUser ? meeting.createdBy : meeting.createdFor;
+						this.remote = this.isUser ? meeting.createdFor : meeting.createdBy;
+						const { userConnId, customerConnId } = meeting;
+						if (this.isUser) {
+							this.peerID = this.callService.initPeer(userConnId);
+							of(this.callService.enableCallAnswer()).subscribe();
+						} else {
+							this.peerID = this.callService.initPeer(customerConnId);
+							of(this.callService.establishMediaCall(userConnId)).subscribe();
+						}
+						this.callService.isConnectionStarted$.subscribe(() => {
+							this.callService.connection$.subscribe(conn => {
+								conn.on("data", ({ event, status }) => {
+									if (event === "video") {
+										this.isRemoteCamOpen = status;
+									} else if (event === "audio") {
+										this.isRemoteMicOpen = status;
+									}
+									console.log(event, status);
+									this.changeDetector.detectChanges();
+									if (event === "video" && status === true) {
+										this.callService.remoteStream$.subscribe(stream => {
+											this.remoteVideo.nativeElement.srcObject = stream;
+										});
+									}
+								});
+							});
+						});
+						this.isloading = false;
+					},
+					error: console.error
+				});
+			}
 		});
-      }
-    });
-  }
+	}
 
-  ngAfterViewInit(): void {
+	ngAfterViewInit(): void {
+		this.callService.localStream$.subscribe(stream => {
+			if (!!stream) {
+				this.localVideo.nativeElement.srcObject = stream
+			}
+		});
 
-    this.callService.localStream$
-      .subscribe({
-        next: (stream) => {
+		this.callService.remoteStream$.subscribe(stream => {
+			if (!!stream) {
+				this.remoteVideo.nativeElement.srcObject = stream;
+			}
+		});
+	}
 
-          if (!!stream) {
-      
-            this.localVideo.nativeElement.srcObject = stream;
+	ngOnDestroy(): void {
+		this.callService.destroyPeer();
+	}
 
-          }
+	showModal(join: boolean) {
+		of(join ? this.callService.establishMediaCall(this.targetID) : this.callService.enableCallAnswer()).subscribe(_ => { });
+	}
 
+	public endCall() {
+		this.callService.closeMediaCall();
+	}
 
-          this.cdr.detectChanges();
+	toggleVideo() {
+		this.isLocalCamOpen = !this.isLocalCamOpen;
+		this.callService.localStream$.subscribe((stream) => {
+			stream.getVideoTracks()[0].enabled = this.isLocalCamOpen;
+			if (this.isLocalCamOpen) {
+				this.changeDetector.detectChanges();
+				this.localVideo.nativeElement.srcObject = stream;
+			}
+			this.callService.connection$.subscribe(conn => conn.send({ event: "video", status: this.isLocalCamOpen }));
+		});
+	}
 
-
-        },
-        error: (err) => {
-          console.log(err);
-        },
-        complete: () => {
-          console.log('completed');
-        }
-      });
-
-    this.callService.remoteStream$
-      .subscribe({
-        next: stream => {
-          
-          if (!!stream) {
-
-            this.remoteVideo.nativeElement.srcObject = stream;
-          }
-
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          console.log(err);
-        },
-        complete: () => {
-            console.log("remote completed")
-        }
-      });
-
-    this.callService.remotePeerData$.subscribe({
-      next: (data) => {
-
-        if (data.meta == "audio") {
-          this.isRemoteMicOpen = ("true" === data.data) ? true : false;
-
-        }
-
-        if (data.meta == "video") {
-          this.isRemoteCamOpen = ("true" === data.data) ? true : false;
-        }
-
-        if(data.meta=="reconnect"){
-
-          //this.callService.call();
-        }
-
-        this.cdr.detectChanges();
-
-      }
-    })
-
-  }
-
-  ngOnDestroy(): void {
-
-    this.callService.destroyPeer();
-
-  }
-
-  showModal(join: boolean) {
-
-    of(join ? this.callService.establishMediaCall(this.targetID) : this.callService.enableCallAnswer()).subscribe(_ => { });
-
-  }
-
-  endCall() {
-
-    this.callService.closeMediaCall();
-
-  }
-
-  toggleCamera() {
-
-    this.isLocalCamOpen = !this.isLocalCamOpen;
-
-    this.callService.toggleCamera(this.isLocalCamOpen);
-
-    this.cdr.detectChanges();
-
-  }
-
-  toggleMicrophone() {
-
-    this.isMicOpen = !this.isMicOpen;
-
-    this.callService.toggleMicrophone(this.isMicOpen);
-
-    this.cdr.detectChanges();
-
-  }
-
-
+	toggleMicrophone() {
+		this.isLocalMicOpen = !this.isLocalMicOpen;
+		this.callService.localStream$.subscribe((stream) => stream.getAudioTracks()[0].enabled = this.isLocalMicOpen);
+		this.callService.connection$.subscribe(conn => conn.send({ event: "audio", status: this.isLocalMicOpen }));
+	}
 }
