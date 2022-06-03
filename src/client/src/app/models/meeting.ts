@@ -15,7 +15,6 @@ export interface Meeting {
     stat:Stat;
     createdBy:User;
     createdFor:Customer;
-    
 }
 
 export interface MeetingCreate {
