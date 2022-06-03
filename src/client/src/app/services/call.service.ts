@@ -31,6 +31,7 @@ export class CallService {
   private isCamOpen = true;
   private isMicOpen = true;
   private stream: MediaStream;
+  private remotePeerId: string
 
   initPeer(id: string): string {
 
@@ -61,13 +62,13 @@ export class CallService {
   }
 
   public async establishMediaCall(remotePeerId: string) {
-
+    this.remotePeerId = remotePeerId;
     try {
 
 
       this.establishMedia().then(() => {
 
-        this.dataConnection = this.peer.connect(remotePeerId);
+        this.dataConnection = this.peer.connect(this.remotePeerId);
         this.dataConnection.on('error', err => {
           console.error(err);
           //this.snackBar.open(err, 'Close');
@@ -78,7 +79,8 @@ export class CallService {
           this.remotePeerData.next(receivedData);
         })
 
-        this.mediaCall = this.peer.call(remotePeerId, this.stream);//
+        this.mediaCall = this.peer.call(this.remotePeerId, this.stream);//
+
         if (!this.mediaCall) {
           let errorMessage = 'Unable to connect to remote peer';
           //this.snackBar.open(errorMessage, 'Close');
@@ -89,12 +91,15 @@ export class CallService {
         this.isCallStartedBs.next(true);
 
         this.mediaCall.on('stream', (remoteStream) => {
+          
           //receive remote stream
 
+          console.log(`received stream id:${remoteStream.id} open:${remoteStream.active}`);
 
+          //this.stream=remoteStream;
+          
           this.remoteStreamBs.next(remoteStream);
-          console.log(`received remote stream:${remoteStream.id}`);
-
+          
         });
 
         this.mediaCall.on('error', err => {
@@ -127,14 +132,11 @@ export class CallService {
         this.peer.on('call', async (call) => {
 
           this.mediaCall = call;
+
           this.isCallStartedBs.next(true);
-
-          this.localStream$.subscribe((stream) => {
-
-            this.mediaCall.answer(stream);
-          })
-
-
+          
+          this.mediaCall.answer(this.stream);
+          
           this.mediaCall.on('stream', (remoteStream) => {
 
             this.remoteStreamBs.next(remoteStream);
@@ -149,8 +151,10 @@ export class CallService {
           });
 
           this.mediaCall.on('close', () => {
-              
+
           });
+
+
 
         });
 
@@ -223,6 +227,21 @@ export class CallService {
         meta: 'video',
         data: `${isOpen}`
       });
+    }).then(v => {
+
+      //if open close and connect same user again it works perfect
+      if (!!this.remotePeerId) { // this works fine
+
+
+        this.mediaCall = this.peer.call(this.remotePeerId, this.stream);//
+
+      } else if (isOpen) {
+
+        //if 
+        //this.mediaCall.answer(this.stream);
+
+      }
+
     })
 
 
@@ -230,7 +249,7 @@ export class CallService {
 
   public async establishMedia() {
 
-    if (!!this.stream) {
+    if (!!this.stream && this.stream.getTracks()[0].enabled) {
       this.stream.getTracks().forEach(v => v.stop());
     }
 
