@@ -31,7 +31,6 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
   /**
    *
    */
-
   constructor(private callService: CallService,private route:ActivatedRoute, private meetingService: MeetingService,private cdr:ChangeDetectorRef) {
   }
 
@@ -163,7 +162,6 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
     this.callService.toggleMicrophone(this.isMicOpen);
 
     this.cdr.detectChanges();
-
   }
 
 
