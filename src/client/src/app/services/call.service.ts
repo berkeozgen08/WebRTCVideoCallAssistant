@@ -231,7 +231,7 @@ export class CallService {
   }
 
   public call(){
-    this.mediaCall = this.peer.call(this.remotePeerId, this.stream);
+    this.establishMediaCall(this.remotePeerId);
   }
 
   public async toggleCamera(isOpen: boolean) {
