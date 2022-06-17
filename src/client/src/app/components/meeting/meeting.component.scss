@@ -125,7 +125,7 @@ video {
     }
 
 
-    .micropohone-status{
+    .microphone-status{
         position: absolute;
         right: 0;
         top: 0;
@@ -161,7 +161,26 @@ video {
     & >.btn{
         margin:0 5px;
     }
-
 }
-  
 
+.media-status{
+	height: 17vh;
+	position: absolute;
+	left: 8px;
+	bottom: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	& > div {
+		margin: 0 5px;
+	}
+
+	& i.fa-solid, & i.fa-volume-high {
+		color: white;
+	}
+
+	& i.fa-thin, & i.fa-volume-off {
+		color: grey;
+	}
+}

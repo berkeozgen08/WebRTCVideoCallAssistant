@@ -34,7 +34,10 @@
               "src/styles.scss",
               "node_modules/ngx-toastr/toastr.css"
             ],
-            "scripts": []
+            "scripts": [
+				"src/assets/ccv.js",
+				"src/assets/face.js"
+			]
           },
           "configurations": {
             "production": {

@@ -1,9 +1,12 @@
 import { ConstantPool } from '@angular/compiler';
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import Peer, { DataConnection } from 'peerjs';
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { PeerData } from '../models/data';
+declare var ccv: any;
+declare var cascade: any;
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -12,7 +15,6 @@ export class CallService {
 	constructor() { }
 
 	private peer: Peer;
-	private statsInterval;
 
 	private mediaCall: Peer.MediaConnection;
 
@@ -39,6 +41,12 @@ export class CallService {
 		(navigator as any).getUserMedia ||
 		(navigator as any).webkitGetUserMedia ||
 		(navigator as any).mozGetUserMedia
+
+	private statsInterval;
+	public localVideo: HTMLVideoElement;
+	public remoteVideo: HTMLVideoElement;
+	public videoActive = false;
+	public audioActive = false;
 
 	initPeer(id: string): string {
 		if (!this.peer || !this.peer.disconnected) {
@@ -120,7 +128,7 @@ export class CallService {
 			this.peer.on('call', async (call) => {
 				this.mediaCall = call;
 				this.isCallStartedBs.next(true);
-				this.statsInterval = setInterval(async () => await this.connectionStats(call.peerConnection), 1000);
+				this.statsInterval = setInterval(/* async */ () => /* await */ this.connectionStats(call.peerConnection), 1000);
 
 				this.mediaCall.answer(stream);
 				this.remoteId = this.mediaCall.peer;
@@ -156,13 +164,52 @@ export class CallService {
 		clearInterval(this.statsInterval);
 	}
 
-	public async connectionStats(conn: RTCPeerConnection) {
-		const stats = await conn.getStats(null);
-		stats.forEach(report => {
-			if (report.type === "inbound-rtp" && (report.kind === "video" || report.kind === "audio")) {
-				console.log(report);
+	public stats = [];
+
+	public /* async */ connectionStats(conn: RTCPeerConnection) {
+		// const stats = await conn.getStats(null);
+		// stats.forEach(report => {
+		// 	if (report.type === "inbound-rtp" && (report.kind === "video" || report.kind === "audio")) {
+		// 		console.log(report);
+		// 	}
+		// });
+		const localCanvas = document.createElement("canvas");
+		const localWidth = this.localVideo.videoWidth, localHeight = this.localVideo.videoHeight;
+		localCanvas.width = localWidth;
+		localCanvas.height = localHeight;
+		const localContext = localCanvas.getContext("2d");
+		localContext.drawImage(this.localVideo, 0, 0, localWidth, localHeight);
+		const localComp = ccv.detect_objects({
+			"canvas": localCanvas,
+			"cascade": cascade,
+			"interval": 5,
+			"min_neighbors": 1
+		});
+		this.videoActive = !!localComp[0];
+		
+		const remoteCanvas = document.createElement("canvas");
+		const remoteWidth = this.remoteVideo.videoWidth, remoteHeight = this.remoteVideo.videoHeight;
+		remoteCanvas.width = remoteWidth;
+		remoteCanvas.height = remoteHeight;
+		const remoteContext = remoteCanvas.getContext("2d");
+		remoteContext.drawImage(this.remoteVideo, 0, 0, localWidth, localHeight);
+		const remoteComp = ccv.detect_objects({
+			"canvas": localCanvas,
+			"cascade": cascade,
+			"interval": 5,
+			"min_neighbors": 1
+		});
+
+		this.stats.push({
+			date: new Date().toISOString(),
+			local: {
+				video: !!localComp[0]
+			},
+			remote: {
+				video: !!remoteComp[0]
 			}
 		});
+		// console.log(this.stats);
 	}
 
 	public closeMediaCall() {
