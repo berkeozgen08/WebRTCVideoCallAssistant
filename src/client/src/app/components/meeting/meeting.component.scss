@@ -163,7 +163,7 @@ video {
     }
 }
 
-.media-status{
+.media-status, .media-status-remote {
 	height: 17vh;
 	position: absolute;
 	left: 8px;
@@ -183,4 +183,9 @@ video {
 	& i.fa-thin, & i.fa-volume-off {
 		color: grey;
 	}
+}
+
+.media-status-remote {
+	left: auto;
+	right: 8px;
 }

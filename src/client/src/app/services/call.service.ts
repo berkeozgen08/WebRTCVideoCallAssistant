@@ -45,8 +45,10 @@ export class CallService {
 	private statsInterval;
 	public localVideo: HTMLVideoElement;
 	public remoteVideo: HTMLVideoElement;
-	public videoActive = false;
-	public audioActive = false;
+	public localVideoActive = false;
+	public localAudioActive = false;
+	public remoteVideoActive = false;
+	public remoteAudioActive = false;
 
 	initPeer(id: string): string {
 		if (!this.peer || !this.peer.disconnected) {
@@ -128,7 +130,7 @@ export class CallService {
 			this.peer.on('call', async (call) => {
 				this.mediaCall = call;
 				this.isCallStartedBs.next(true);
-				this.statsInterval = setInterval(/* async */ () => /* await */ this.connectionStats(call.peerConnection), 1000);
+				this.statsInterval = setInterval(/* async */() => /* await */ this.connectionStats(call.peerConnection), 1000);
 
 				this.mediaCall.answer(stream);
 				this.remoteId = this.mediaCall.peer;
@@ -173,43 +175,56 @@ export class CallService {
 		// 		console.log(report);
 		// 	}
 		// });
-		const localCanvas = document.createElement("canvas");
+		const canvas = document.createElement("canvas");
 		const localWidth = this.localVideo.videoWidth, localHeight = this.localVideo.videoHeight;
-		localCanvas.width = localWidth;
-		localCanvas.height = localHeight;
-		const localContext = localCanvas.getContext("2d");
-		localContext.drawImage(this.localVideo, 0, 0, localWidth, localHeight);
-		const localComp = ccv.detect_objects({
-			"canvas": localCanvas,
-			"cascade": cascade,
-			"interval": 5,
-			"min_neighbors": 1
-		});
-		this.videoActive = !!localComp[0];
-		
-		const remoteCanvas = document.createElement("canvas");
 		const remoteWidth = this.remoteVideo.videoWidth, remoteHeight = this.remoteVideo.videoHeight;
-		remoteCanvas.width = remoteWidth;
-		remoteCanvas.height = remoteHeight;
-		const remoteContext = remoteCanvas.getContext("2d");
-		remoteContext.drawImage(this.remoteVideo, 0, 0, localWidth, localHeight);
-		const remoteComp = ccv.detect_objects({
-			"canvas": localCanvas,
+		canvas.width = localWidth + remoteWidth;
+		canvas.height = localHeight > remoteWidth ? localHeight : remoteHeight;
+		const context = canvas.getContext("2d");
+		if (!this.localVideo.hidden) context.drawImage(this.localVideo, 0, 0, localWidth, localHeight);
+		if (!this.remoteVideo.hidden) context.drawImage(this.remoteVideo, localWidth, 0, remoteWidth, remoteHeight);
+
+		const comp = ccv.detect_objects({
+			"canvas": canvas,
 			"cascade": cascade,
 			"interval": 5,
 			"min_neighbors": 1
 		});
 
+		this.localVideoActive = false;
+		this.remoteVideoActive = false;
+		for (const i of comp) {
+			const xavg = i.x + i.width / 2, yavg = i.y + i.height / 2;
+			console.log(localWidth, localHeight);
+			console.log(remoteWidth, remoteHeight);
+			console.log(xavg, yavg);
+			console.log(xavg > 0, xavg < localWidth, yavg > 0, yavg < localHeight);
+			console.log(xavg > localWidth, xavg < remoteWidth + localWidth, yavg > 0, yavg < remoteHeight);
+			if (xavg > 0 && xavg < localWidth && yavg > 0 && yavg < localHeight) {
+				this.localVideoActive = true;
+			} else if (xavg > localWidth && xavg < remoteWidth + localWidth && yavg > 0 && yavg < remoteHeight) {
+				this.remoteVideoActive = true;
+			}
+		}
+		context.beginPath();
+		for (const i of comp) {
+			context.rect(i.x, i.y, i.width, i.height);
+		}
+		context.stroke();
+		canvas.id = "asd";
+		document.getElementById("asd")?.remove();
+		document.body.appendChild(canvas);
+
 		this.stats.push({
 			date: new Date().toISOString(),
 			local: {
-				video: !!localComp[0]
+				video: this.localVideoActive
 			},
 			remote: {
-				video: !!remoteComp[0]
+				video: this.remoteVideoActive
 			}
 		});
-		// console.log(this.stats);
+		console.log(this.stats);
 	}
 
 	public closeMediaCall() {

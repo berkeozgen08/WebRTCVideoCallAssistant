@@ -32,8 +32,12 @@
 		</div>
 	</div>
 	<div *ngIf="isUser" class="media-status">
-		<div><i [ngClass]="callService.videoActive ? 'fa-solid' : 'fa-thin'" class="fa fa-clapperboard" aria-hidden="true"></i></div>
-		<div><i [ngClass]="callService.audioActive ? 'fa-volume-high' : 'fa-volume-off'" class="fa" aria-hidden="true"></i></div>
+		<div><i [ngClass]="callService.localVideoActive ? 'fa-solid' : 'fa-thin'" class="fa fa-clapperboard" aria-hidden="true"></i></div>
+		<div><i [ngClass]="callService.localAudioActive ? 'fa-volume-high' : 'fa-volume-off'" class="fa" aria-hidden="true"></i></div>
+	</div>
+	<div *ngIf="isUser" class="media-status-remote">
+		<div><i [ngClass]="callService.remoteVideoActive ? 'fa-solid' : 'fa-thin'" class="fa fa-clapperboard" aria-hidden="true"></i></div>
+		<div><i [ngClass]="callService.remoteAudioActive ? 'fa-volume-high' : 'fa-volume-off'" class="fa" aria-hidden="true"></i></div>
 	</div>
 	<div class="control-buttons">
 		<button type="button" [ngClass]="isLocalMicOpen ? 'btn-dark' : 'btn-danger'" class="btn"
