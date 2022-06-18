@@ -8,46 +8,67 @@ import { CustomersComponent } from './components/customers/customers.component';
 import { CustomerComponent } from './components/customer/customer.component';
 import { UsersComponent } from './components/users/users.component';
 import { UserComponent } from './components/user/user.component';
+import { LoginComponent } from './components/login/login.component';
+import { AuthGuard } from './services/auth.guard';
 
 const routes: Routes = [{
   path: '',
-  component: HomeComponent
+  component: HomeComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'meeting',
-  component: MeetingComponent
+  component: MeetingComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'meeting-stats',
-  component: MeetingStatsComponent
+  component: MeetingStatsComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'meetings/create',
-  component: SetMeetingComponent
+  component: SetMeetingComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'meetings/:id',
-  component: SetMeetingComponent
+  component: SetMeetingComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'j/:slug',
-  component: MeetingComponent
+  component: MeetingComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'client/joinMeeting',
-  component: MeetingComponent
+  component: MeetingComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'customers',
   component: CustomersComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'customers/:id',
-  component: CustomerComponent
+  component: CustomerComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'customers/create',
-  component: CustomerComponent
+  component: CustomerComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'users',
   component: UsersComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'users/:id',
-  component: UserComponent
+  component: UserComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'users/create',
-  component: UserComponent
+  component: UserComponent,
+  canActivate:[AuthGuard]
+},{
+  path: 'login',
+  component: LoginComponent
+},{
+  path: 'admin-login',
+  component: LoginComponent
 }, {
   path: '**',
   redirectTo: ''

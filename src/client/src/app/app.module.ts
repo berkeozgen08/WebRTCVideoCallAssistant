@@ -17,9 +17,9 @@ import { UsersComponent } from './components/users/users.component';
 import { UserComponent } from './components/user/user.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxLoadingModule } from 'ngx-loading';
-
-
-
+import { LoginComponent } from './components/login/login.component';
+import { JwtModule } from '@auth0/angular-jwt';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -31,7 +31,8 @@ import { NgxLoadingModule } from 'ngx-loading';
     CustomersComponent,
     CustomerComponent,
     UsersComponent,
-    UserComponent
+    UserComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +42,14 @@ import { NgxLoadingModule } from 'ngx-loading';
     ToastNoAnimationModule.forRoot(),
     NgxPaginationModule,
     NgxLoadingModule.forRoot({}),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    JwtModule.forRoot({
+      config:{
+        tokenGetter: ()=>{
+            return localStorage.getItem(environment.ACCESS_TOKEN);
+        }
+      }
+    })
   ],
   providers: [],
   bootstrap: [AppComponent],
