@@ -16,12 +16,11 @@ export class AuthService {
   userInfo$: BehaviorSubject<AuthUser> = new BehaviorSubject<AuthUser>(null);
   
   constructor(private http: HttpClient, private router: Router, private jwtHelper: JwtHelperService) {    
-
+    
   }
   
 
   setLoggedIn(){
-
     
     const token=localStorage.getItem(environment.ACCESS_TOKEN);
     
@@ -33,19 +32,18 @@ export class AuthService {
 
   }
 
-  isLoggedIn(): Observable<boolean> {
+  isLoggedIn():boolean {
 
     const token = localStorage.getItem(environment.ACCESS_TOKEN);
-
     if (!token) {
       this.isLogIn$.next(false);
+      return false;
     } else {
       let validToken = !this.jwtHelper.isTokenExpired(token);
       this.isLogIn$.next(validToken);
+      return validToken
     }
-    
-    return (this.isLogIn$.asObservable());
-
+  
   }
 
   getUserInfo():Observable<AuthUser>{
@@ -62,7 +60,7 @@ export class AuthService {
   }
 
   getUser(){
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem(environment.ACCESS_TOKEN);
     return this.jwtHelper.decodeToken(token) as AuthUser;
   }
 
@@ -83,7 +81,6 @@ export class AuthService {
         this.isLogIn$.next(false);
         this.userInfo$.next(null);
         //this.router.navigate(['/login']);
-        
       }
     );
   }
