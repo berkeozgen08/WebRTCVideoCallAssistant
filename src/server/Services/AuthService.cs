@@ -25,10 +25,7 @@ public class AuthService
 		var user = _userService.GetByEmail(email)
 			?? throw new UnauthorizedAccessException("Incorrect email");
 
-		var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
-		var hashedPassword=BCrypt.Net.BCrypt.HashPassword(password,salt);
-
-		return BCrypt.Net.BCrypt.Verify(hashedPassword, user.Password)
+		return BCrypt.Net.BCrypt.Verify(password, user.Password)
 			? user
 			: throw new UnauthorizedAccessException("Incorrect password");
 	}
@@ -38,10 +35,7 @@ public class AuthService
 		var admin = _adminService.GetByUsername(username)
 			?? throw new UnauthorizedAccessException("Incorrect username");
 
-		var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
-		var hashedPassword=BCrypt.Net.BCrypt.HashPassword(password,salt);
-
-		return BCrypt.Net.BCrypt.Verify(hashedPassword, admin.Password)
+		return BCrypt.Net.BCrypt.Verify(password, admin.Password)
 			? admin
 			: throw new UnauthorizedAccessException("Incorrect password");
 	}

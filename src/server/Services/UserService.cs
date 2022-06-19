@@ -9,11 +9,13 @@ namespace WebRTCVideoCallAssistant.Server.Services;
 public class UserService {
     private readonly AppDbContext _db;
     private readonly IMapper _mapper;
+	private readonly IConfiguration _configuration;
 	
-	public UserService(AppDbContext db, IMapper mapper)
+	public UserService(AppDbContext db, IMapper mapper, IConfiguration configuration)
 	{
 		_db = db;
 		_mapper = mapper;
+		_configuration = configuration;
 	}
 
 	public User Create(CreateUserDto dto)
@@ -24,8 +26,7 @@ public class UserService {
             throw new ApplicationException($"User with phone '{dto.Phone}' already exists");
 
         var user = _mapper.Map<User>(dto);
-		var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
-        user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password,salt);
+        user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
         var res = _db.Users.Add(user).Entity;
         _db.SaveChanges();
