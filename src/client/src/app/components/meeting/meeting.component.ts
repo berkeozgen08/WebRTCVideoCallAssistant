@@ -52,6 +52,8 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 				this.meetingService.resolveSlug(slug).subscribe({
 					next: (meeting) => {
 						this.meeting = meeting;
+						this.callService.stats.meetingId = meeting.id;
+						this.callService.isUser = this.isUser;
 						this.local = this.isUser ? meeting.createdBy : meeting.createdFor;
 						this.remote = this.isUser ? meeting.createdFor : meeting.createdBy;
 						const { userConnId, customerConnId } = meeting;

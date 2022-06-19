@@ -1,10 +1,8 @@
-import { ConstantPool } from '@angular/compiler';
-import { ElementRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import hark from "hark";
 import Peer, { DataConnection, MediaConnection, PeerJSOption } from 'peerjs';
-import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
-import { PeerData } from '../models/data';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { MeetingService } from "./meeting.service";
 declare var ccv: any;
 declare var cascade: any;
 
@@ -13,7 +11,7 @@ declare var cascade: any;
 })
 export class CallService {
 
-	constructor() { }
+	constructor(private meetingService: MeetingService) { }
 
 	private peer: Peer;
 
@@ -43,9 +41,9 @@ export class CallService {
 		(navigator as any).webkitGetUserMedia ||
 		(navigator as any).mozGetUserMedia
 
-	public stats = { local: { video: [], audio: [] }, remote: { video: [], audio: [] } };
 	private statsInterval;
 	private interval = 5000;
+	public stats = { local: { video: [], audio: [] }, remote: { video: [], audio: [] }, interval: this.interval, meetingId: 0 };
 	public localVideo: HTMLVideoElement;
 	public remoteVideo: HTMLVideoElement;
 	public localVideoActive = false;
@@ -54,6 +52,7 @@ export class CallService {
 	public remoteAudioActive = false;
 	public localSpeech: hark.Harker;
 	public remoteSpeech: hark.Harker;
+	public isUser: boolean;
 
 	initPeer(id: string): string {
 		if (!this.peer || !this.peer.disconnected) {
@@ -168,7 +167,15 @@ export class CallService {
 			track.stop();
 		});
 		//this.snackBar.open('Call Ended', 'Close');
-		this.stopStatInterval();
+		if (this.isUser) {
+			this.stopStatInterval();
+			this.meetingService.createStat(this.stats).subscribe({
+				next: (s) => {
+					console.log(s);
+				},
+				error: console.error
+			});
+		}
 	}
 
 	public /* async */ connectionStats(conn: RTCPeerConnection) {
