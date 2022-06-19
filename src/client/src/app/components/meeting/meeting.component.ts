@@ -36,7 +36,7 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 	/**
 	 *
 	 */
-	constructor(private callService: CallService, private route: ActivatedRoute, private meetingService: MeetingService, private changeDetector: ChangeDetectorRef) {
+	constructor(public callService: CallService, private route: ActivatedRoute, private meetingService: MeetingService, private changeDetector: ChangeDetectorRef) {
 	}
 
 	ngOnInit(): void {
@@ -89,6 +89,9 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 	}
 
 	ngAfterViewInit(): void {
+		this.callService.localVideo = this.localVideo.nativeElement;
+		this.callService.remoteVideo = this.remoteVideo.nativeElement;
+
 		this.callService.localStream$.subscribe(stream => {
 			if (!!stream) {
 				this.localVideo.nativeElement.srcObject = stream

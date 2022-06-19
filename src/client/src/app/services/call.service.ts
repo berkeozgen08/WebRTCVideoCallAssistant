@@ -1,9 +1,12 @@
 import { ConstantPool } from '@angular/compiler';
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import Peer, { DataConnection } from 'peerjs';
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { PeerData } from '../models/data';
+declare var ccv: any;
+declare var cascade: any;
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -12,7 +15,6 @@ export class CallService {
 	constructor() { }
 
 	private peer: Peer;
-	private statsInterval;
 
 	private mediaCall: Peer.MediaConnection;
 
@@ -39,6 +41,14 @@ export class CallService {
 		(navigator as any).getUserMedia ||
 		(navigator as any).webkitGetUserMedia ||
 		(navigator as any).mozGetUserMedia
+
+	private statsInterval;
+	public localVideo: HTMLVideoElement;
+	public remoteVideo: HTMLVideoElement;
+	public localVideoActive = false;
+	public localAudioActive = false;
+	public remoteVideoActive = false;
+	public remoteAudioActive = false;
 
 	initPeer(id: string): string {
 		if (!this.peer || !this.peer.disconnected) {
@@ -120,7 +130,7 @@ export class CallService {
 			this.peer.on('call', async (call) => {
 				this.mediaCall = call;
 				this.isCallStartedBs.next(true);
-				this.statsInterval = setInterval(async () => await this.connectionStats(call.peerConnection), 1000);
+				this.statsInterval = setInterval(/* async */() => /* await */ this.connectionStats(call.peerConnection), 1000);
 
 				this.mediaCall.answer(stream);
 				this.remoteId = this.mediaCall.peer;
@@ -156,13 +166,65 @@ export class CallService {
 		clearInterval(this.statsInterval);
 	}
 
-	public async connectionStats(conn: RTCPeerConnection) {
-		const stats = await conn.getStats(null);
-		stats.forEach(report => {
-			if (report.type === "inbound-rtp" && (report.kind === "video" || report.kind === "audio")) {
-				console.log(report);
+	public stats = [];
+
+	public /* async */ connectionStats(conn: RTCPeerConnection) {
+		// const stats = await conn.getStats(null);
+		// stats.forEach(report => {
+		// 	if (report.type === "inbound-rtp" && (report.kind === "video" || report.kind === "audio")) {
+		// 		console.log(report);
+		// 	}
+		// });
+		const canvas = document.createElement("canvas");
+		const localWidth = this.localVideo.videoWidth, localHeight = this.localVideo.videoHeight;
+		const remoteWidth = this.remoteVideo.videoWidth, remoteHeight = this.remoteVideo.videoHeight;
+		canvas.width = localWidth + remoteWidth;
+		canvas.height = localHeight > remoteWidth ? localHeight : remoteHeight;
+		const context = canvas.getContext("2d");
+		if (!this.localVideo.hidden) context.drawImage(this.localVideo, 0, 0, localWidth, localHeight);
+		if (!this.remoteVideo.hidden) context.drawImage(this.remoteVideo, localWidth, 0, remoteWidth, remoteHeight);
+
+		const comp = ccv.detect_objects({
+			"canvas": canvas,
+			"cascade": cascade,
+			"interval": 5,
+			"min_neighbors": 1
+		});
+
+		this.localVideoActive = false;
+		this.remoteVideoActive = false;
+		for (const i of comp) {
+			const xavg = i.x + i.width / 2, yavg = i.y + i.height / 2;
+			console.log(localWidth, localHeight);
+			console.log(remoteWidth, remoteHeight);
+			console.log(xavg, yavg);
+			console.log(xavg > 0, xavg < localWidth, yavg > 0, yavg < localHeight);
+			console.log(xavg > localWidth, xavg < remoteWidth + localWidth, yavg > 0, yavg < remoteHeight);
+			if (xavg > 0 && xavg < localWidth && yavg > 0 && yavg < localHeight) {
+				this.localVideoActive = true;
+			} else if (xavg > localWidth && xavg < remoteWidth + localWidth && yavg > 0 && yavg < remoteHeight) {
+				this.remoteVideoActive = true;
+			}
+		}
+		context.beginPath();
+		for (const i of comp) {
+			context.rect(i.x, i.y, i.width, i.height);
+		}
+		context.stroke();
+		canvas.id = "asd";
+		document.getElementById("asd")?.remove();
+		document.body.appendChild(canvas);
+
+		this.stats.push({
+			date: new Date().toISOString(),
+			local: {
+				video: this.localVideoActive
+			},
+			remote: {
+				video: this.remoteVideoActive
 			}
 		});
+		console.log(this.stats);
 	}
 
 	public closeMediaCall() {

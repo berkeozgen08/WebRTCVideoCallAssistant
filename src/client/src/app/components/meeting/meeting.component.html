@@ -6,12 +6,12 @@
 					<h1>{{ local.firstName.charAt(0) }}</h1>
 				</div>
 			</div>
-			<video #localVideo *ngIf="isLocalCamOpen" class="local-video" autoplay playsinline [muted]=true>
+			<video #localVideo [hidden]="!isLocalCamOpen" class="local-video" autoplay playsinline [muted]=true>
 			</video>
 			<div class="client-name">
 				<h4>{{ local.firstName + " " + local.lastName }}</h4>
 			</div>
-			<div *ngIf="!isLocalMicOpen" class="micropohone-status" style="z-index: 10;">
+			<div *ngIf="!isLocalMicOpen" class="microphone-status" style="z-index: 10;">
 				<i class="fa fa-microphone-slash" aria-hidden="true"></i>
 			</div>
 		</div>
@@ -21,15 +21,23 @@
 					<h1>{{ remote.firstName.charAt(0) }}</h1>
 				</div>
 			</div>
-			<video *ngIf="isRemoteCamOpen" #remoteVideo class="remote-video" autoplay playsinline>
+			<video #remoteVideo [hidden]="!isRemoteCamOpen" class="remote-video" autoplay playsinline>
 			</video>
 			<div class="client-name">
 				<h3>{{ remote.firstName + " " + remote.lastName }}</h3>
 			</div>
-			<div *ngIf="!isRemoteMicOpen" class="micropohone-status">
+			<div *ngIf="!isRemoteMicOpen" class="microphone-status">
 				<i class="fa fa-microphone-slash" aria-hidden="true"></i>
 			</div>
 		</div>
+	</div>
+	<div *ngIf="isUser" class="media-status">
+		<div><i [ngClass]="callService.localVideoActive ? 'fa-solid' : 'fa-thin'" class="fa fa-clapperboard" aria-hidden="true"></i></div>
+		<div><i [ngClass]="callService.localAudioActive ? 'fa-volume-high' : 'fa-volume-off'" class="fa" aria-hidden="true"></i></div>
+	</div>
+	<div *ngIf="isUser" class="media-status-remote">
+		<div><i [ngClass]="callService.remoteVideoActive ? 'fa-solid' : 'fa-thin'" class="fa fa-clapperboard" aria-hidden="true"></i></div>
+		<div><i [ngClass]="callService.remoteAudioActive ? 'fa-volume-high' : 'fa-volume-off'" class="fa" aria-hidden="true"></i></div>
 	</div>
 	<div class="control-buttons">
 		<button type="button" [ngClass]="isLocalMicOpen ? 'btn-dark' : 'btn-danger'" class="btn"
