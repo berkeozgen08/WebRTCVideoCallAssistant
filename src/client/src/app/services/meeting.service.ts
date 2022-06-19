@@ -14,8 +14,8 @@ export class MeetingService {
     return this.http.get<Meeting>(`${environment.API_URL}Meeting/Get/${id}`);
   }
 
-  public getAll() {
-    return this.http.get<Meeting[]>(`${environment.API_URL}Meeting/GetAll`);
+  public getAll(userId:number) {
+    return this.http.get<Meeting[]>(`${environment.API_URL}Meeting/GetAllByUser/${userId}`);
   }
 
   public create(meeting: MeetingCreate) {
@@ -23,8 +23,7 @@ export class MeetingService {
   }
 
   public update(meeting: Meeting) {
-    //let update: MeetingUpdate = { password: meeting.password, phone: Meeting.phone }
-    return this.http.patch(`${environment.API_URL}Meeting/Update/${meeting.id}`, meeting);//we Meeting in body id unnecessary
+    return this.http.patch(`${environment.API_URL}Meeting/Update/${meeting.id}`, meeting);
   }
 
   public delete(id: number) {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Meeting } from 'src/app/models/meeting';
+import { AuthService } from 'src/app/services/auth.service';
 import { MeetingService } from 'src/app/services/meeting.service';
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,16 +20,19 @@ export class HomeComponent implements OnInit {
   isloading: boolean = false;
   constructor(
     private meetingService: MeetingService,
-    private toastService: ToastrService) { }
+    private toastService: ToastrService,
+    private authService:AuthService) { }
 
   ngOnInit(): void {
+
     this.isloading = true;
-    this.meetingService.getAll().subscribe({
+    this.meetingService.getAll(this.authService.getUser().id).subscribe({
       next: (v) => {
         this.meetings = v;
         this.isloading = false;
       }
     });
+    
   }
 
   get id(): string {

@@ -34,6 +34,12 @@ public class MeetingController : ControllerBase
 		return Ok(_meetingService.GetAll());
 	}
 
+	[HttpGet("{id}")]
+	public ActionResult<IQueryable<Meeting>> GetAllByUser(int userId)
+	{
+		return Ok(_meetingService.GetAllByUser(userId));
+	}
+
 	[HttpPatch("{id}")]
 	public ActionResult<Meeting> Update(int id, UpdateMeetingDto dto)
 	{

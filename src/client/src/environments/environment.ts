@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  API_URL:'https://webrtcproje.azurewebsites.net/'
+  API_URL:'https://webrtcproje.azurewebsites.net/',
+  ACCESS_TOKEN:'access_token'
 };
 
 /*

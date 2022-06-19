@@ -1,59 +1,41 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { filter, Observable, of } from 'rxjs';
-import { CallService } from './services/call.service';
+import {  Component, OnInit } from '@angular/core';
+import { Router} from '@angular/router';
+import { MeetingComponent } from './components/meeting/meeting.component';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnDestroy, AfterViewInit, OnInit {
+export class AppComponent implements OnInit {
 
   title = 'WebRTCVideoCallAssistant.Client';
-
-  @ViewChild('localVideo') localVideo: ElementRef<HTMLVideoElement>;
-  @ViewChild('remoteVideo') remoteVideo: ElementRef<HTMLVideoElement>;
-
-  targetID: string = "";
-  peerID: string;
-  public isCallStarted$: Observable<boolean>;
-
-
-  /**
-   *
-   */
-  constructor() {
+  isHide:boolean=false;
+  constructor(private authService:AuthService,private router:Router) {
   }
 
   ngOnInit(): void {
-    // this.isCallStarted$ = this.callService.isCallStarted$;
-    // this.peerID = this.callService.initPeer();
+    
   }
 
-  ngAfterViewInit(): void {
-    // this.callService.localStream$
-    //   .pipe(filter(res => !!res))
-    //   .subscribe(stream => {
-    //     this.localVideo.nativeElement.srcObject = stream
-    //   });
-
-    // this.callService.remoteStream$
-    //   .pipe(filter(res => !!res))
-    //   .subscribe(stream => {
-    //     this.remoteVideo.nativeElement.srcObject = stream
-    //   });
+  get isLoggedIn(){
+    return this.authService.isLoggedIn();
   }
 
-  ngOnDestroy(): void {
-    //this.callService.destroyPeer();
+  get isAdmin(){
+    return this.authService.getUser().role=='admin';
   }
 
-  showModal(join: boolean) {
-    //of(join ? this.callService.establishMediaCall(this.targetID) : this.callService.enableCallAnswer()).subscribe(_ => { });
+  logout(){
+    this.authService.logout().subscribe(v=>{
+      this.router.navigate(['/login']);
+    })    
   }
 
-  public endCall() {
-    //this.callService.closeMediaCall();
+  bindMeeting(componentRef){
+    this.isHide=(componentRef instanceof MeetingComponent)
+
   }
 
 }

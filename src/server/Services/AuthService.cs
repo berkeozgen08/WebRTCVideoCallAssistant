@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using WebRTCVideoCallAssistant.Server.Helpers;
 using WebRTCVideoCallAssistant.Server.Models;
 
 namespace WebRTCVideoCallAssistant.Server.Services;
@@ -23,7 +24,11 @@ public class AuthService
 	{
 		var user = _userService.GetByEmail(email)
 			?? throw new UnauthorizedAccessException("Incorrect email");
-		return BCrypt.Net.BCrypt.Verify(password, user.Password)
+
+		var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
+		var hashedPassword=BCrypt.Net.BCrypt.HashPassword(password,salt);
+
+		return BCrypt.Net.BCrypt.Verify(hashedPassword, user.Password)
 			? user
 			: throw new UnauthorizedAccessException("Incorrect password");
 	}
@@ -32,7 +37,11 @@ public class AuthService
 	{
 		var admin = _adminService.GetByUsername(username)
 			?? throw new UnauthorizedAccessException("Incorrect username");
-		return BCrypt.Net.BCrypt.Verify(password, admin.Password)
+
+		var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
+		var hashedPassword=BCrypt.Net.BCrypt.HashPassword(password,salt);
+
+		return BCrypt.Net.BCrypt.Verify(hashedPassword, admin.Password)
 			? admin
 			: throw new UnauthorizedAccessException("Incorrect password");
 	}
