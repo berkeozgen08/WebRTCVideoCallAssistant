@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
 
         },
         error: (err: Error) => {
-          this.toastService.error(err.message, "Hata");
+          this.toastService.error("Oturum açılamadı");
         }
       })
 
@@ -69,7 +69,7 @@ export class LoginComponent implements OnInit {
 
         },
         error: (err: Error) => {
-          this.toastService.error(err.message, "Hata");
+          this.toastService.error("Oturum açılamadı");
         }
       })
 
