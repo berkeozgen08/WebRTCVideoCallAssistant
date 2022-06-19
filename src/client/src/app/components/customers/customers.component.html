@@ -18,7 +18,7 @@
     </ul>
     <div class="d-flex">
 
-        <pagination-controls (pageChange)="currentPage = $event">
+        <pagination-controls (pageChange)="currentPage = $event" [previousLabel]="'Önceki'" [nextLabel]="'Sonraki'">
         </pagination-controls>
 
         <select [(ngModel)]="itemsPerPage" name="itemsPerPage" class="col-sm-1 mx-5" id="item-count">

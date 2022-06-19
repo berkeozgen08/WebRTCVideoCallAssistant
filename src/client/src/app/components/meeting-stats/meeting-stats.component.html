@@ -3,16 +3,16 @@
     <div class="card no-border">
         <div class="card-body">
             <h5 class="card-title">Görüşme İstatistikleri</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Müşteri Temsilcisi:{{meeting.createdBy.firstName}} {{meeting.createdBy.lastName}}</h6>
-            <h6 class="card-subtitle mb-2 text-muted">Müşteri:{{meeting.createdFor.firstName}} {{meeting.createdFor.lastName}} </h6>
+            <h6 class="card-subtitle mb-2 text-muted">Müşteri Temsilcisi: {{meeting.createdBy.firstName}} {{meeting.createdBy.lastName}}</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Müşteri: {{meeting.createdFor.firstName}} {{meeting.createdFor.lastName}}</h6>
 
             <ul class="list-group">
-                <li class="list-group-item list-group-item-action">Başlangıç Tarihi:{{meeting.stat.startedAt | date :'short'}}</li>
-                <li class="list-group-item list-group-item-action">Bitiş Tarihi:{{meeting.stat.endedAt | date :'short'}}</li>
-                <li class="list-group-item list-group-item-action">Çalışan Konuşma Süresi:{{meeting.stat.userSpeakTime |totalTime }}</li>
-                <li class="list-group-item list-group-item-action">Çalışan Kamera Süresi:{{meeting.stat.userVideoTime |totalTime }}</li>
-                <li class="list-group-item list-group-item-action">Müşteri Konuşma Süresi:{{meeting.stat.customerSpeakTime |totalTime }}</li>
-                <li class="list-group-item list-group-item-action">Müşteri Kamera Süresi:{{meeting.stat.customerVideoTime |totalTime }}</li>
+                <li class="list-group-item list-group-item-action">Başlangıç Tarihi: {{meeting.stat.startedAt | date :'short'}}</li>
+                <li class="list-group-item list-group-item-action">Bitiş Tarihi: {{meeting.stat.endedAt | date :'short'}}</li>
+                <li class="list-group-item list-group-item-action">Çalışan Konuşma Süresi: {{meeting.stat.userSpeakTime |totalTime }}</li>
+                <li class="list-group-item list-group-item-action">Çalışan Kamera Süresi: {{meeting.stat.userVideoTime |totalTime }}</li>
+                <li class="list-group-item list-group-item-action">Müşteri Konuşma Süresi: {{meeting.stat.customerSpeakTime |totalTime }}</li>
+                <li class="list-group-item list-group-item-action">Müşteri Kamera Süresi: {{meeting.stat.customerVideoTime |totalTime }}</li>
             </ul>
 
         </div>
