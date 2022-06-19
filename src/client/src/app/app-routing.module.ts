@@ -25,7 +25,7 @@ const routes: Routes = [{
 }, {
   path: 'meeting-stats/:id',
   component: MeetingStatsComponent,
-  canActivate:[]
+  canActivate:[AuthGuard]
 }, {
   path: 'meetings/create',
   component: SetMeetingComponent,
@@ -55,15 +55,15 @@ const routes: Routes = [{
 }, {
   path: 'users',
   component: UsersComponent,
-  canActivate:[]
+  canActivate:[AuthGuard,AdminGuard]
 }, {
   path: 'users/:id',
   component: UserComponent,
-  canActivate:[]
+  canActivate:[AuthGuard,AdminGuard]
 }, {
   path: 'users/create',
   component: UserComponent,
-  canActivate:[]
+  canActivate:[AuthGuard,AdminGuard]
 },{
   path: 'login',
   component: LoginComponent
@@ -73,15 +73,15 @@ const routes: Routes = [{
 },{
   path: 'admins',
   component: AdminsComponent,
-  canActivate:[]
+  canActivate:[AuthGuard,AdminGuard]
 },{
   path: 'admins/:id',
   component: AdminComponent,
-  canActivate:[]
+  canActivate:[AuthGuard,AdminGuard]
 },{
   path: 'admins/create',
   component: AdminComponent,
-  canActivate:[]
+  canActivate:[AuthGuard,AdminGuard]
 },{
   path: '**',
   redirectTo: ''
