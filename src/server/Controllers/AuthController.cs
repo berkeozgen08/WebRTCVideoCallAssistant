@@ -23,6 +23,7 @@ public class AuthController : ControllerBase
 		var user = _authService.ValidateUser(cred.Email, cred.Password);
 		return Ok(new {
 			token = _authService.GenerateToken(
+				new Claim("id", user.Id.ToString()),
 				new Claim("email", user.Email),
 				new Claim("firstName", user.FirstName),
 				new Claim("lastName", user.LastName),
@@ -38,6 +39,7 @@ public class AuthController : ControllerBase
 		var admin = _authService.ValidateAdmin(cred.Username, cred.Password);
 		return Ok(new {
 			token = _authService.GenerateToken(
+				new Claim("id", admin.Id.ToString()),
 				new Claim("username", admin.Username),
 				new Claim("role", Role.Admin)
 			)
