@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
     email: '',
     password: ''
   };
-  title: 'Kullanıcı Girişi' | 'Yönetici Girişi' = 'Kullanıcı Girişi';
+  title: 'Çalışan Girişi' | 'Yönetici Girişi' = 'Çalışan Girişi';
 
   isAdminLogin: boolean = false;
 
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
 
     this.isAdminLogin = (this.activeRoute.snapshot.url[0].path == 'admin-login');
-    this.title = this.isAdminLogin ? 'Yönetici Girişi' : 'Kullanıcı Girişi';
+    this.title = this.isAdminLogin ? 'Yönetici Girişi' : 'Çalışan Girişi';
   }
 
   login() {
@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
         next: (value: AuthUser) => {
           const token = JSON.stringify(value);
           this.authService.setLoggedIn(token).subscribe(v => {
-            this.toastService.success("Kullanıcı başarılı şekilde oturum açtı.");
+            this.toastService.success("Çalışan başarılı şekilde oturum açtı.");
             this.router.navigate(['/home']);
           })
 

@@ -1,13 +1,17 @@
 <div class="container">
 
-    <h2>Toplantılar</h2>
+    <h2>Görüşmeler</h2>
 
     <ul class="list-group mb-2">
 
         <li *ngFor="let meeting of meetings | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage,totalItems: meetings.length } ;index as i;"
             class="list-group-item d-flex justify-content-between align-items-center">
-            <span>{{meeting.createdFor.firstName}} {{meeting.createdFor.lastName}}
-                {{meeting.startsAt | date:"dd/MM/yyyy HH:mm"}}
+            <span>
+				<b>Müşteri:</b> {{meeting.createdFor.firstName}} {{meeting.createdFor.lastName}}
+				<br>
+				<b>Çalışan:</b> {{meeting.createdBy.firstName}} {{meeting.createdBy.lastName}}
+				<br>
+				<b>Tarih:</b> {{meeting.startsAt | date:"dd/MM/yyyy HH:mm"}}
             </span>
             <div class="actions">
                 <button type="button" *ngIf="!(!!meeting.statId)" class="btn btn-sm btn-danger"
@@ -28,7 +32,7 @@
 
     <div class="d-flex">
         
-        <pagination-controls (pageChange)="currentPage = $event">
+        <pagination-controls (pageChange)="currentPage = $event" [previousLabel]="'Önceki'" [nextLabel]="'Sonraki'">
         </pagination-controls>
 
         <select [(ngModel)]="itemsPerPage" name="itemsPerPage" class="col-sm-1 mx-5" id="item-count">
@@ -37,7 +41,7 @@
         </select>
     </div>
 
-    <button type="button" [routerLink]="['meetings/create']" class="btn btn-primary">Toplantı oluştur</button>
+    <button type="button" [routerLink]="['meetings/create']" class="btn btn-primary">Görüşme Oluştur</button>
 </div>
 <ngx-loading
 [show]="isloading"
