@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using WebRTCVideoCallAssistant.Server.Helpers;
 using WebRTCVideoCallAssistant.Server.Models;
 using WebRTCVideoCallAssistant.Server.Models.Dto;
 
@@ -23,7 +24,8 @@ public class UserService {
             throw new ApplicationException($"User with phone '{dto.Phone}' already exists");
 
         var user = _mapper.Map<User>(dto);
-        user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+		var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
+        user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password,salt);
 
         var res = _db.Users.Add(user).Entity;
         _db.SaveChanges();
@@ -52,9 +54,11 @@ public class UserService {
         if (dto.Phone != user.Phone && _db.Users.Any(i => i.Phone == dto.Phone))
             throw new ApplicationException($"User with phone '{dto.Phone}' already exists");
 
-        if (!string.IsNullOrEmpty(dto.Password))
-            user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-
+        if (!string.IsNullOrEmpty(dto.Password)){
+			var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password,salt);
+		}
+			
         _mapper.Map(dto, user);
         var res = _db.Users.Update(user).Entity;
         _db.SaveChanges();
