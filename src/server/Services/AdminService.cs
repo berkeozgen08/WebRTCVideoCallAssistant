@@ -21,8 +21,7 @@ public class AdminService {
             throw new ApplicationException($"Admin with username '{dto.Username}' already exists");
 
         var admin = _mapper.Map<Admin>(dto);
-		var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
-        admin.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password,salt);
+        admin.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
         var res = _db.Admins.Add(admin).Entity;
         _db.SaveChanges();
@@ -45,8 +44,7 @@ public class AdminService {
         var admin = GetById(id);
 
         if (!string.IsNullOrEmpty(dto.Password)){
-			var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
-            admin.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password,salt);
+            admin.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 		}
 
         _mapper.Map(dto, admin);

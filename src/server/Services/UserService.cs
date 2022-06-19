@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using WebRTCVideoCallAssistant.Server.Helpers;
 using WebRTCVideoCallAssistant.Server.Models;
 using WebRTCVideoCallAssistant.Server.Models.Dto;
 
@@ -9,13 +8,11 @@ namespace WebRTCVideoCallAssistant.Server.Services;
 public class UserService {
     private readonly AppDbContext _db;
     private readonly IMapper _mapper;
-	private readonly IConfiguration _configuration;
 	
-	public UserService(AppDbContext db, IMapper mapper, IConfiguration configuration)
+	public UserService(AppDbContext db, IMapper mapper)
 	{
 		_db = db;
 		_mapper = mapper;
-		_configuration = configuration;
 	}
 
 	public User Create(CreateUserDto dto)
@@ -56,8 +53,7 @@ public class UserService {
             throw new ApplicationException($"User with phone '{dto.Phone}' already exists");
 
         if (!string.IsNullOrEmpty(dto.Password)){
-			var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
-            user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password,salt);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 		}
 			
         _mapper.Map(dto, user);

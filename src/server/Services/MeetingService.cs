@@ -56,7 +56,7 @@ public class MeetingService
 
 	public IQueryable<Meeting> GetAllByUser(int userId)
 	{
-		return _db.Meetings.Where(v=>v.CreatedById==userId)
+		return _db.Meetings.Where(m => m.CreatedById == userId)
 			.Include(m => m.CreatedBy)
 			.Include(m => m.CreatedFor)
 			.Include(m => m.Stat);
