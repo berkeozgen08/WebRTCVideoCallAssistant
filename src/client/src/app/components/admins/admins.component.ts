@@ -38,7 +38,7 @@ export class AdminsComponent implements OnInit {
     this.adminService.delete(admin.id).subscribe({
       next:(v)=>{
         this.admins.splice(absoluteIndex,1);
-        this.toastService.success("Admin deleted successfully");
+        this.toastService.success("Yönetici başarılı şekilde silindi.");
       }
     });
   }

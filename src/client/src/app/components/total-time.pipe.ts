@@ -11,9 +11,9 @@ export class TotalTimePipe implements PipeTransform {
     let str=[];
     
     if(minutes>=1){
-      str.push(`${Math.round(minutes)}min`);
+      str.push(`${Math.round(minutes)}dk`);
     }
-    str.push(`${Math.round(senconds%60)}sec`);
+    str.push(`${Math.round(senconds%60)}sn`);
 
 
     return str.join(' ');

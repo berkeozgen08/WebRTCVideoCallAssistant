@@ -43,13 +43,13 @@ export class AdminComponent implements OnInit {
   onSubmit(): void {
     if (this.isNewRecord) {
       this.adminService.create(this.admin).subscribe({
-        next: (v) => this.toastService.success(`Admin created successfully.`),
+        next: (v) => this.toastService.success(`Yönetici başarılı şekilde oluşturuldu.`),
         error: (err:Error) => this.toastService.error(err.message)
       })
 
     } else {
       this.adminService.update(this.admin).subscribe({
-        next: (v) => this.toastService.success(`Admin updated successfully.`),
+        next: (v) => this.toastService.success(`Yönetici başarılı şekilde güncellendi.`),
         error: (err:Error) => console.log(err)
       });
     }

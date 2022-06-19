@@ -42,13 +42,13 @@ export class CustomerComponent implements OnInit {
   onSubmit(): void {
     if (this.isNewRecord) {
       this.customerService.create(this.customer).subscribe({
-        next: (v) =>this.toastService.success(`Customer created successfully.`),
+        next: (v) =>this.toastService.success(`Müşteri başarılı şekilde oluşturuldu.`),
         error: (err) => this.toastService.error(err)
       })
 
     } else {
       this.customerService.update(this.customer).subscribe({
-        next: (v) =>this.toastService.success(`Customer updated successfully.`),
+        next: (v) =>this.toastService.success(`Müşteri başarılı şekilde güncellendi.`),
         error: (err) => this.toastService.error(err)
       });
     }

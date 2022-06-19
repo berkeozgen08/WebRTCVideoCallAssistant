@@ -1,6 +1,6 @@
 <div class="container">
 
-    <h2>Meetings</h2>
+    <h2>Toplantılar</h2>
 
     <ul class="list-group mb-2">
 
@@ -11,17 +11,17 @@
             </span>
             <div class="actions">
                 <button type="button" *ngIf="!(!!meeting.statId)" class="btn btn-sm btn-danger"
-                    (click)="deleteMeeting(i)">Delete</button>
+                    (click)="deleteMeeting(i)">Sil</button>
                 <button type="button" *ngIf="!(!!meeting.statId)" [routerLink]="['/meetings',meeting.id]"
-                    class="btn btn-sm btn-warning">Edit</button>
+                    class="btn btn-sm btn-warning">Düzenle</button>
                 <button type="button" *ngIf="!(!!meeting.statId)" [routerLink]="['/j/' + meeting.slug]"
 					[queryParams]="{a: 'u'}"
-                    class="btn btn-sm btn-primary">Join</button>
+                    class="btn btn-sm btn-primary">Katıl</button>
 
                 <button type="button" *ngIf="!(!!meeting.statId)" (click)="getInviteLink(meeting.slug)"
-                    class="btn btn-sm btn-info">Invite</button>
+                    class="btn btn-sm btn-info">Davet Et</button>
                 <button type="button" *ngIf="!!meeting.statId" [routerLink]="['/meeting-stats',meeting.id]"
-                    class="btn btn-sm btn-secondary">Review</button>
+                    class="btn btn-sm btn-secondary">İncele</button>
             </div>
         </li>
     </ul>
@@ -37,7 +37,7 @@
         </select>
     </div>
 
-    <button type="button" [routerLink]="['meetings/create']" class="btn btn-primary">Create Meeting</button>
+    <button type="button" [routerLink]="['meetings/create']" class="btn btn-primary">Toplantı oluştur</button>
 </div>
 <ngx-loading
 [show]="isloading"

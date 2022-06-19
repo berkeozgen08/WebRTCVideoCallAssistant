@@ -56,7 +56,7 @@ export class HomeComponent implements OnInit {
 
   getInviteLink(data: string) {
     navigator.clipboard.writeText(`${window.location.toString()}j/${data}`);
-    this.toastService.success(`Invite link copied to clipboard.\ndata`)
+    this.toastService.success(`Davet linki panoya kopyalandı.`)
   }
 
   deleteMeeting(index: number) {
@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit {
     this.meetingService.delete(meeting.id).subscribe({
       next: (v) => {
         this.meetings.splice(absoluteIndex, 1);
-        this.toastService.success("Meeting deleted successfully");
+        this.toastService.success("Toplantı başarılı şekilde silindi.");
       }
     });
   }

@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
     email: '',
     password: ''
   };
-  title: 'User Login' | 'Admin Login' = 'User Login';
+  title: 'Kullanıcı Girişi' | 'Yönetici Girişi' = 'Kullanıcı Girişi';
 
   isAdminLogin: boolean = false;
 
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
 
     this.isAdminLogin = (this.activeRoute.snapshot.url[0].path == 'admin-login');
-    this.title = this.isAdminLogin ? 'Admin Login' : 'User Login';
+    this.title = this.isAdminLogin ? 'Yönetici Girişi' : 'Kullanıcı Girişi';
   }
 
   login() {
@@ -46,14 +46,14 @@ export class LoginComponent implements OnInit {
 
           this.authService.setLoggedIn(token).subscribe(v => {
 
-            this.toastService.success("successfully logged in", "Login");
+            this.toastService.success("Yönetici başarılı şekilde oturum açtı.");
             this.router.navigate(['/admins']);
 
           });
 
         },
         error: (err: Error) => {
-          this.toastService.error(err.message, "Login");
+          this.toastService.error(err.message, "Hata");
         }
       })
 
@@ -63,13 +63,13 @@ export class LoginComponent implements OnInit {
         next: (value: AuthUser) => {
           const token = JSON.stringify(value);
           this.authService.setLoggedIn(token).subscribe(v => {
-            this.toastService.success("successfully logged in", "Login");
+            this.toastService.success("Kullanıcı başarılı şekilde oturum açtı.");
             this.router.navigate(['/home']);
           })
 
         },
         error: (err: Error) => {
-          this.toastService.error(err.message, "Login");
+          this.toastService.error(err.message, "Hata");
         }
       })
 

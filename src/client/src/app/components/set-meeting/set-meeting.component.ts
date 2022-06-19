@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Customer } from 'src/app/models/customer';
 import { Meeting } from 'src/app/models/meeting';
 import { User } from 'src/app/models/user';
+import { AuthService } from 'src/app/services/auth.service';
 import { CustomerService } from 'src/app/services/customer.service';
 import { MeetingService } from 'src/app/services/meeting.service';
 import { UserService } from 'src/app/services/user.service';
@@ -35,13 +36,14 @@ export class SetMeetingComponent implements OnInit {
 
   users:User[];
   customers:Customer[];
-
+  isAdmin:boolean=false;
   constructor(
     private route: ActivatedRoute, 
     private meetingService: MeetingService, 
     private customerService:CustomerService,
     private userService:UserService,
-    private toastService: ToastrService) { }
+    private toastService: ToastrService,
+    private authService:AuthService) { }
 
   ngOnInit(): void {
     let id = +this.route.snapshot.paramMap.get("id");
@@ -60,6 +62,17 @@ export class SetMeetingComponent implements OnInit {
         next: (v) => this.meeting = v
       });
     }
+
+    this.authService.getUserInfo().subscribe(v=>{
+      
+      this.isAdmin=v.role=='admin';
+      
+      if(!this.isAdmin){
+        this.meeting.createdById=v.id;
+      }
+
+    })
+
   }
 
   onSubmit(): void {

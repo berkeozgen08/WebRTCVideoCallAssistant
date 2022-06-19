@@ -42,13 +42,13 @@ export class UserComponent implements OnInit {
     if (this.isNewRecord) {
       
       this.userService.create(this.user).subscribe({
-        next: (v) => this.toastService.success(`User created successfully.`),
+        next: (v) => this.toastService.success(`Kullanıcı başarılı şekilde oluşturuldu.`),
         error: (err:Error) => this.toastService.error(err.message)
       });
 
     } else {
       this.userService.update(this.user).subscribe({
-        next: (v) => this.toastService.success(`User updated successfully.`),
+        next: (v) => this.toastService.success(`Kullanıcı başarılı şekilde güncellendi.`),
         error: (err:Error) => console.log(err)
       });
     }

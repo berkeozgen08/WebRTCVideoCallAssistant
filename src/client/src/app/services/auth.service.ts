@@ -25,7 +25,7 @@ export class AuthService {
 
     //const token=localStorage.getItem(environment.ACCESS_TOKEN);
     
-    const user= JSON.parse(token) as AuthUser;
+    const user= this.jwtHelper.decodeToken(token) as AuthUser;
     
     this.userInfo$.next(user);
     
@@ -54,7 +54,7 @@ export class AuthService {
     if(!!this.userInfo$){
     
       const token=localStorage.getItem(environment.ACCESS_TOKEN);
-      const user= JSON.parse(token) as AuthUser;
+      const user= this.jwtHelper.decodeToken(token) as AuthUser;
       this.userInfo$.next(user);
 
     }
