@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, LOCALE_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -22,6 +22,10 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
 import { AdminComponent } from './components/admin/admin.component';
 import { AdminsComponent } from './components/admins/admins.component';
+import { registerLocaleData } from '@angular/common';
+import localeTr from '@angular/common/locales/tr';
+import { TotalTimePipe } from './components/total-time.pipe';
+registerLocaleData(localeTr);
 
 @NgModule({
   declarations: [
@@ -36,7 +40,8 @@ import { AdminsComponent } from './components/admins/admins.component';
     UserComponent,
     LoginComponent,
     AdminComponent,
-    AdminsComponent
+    AdminsComponent,
+    TotalTimePipe
   ],
   imports: [
     BrowserModule,
@@ -48,15 +53,15 @@ import { AdminsComponent } from './components/admins/admins.component';
     NgxLoadingModule.forRoot({}),
     BrowserAnimationsModule,
     JwtModule.forRoot({
-      config:{
-        tokenGetter: ()=>{
-            return localStorage.getItem(environment.ACCESS_TOKEN);
+      config: {
+        tokenGetter: () => {
+          return localStorage.getItem(environment.ACCESS_TOKEN);
         }
       }
     })
   ],
-  providers: [],
+  providers: [{ provide: LOCALE_ID, useValue: 'tr-TR' }],
   bootstrap: [AppComponent],
-  schemas:[CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }
