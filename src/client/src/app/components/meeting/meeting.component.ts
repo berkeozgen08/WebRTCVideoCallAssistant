@@ -103,6 +103,10 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 				this.remoteVideo.nativeElement.srcObject = stream;
 			}
 		});
+
+		this.remoteVideo.nativeElement.addEventListener("play", () => {
+			this.callService.startStatInterval(this.callService.mediaCall.peerConnection);
+		});
 	}
 
 	ngOnDestroy(): void {

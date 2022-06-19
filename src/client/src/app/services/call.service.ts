@@ -17,7 +17,7 @@ export class CallService {
 
 	private peer: Peer;
 
-	private mediaCall: MediaConnection;
+	public mediaCall: MediaConnection;
 
 	private localStreamBs = new BehaviorSubject<MediaStream>(null);
 	public localStream$: Observable<MediaStream> = this.localStreamBs.asObservable();
@@ -43,8 +43,9 @@ export class CallService {
 		(navigator as any).webkitGetUserMedia ||
 		(navigator as any).mozGetUserMedia
 
+	public stats = { local: { video: [], audio: [] }, remote: { video: [], audio: [] } };
 	private statsInterval;
-	private interval = 1000;
+	private interval = 5000;
 	public localVideo: HTMLVideoElement;
 	public remoteVideo: HTMLVideoElement;
 	public localVideoActive = false;
@@ -140,7 +141,6 @@ export class CallService {
 				this.remoteId = this.mediaCall.peer;
 				this.mediaCall.on('stream', (remoteStream) => {
 					this.remoteStreamBs.next(remoteStream);
-					this.startStatInterval(call.peerConnection);
 				});
 				this.mediaCall.on('error', err => {
 					//this.snackBar.open(err, 'Close');
@@ -171,8 +171,6 @@ export class CallService {
 		this.stopStatInterval();
 	}
 
-	public stats = { local: { video: [], audio: [] }, remote: { video: [], audio: [] } };
-
 	public /* async */ connectionStats(conn: RTCPeerConnection) {
 		// const stats = await conn.getStats(null);
 		// stats.forEach(report => {
@@ -200,11 +198,11 @@ export class CallService {
 		this.remoteVideoActive = false;
 		for (const i of comp) {
 			const xavg = i.x + i.width / 2, yavg = i.y + i.height / 2;
-			console.log(localWidth, localHeight);
-			console.log(remoteWidth, remoteHeight);
-			console.log(xavg, yavg);
-			console.log(xavg > 0, xavg < localWidth, yavg > 0, yavg < localHeight);
-			console.log(xavg > localWidth, xavg < remoteWidth + localWidth, yavg > 0, yavg < remoteHeight);
+			// console.log(localWidth, localHeight);
+			// console.log(remoteWidth, remoteHeight);
+			// console.log(xavg, yavg);
+			// console.log(xavg > 0, xavg < localWidth, yavg > 0, yavg < localHeight);
+			// console.log(xavg > localWidth, xavg < remoteWidth + localWidth, yavg > 0, yavg < remoteHeight);
 			if (xavg > 0 && xavg < localWidth && yavg > 0 && yavg < localHeight) {
 				this.localVideoActive = true;
 			} else if (xavg > localWidth && xavg < remoteWidth + localWidth && yavg > 0 && yavg < remoteHeight) {
@@ -221,15 +219,29 @@ export class CallService {
 			date: new Date().toISOString(),
 			visible: this.remoteVideoActive
 		});
+
+		if (this.stats.local.video.length >= 2
+		 && (this.stats.local.video[this.stats.local.video.length - 1].visible
+		 || this.stats.local.video[this.stats.local.video.length - 2].visible)) {
+			this.localVideoActive = true;
+		}
+
+		if (this.stats.remote.video.length >= 2
+		 && (this.stats.remote.video[this.stats.remote.video.length - 1].visible
+		 || this.stats.remote.video[this.stats.remote.video.length - 2].visible)) {
+			this.remoteVideoActive = true;
+		}
 	}
 
 	public startStatInterval(peerConnection: RTCPeerConnection) {
 		this.statsInterval = setInterval(() => this.connectionStats(peerConnection), this.interval);
 		const localStream = this.localStreamBs.value;
 		const remoteStream = this.remoteStreamBs.value;
+		// console.log(localStream, remoteStream);
 		this.localSpeech = hark(localStream);
 		this.remoteSpeech = hark(remoteStream);
 		this.localSpeech.on("speaking", () => {
+			// console.log("local speaking");
 			this.localAudioActive = true;
 			this.stats.local.audio.push({
 				date: new Date().toISOString(),
@@ -237,6 +249,7 @@ export class CallService {
 			});
 		});
 		this.remoteSpeech.on("speaking", () => {
+			// console.log("remote speaking");
 			this.remoteAudioActive = true;
 			this.stats.remote.audio.push({
 				date: new Date().toISOString(),
@@ -244,6 +257,7 @@ export class CallService {
 			});
 		});
 		this.localSpeech.on("stopped_speaking", () => {
+			// console.log("local stopped_speaking");
 			this.localAudioActive = false;
 			this.stats.local.audio.push({
 				date: new Date().toISOString(),
@@ -251,6 +265,7 @@ export class CallService {
 			});
 		});
 		this.remoteSpeech.on("stopped_speaking", () => {
+			// console.log("remote stopped_speaking");
 			this.remoteAudioActive = false;
 			this.stats.remote.audio.push({
 				date: new Date().toISOString(),
