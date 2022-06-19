@@ -1,5 +1,6 @@
 import { ConstantPool } from '@angular/compiler';
 import { ElementRef, Injectable } from '@angular/core';
+import hark from "hark";
 import Peer, { DataConnection } from 'peerjs';
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
@@ -43,12 +44,15 @@ export class CallService {
 		(navigator as any).mozGetUserMedia
 
 	private statsInterval;
+	private interval = 1000;
 	public localVideo: HTMLVideoElement;
 	public remoteVideo: HTMLVideoElement;
 	public localVideoActive = false;
 	public localAudioActive = false;
 	public remoteVideoActive = false;
 	public remoteAudioActive = false;
+	public localSpeech: hark.Harker;
+	public remoteSpeech: hark.Harker;
 
 	initPeer(id: string): string {
 		if (!this.peer || !this.peer.disconnected) {
@@ -130,12 +134,13 @@ export class CallService {
 			this.peer.on('call', async (call) => {
 				this.mediaCall = call;
 				this.isCallStartedBs.next(true);
-				this.statsInterval = setInterval(/* async */() => /* await */ this.connectionStats(call.peerConnection), 1000);
+				// this.statsInterval = setInterval(/* async */() => /* await */ this.connectionStats(call.peerConnection), this.interval);
 
 				this.mediaCall.answer(stream);
 				this.remoteId = this.mediaCall.peer;
 				this.mediaCall.on('stream', (remoteStream) => {
 					this.remoteStreamBs.next(remoteStream);
+					this.startStatInterval(call.peerConnection);
 				});
 				this.mediaCall.on('error', err => {
 					//this.snackBar.open(err, 'Close');
@@ -144,7 +149,7 @@ export class CallService {
 				});
 				this.mediaCall.on('close', () => {
 					this.onCallClose()
-					clearInterval(this.statsInterval);
+					this.stopStatInterval();
 				});
 			});
 		}
@@ -163,10 +168,10 @@ export class CallService {
 			track.stop();
 		});
 		//this.snackBar.open('Call Ended', 'Close');
-		clearInterval(this.statsInterval);
+		this.stopStatInterval();
 	}
 
-	public stats = [];
+	public stats = { local: { video: [], audio: [] }, remote: { video: [], audio: [] } };
 
 	public /* async */ connectionStats(conn: RTCPeerConnection) {
 		// const stats = await conn.getStats(null);
@@ -206,25 +211,58 @@ export class CallService {
 				this.remoteVideoActive = true;
 			}
 		}
-		context.beginPath();
-		for (const i of comp) {
-			context.rect(i.x, i.y, i.width, i.height);
-		}
-		context.stroke();
-		canvas.id = "asd";
-		document.getElementById("asd")?.remove();
-		document.body.appendChild(canvas);
-
-		this.stats.push({
+		
+		this.stats.local.video.push({
 			date: new Date().toISOString(),
-			local: {
-				video: this.localVideoActive
-			},
-			remote: {
-				video: this.remoteVideoActive
-			}
+			visible: this.localVideoActive
 		});
-		console.log(this.stats);
+
+		this.stats.remote.video.push({
+			date: new Date().toISOString(),
+			visible: this.remoteVideoActive
+		});
+	}
+
+	public startStatInterval(peerConnection: RTCPeerConnection) {
+		this.statsInterval = setInterval(() => this.connectionStats(peerConnection), this.interval);
+		const localStream = this.localStreamBs.value;
+		const remoteStream = this.remoteStreamBs.value;
+		this.localSpeech = hark(localStream);
+		this.remoteSpeech = hark(remoteStream);
+		this.localSpeech.on("speaking", () => {
+			this.localAudioActive = true;
+			this.stats.local.audio.push({
+				date: new Date().toISOString(),
+				speaking: true
+			});
+		});
+		this.remoteSpeech.on("speaking", () => {
+			this.remoteAudioActive = true;
+			this.stats.remote.audio.push({
+				date: new Date().toISOString(),
+				speaking: true
+			});
+		});
+		this.localSpeech.on("stopped_speaking", () => {
+			this.localAudioActive = false;
+			this.stats.local.audio.push({
+				date: new Date().toISOString(),
+				speaking: false
+			});
+		});
+		this.remoteSpeech.on("stopped_speaking", () => {
+			this.remoteAudioActive = false;
+			this.stats.remote.audio.push({
+				date: new Date().toISOString(),
+				speaking: false
+			});
+		});
+	}
+
+	public stopStatInterval() {
+		clearInterval(this.statsInterval);
+		this.localSpeech.stop();
+		this.remoteSpeech.stop();
 	}
 
 	public closeMediaCall() {
