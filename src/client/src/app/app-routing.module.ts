@@ -73,15 +73,15 @@ const routes: Routes = [{
 },{
   path: 'admins',
   component: AdminsComponent,
-  canActivate:[AuthGuard,AdminGuard]
+  canActivate:[AuthGuard]
 },{
   path: 'admins/:id',
   component: AdminComponent,
-  canActivate:[AuthGuard,AdminGuard]
+  canActivate:[AuthGuard]
 },{
   path: 'admins/create',
   component: AdminComponent,
-  canActivate:[AuthGuard,AdminGuard]
+  canActivate:[AuthGuard]
 },{
   path: '**',
   redirectTo: ''

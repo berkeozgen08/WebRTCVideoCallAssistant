@@ -21,18 +21,32 @@ export class HomeComponent implements OnInit {
   constructor(
     private meetingService: MeetingService,
     private toastService: ToastrService,
-    private authService:AuthService) { }
+    private authService: AuthService) { }
 
   ngOnInit(): void {
 
     this.isloading = true;
-    this.meetingService.getAll(this.authService.getUser().id).subscribe({
-      next: (v) => {
-        this.meetings = v;
-        this.isloading = false;
-      }
-    });
-    
+    if (this.authService.getUser().role == 'admin') {
+      
+      this.meetingService.getAll().subscribe({
+        next: (v) => {
+          this.meetings = v;
+          this.isloading = false;
+        }
+      })
+
+    } else {
+
+      this.meetingService.getAllByUser(this.authService.getUser().id).subscribe({
+        next: (v) => {
+          this.meetings = v;
+          this.isloading = false;
+        }
+      });
+    }
+
+
+
   }
 
   get id(): string {
@@ -42,7 +56,7 @@ export class HomeComponent implements OnInit {
 
   getInviteLink(data: string) {
     navigator.clipboard.writeText(`${window.location.toString()}j/${data}`);
-	this.toastService.success(`Invite link copied to clipboard.\ndata`)
+    this.toastService.success(`Invite link copied to clipboard.\ndata`)
   }
 
   deleteMeeting(index: number) {

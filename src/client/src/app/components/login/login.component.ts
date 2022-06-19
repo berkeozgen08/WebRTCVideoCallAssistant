@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthUser } from 'src/app/models/auth';
-import { Login } from 'src/app/models/login';
+import { Login, LoginAdmin } from 'src/app/models/login';
 import { AuthService } from 'src/app/services/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -40,14 +40,14 @@ export class LoginComponent implements OnInit {
   login() {
     if (this.isAdminLogin) {
 
-      this.authService.loginAdmin(this.user).subscribe({
+      this.authService.loginAdmin({username:this.user.email,password:this.user.password} as LoginAdmin).subscribe({
         next: (value: AuthUser) => {
           const token = JSON.stringify(value);
 
           this.authService.setLoggedIn(token).subscribe(v => {
 
             this.toastService.success("successfully logged in", "Login");
-            this.router.navigate(['/home']);
+            this.router.navigate(['/admins']);
 
           });
 

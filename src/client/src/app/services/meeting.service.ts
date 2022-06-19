@@ -15,7 +15,11 @@ export class MeetingService {
     return this.http.get<Meeting>(`${environment.API_URL}Meeting/Get/${id}`);
   }
 
-  public getAll(userId:number) {
+  public getAll() {
+    return this.http.get<Meeting[]>(`${environment.API_URL}Meeting/GetAll`);
+  }
+
+  public getAllByUser(userId:number) {
     return this.http.get<Meeting[]>(`${environment.API_URL}Meeting/GetAllByUser/${userId}`);
   }
 

@@ -5,7 +5,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthUser } from '../models/auth';
-import { Login } from '../models/login';
+import { Login, LoginAdmin } from '../models/login';
 
 @Injectable({
   providedIn: 'root'
@@ -71,7 +71,7 @@ export class AuthService {
     return this.http.post<AuthUser>(`${environment.API_URL}Auth/SignIn`,login);
   }
 
-  loginAdmin(login:Login){
+  loginAdmin(login:LoginAdmin){
     return this.http.post<AuthUser>(`${environment.API_URL}Auth/SignInAdmin`,login);
   }
 
