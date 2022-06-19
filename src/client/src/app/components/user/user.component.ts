@@ -40,10 +40,11 @@ export class UserComponent implements OnInit {
 
   onSubmit(): void {
     if (this.isNewRecord) {
+      
       this.userService.create(this.user).subscribe({
         next: (v) => this.toastService.success(`User created successfully.`),
         error: (err:Error) => this.toastService.error(err.message)
-      })
+      });
 
     } else {
       this.userService.update(this.user).subscribe({

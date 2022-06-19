@@ -8,22 +8,32 @@ import { CustomersComponent } from './components/customers/customers.component';
 import { CustomerComponent } from './components/customer/customer.component';
 import { UsersComponent } from './components/users/users.component';
 import { UserComponent } from './components/user/user.component';
+import { LoginComponent } from './components/login/login.component';
+import { AuthGuard } from './services/auth.guard';
+import { AdminGuard } from './services/admin.guard';
+import { AdminComponent } from './components/admin/admin.component';
+import { AdminsComponent } from './components/admins/admins.component';
 
 const routes: Routes = [{
   path: '',
-  component: HomeComponent
+  component: HomeComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'meeting',
-  component: MeetingComponent
+  component: MeetingComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'meeting-stats',
-  component: MeetingStatsComponent
+  component: MeetingStatsComponent,
+  canActivate:[AuthGuard,AdminGuard]
 }, {
   path: 'meetings/create',
-  component: SetMeetingComponent
+  component: SetMeetingComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'meetings/:id',
-  component: SetMeetingComponent
+  component: SetMeetingComponent,
+  canActivate:[AuthGuard]
 }, {
   path: 'j/:slug',
   component: MeetingComponent
@@ -33,22 +43,46 @@ const routes: Routes = [{
 }, {
   path: 'customers',
   component: CustomersComponent,
+  canActivate:[AuthGuard,AdminGuard]
 }, {
   path: 'customers/:id',
-  component: CustomerComponent
+  component: CustomerComponent,
+  canActivate:[AuthGuard,AdminGuard]
 }, {
   path: 'customers/create',
-  component: CustomerComponent
+  component: CustomerComponent,
+  canActivate:[AuthGuard,AdminGuard]
 }, {
   path: 'users',
   component: UsersComponent,
+  canActivate:[]
 }, {
   path: 'users/:id',
-  component: UserComponent
+  component: UserComponent,
+  canActivate:[]
 }, {
   path: 'users/create',
-  component: UserComponent
-}, {
+  component: UserComponent,
+  canActivate:[]
+},{
+  path: 'login',
+  component: LoginComponent
+},{
+  path: 'admin-login',
+  component: LoginComponent
+},{
+  path: 'admins',
+  component: AdminsComponent,
+  canActivate:[]
+},{
+  path: 'admins/:id',
+  component: AdminComponent,
+  canActivate:[]
+},{
+  path: 'admins/create',
+  component: AdminComponent,
+  canActivate:[]
+},{
   path: '**',
   redirectTo: ''
 }];

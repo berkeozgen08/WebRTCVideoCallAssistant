@@ -1,4 +1,5 @@
 using AutoMapper;
+using WebRTCVideoCallAssistant.Server.Helpers;
 using WebRTCVideoCallAssistant.Server.Models;
 using WebRTCVideoCallAssistant.Server.Models.Dto;
 
@@ -20,7 +21,8 @@ public class AdminService {
             throw new ApplicationException($"Admin with username '{dto.Username}' already exists");
 
         var admin = _mapper.Map<Admin>(dto);
-        admin.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+		var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
+        admin.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password,salt);
 
         var res = _db.Admins.Add(admin).Entity;
         _db.SaveChanges();
@@ -42,8 +44,10 @@ public class AdminService {
     {
         var admin = GetById(id);
 
-        if (!string.IsNullOrEmpty(dto.Password))
-            admin.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+        if (!string.IsNullOrEmpty(dto.Password)){
+			var salt=BCrypt.Net.BCrypt.GenerateSalt(Constants.SALT);
+            admin.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password,salt);
+		}
 
         _mapper.Map(dto, admin);
         var res = _db.Admins.Update(admin).Entity;

@@ -54,6 +54,14 @@ public class MeetingService
 			.Include(m => m.Stat);
 	}
 
+	public IQueryable<Meeting> GetAllByUser(int userId)
+	{
+		return _db.Meetings.Where(v=>v.CreatedById==userId)
+			.Include(m => m.CreatedBy)
+			.Include(m => m.CreatedFor)
+			.Include(m => m.Stat);
+	}
+
 	public Meeting Update(int id, UpdateMeetingDto dto)
     {
         var meeting = GetById(id);
