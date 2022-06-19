@@ -1,7 +1,7 @@
 import { ConstantPool } from '@angular/compiler';
 import { ElementRef, Injectable } from '@angular/core';
 import hark from "hark";
-import Peer, { DataConnection } from 'peerjs';
+import Peer, { DataConnection, MediaConnection, PeerJSOption } from 'peerjs';
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { PeerData } from '../models/data';
@@ -17,7 +17,7 @@ export class CallService {
 
 	private peer: Peer;
 
-	private mediaCall: Peer.MediaConnection;
+	private mediaCall: MediaConnection;
 
 	private localStreamBs = new BehaviorSubject<MediaStream>(null);
 	public localStream$: Observable<MediaStream> = this.localStreamBs.asObservable();
@@ -56,7 +56,7 @@ export class CallService {
 
 	initPeer(id: string): string {
 		if (!this.peer || !this.peer.disconnected) {
-			const peerJsOptions: Peer.PeerJSOption = {
+			const peerJsOptions: PeerJSOption = {
 				debug: 3,
 				config: {
 					iceServers: [{
