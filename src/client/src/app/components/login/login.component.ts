@@ -1,8 +1,6 @@
-import { JsonPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
 import { AuthUser } from 'src/app/models/auth';
 import { Login } from 'src/app/models/login';
 import { AuthService } from 'src/app/services/auth.service';
@@ -58,10 +56,8 @@ export class LoginComponent implements OnInit {
     
   }
 
-
   handleLogin(value: AuthUser) {
     const token = JSON.stringify(value);
-
     localStorage.setItem(environment.ACCESS_TOKEN, token);
     this.authService.setLoggedIn();
 
@@ -70,7 +66,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  handleError(err:Error){
-    this.toastService.error(err.message, "Login");
+  handleError(err:any){
+    this.toastService.error("Error","Login");
   }
 }

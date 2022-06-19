@@ -1,0 +1,32 @@
+<div class="container">
+
+    <h2>Admins</h2>
+
+    <ul class="list-group mb-2">
+
+        <li *ngFor="let admin of admins | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage,totalItems: admins.length } ;index as i;"
+            class="list-group-item d-flex justify-content-between align-items-center">
+
+            <span>{{admin.username}}</span>
+
+            <div class="actions">
+                <button type="button" (click)="deleteAdmin(i)" class="btn btn-sm btn-danger">Delete</button>
+                <button type="button" [routerLink]="['/admins/',admin.id]" class="btn btn-sm btn-warning">Edit</button>
+            </div>
+        </li>
+    </ul>
+    <div class="d-flex">
+        
+        <pagination-controls (pageChange)="currentPage = $event">
+        </pagination-controls>
+
+        <select [(ngModel)]="itemsPerPage" name="itemsPerPage" class="col-sm-1 mx-5" id="item-count">
+            <option *ngFor="let item of itemsCountOptions" [value]="item" [selected]="item==itemsPerPage">
+                {{item}}</option>
+        </select>
+    </div>
+    <button type="button" [routerLink]="['/admins/create']" class="btn btn-primary">Create Admin</button>
+</div>
+<ngx-loading
+[show]="isloading"
+></ngx-loading>

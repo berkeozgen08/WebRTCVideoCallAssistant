@@ -10,6 +10,9 @@ import { UsersComponent } from './components/users/users.component';
 import { UserComponent } from './components/user/user.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthGuard } from './services/auth.guard';
+import { AdminGuard } from './services/admin.guard';
+import { AdminComponent } from './components/admin/admin.component';
+import { AdminsComponent } from './components/admins/admins.component';
 
 const routes: Routes = [{
   path: '',
@@ -22,7 +25,7 @@ const routes: Routes = [{
 }, {
   path: 'meeting-stats',
   component: MeetingStatsComponent,
-  canActivate:[AuthGuard]
+  canActivate:[AuthGuard,AdminGuard]
 }, {
   path: 'meetings/create',
   component: SetMeetingComponent,
@@ -33,43 +36,53 @@ const routes: Routes = [{
   canActivate:[AuthGuard]
 }, {
   path: 'j/:slug',
-  component: MeetingComponent,
-  canActivate:[AuthGuard]
+  component: MeetingComponent
 }, {
   path: 'client/joinMeeting',
-  component: MeetingComponent,
-  canActivate:[AuthGuard]
+  component: MeetingComponent
 }, {
   path: 'customers',
   component: CustomersComponent,
-  canActivate:[AuthGuard]
+  canActivate:[AuthGuard,AdminGuard]
 }, {
   path: 'customers/:id',
   component: CustomerComponent,
-  canActivate:[AuthGuard]
+  canActivate:[AuthGuard,AdminGuard]
 }, {
   path: 'customers/create',
   component: CustomerComponent,
-  canActivate:[AuthGuard]
+  canActivate:[AuthGuard,AdminGuard]
 }, {
   path: 'users',
   component: UsersComponent,
-  canActivate:[AuthGuard]
+  canActivate:[]
 }, {
   path: 'users/:id',
   component: UserComponent,
-  canActivate:[AuthGuard]
+  canActivate:[]
 }, {
   path: 'users/create',
   component: UserComponent,
-  canActivate:[AuthGuard]
+  canActivate:[]
 },{
   path: 'login',
   component: LoginComponent
 },{
   path: 'admin-login',
   component: LoginComponent
-}, {
+},{
+  path: 'admins',
+  component: AdminsComponent,
+  canActivate:[]
+},{
+  path: 'admins/:id',
+  component: AdminComponent,
+  canActivate:[]
+},{
+  path: 'admins/create',
+  component: AdminComponent,
+  canActivate:[]
+},{
   path: '**',
   redirectTo: ''
 }];

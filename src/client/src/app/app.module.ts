@@ -20,6 +20,8 @@ import { NgxLoadingModule } from 'ngx-loading';
 import { LoginComponent } from './components/login/login.component';
 import { JwtModule } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
+import { AdminComponent } from './components/admin/admin.component';
+import { AdminsComponent } from './components/admins/admins.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { environment } from 'src/environments/environment';
     CustomerComponent,
     UsersComponent,
     UserComponent,
-    LoginComponent
+    LoginComponent,
+    AdminComponent,
+    AdminsComponent
   ],
   imports: [
     BrowserModule,
