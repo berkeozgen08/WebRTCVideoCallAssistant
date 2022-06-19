@@ -34,7 +34,7 @@ public class MeetingController : ControllerBase
 		return Ok(_meetingService.GetAll());
 	}
 
-	[HttpGet("{id}")]
+	[HttpGet("{userId}")]
 	public ActionResult<IQueryable<Meeting>> GetAllByUser(int userId)
 	{
 		return Ok(_meetingService.GetAllByUser(userId));

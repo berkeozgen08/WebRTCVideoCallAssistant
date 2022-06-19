@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
     email: '',
     password: ''
   };
-  title:'User Login'|'Admin Login'='User Login';
+  title: 'User Login' | 'Admin Login' = 'User Login';
 
   isAdminLogin: boolean = false;
 
@@ -34,39 +34,55 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
 
     this.isAdminLogin = (this.activeRoute.snapshot.url[0].path == 'admin-login');
-    this.title=this.isAdminLogin?'Admin Login':'User Login';
+    this.title = this.isAdminLogin ? 'Admin Login' : 'User Login';
   }
 
   login() {
     if (this.isAdminLogin) {
-      
+
       this.authService.loginAdmin(this.user).subscribe({
-        next:this.handleLogin,
-        error:this.handleError
+        next: (value: AuthUser) => {
+          const token = JSON.stringify(value);
+
+          this.authService.setLoggedIn(token).subscribe(v => {
+
+            this.toastService.success("successfully logged in", "Login");
+            this.router.navigate(['/home']);
+
+          });
+
+        },
+        error: (err: Error) => {
+          this.toastService.error(err.message, "Login");
+        }
       })
 
-    }else{
-  
+    } else {
+
       this.authService.login(this.user).subscribe({
-        next:this.handleLogin,
-        error:this.handleError
+        next: (value: AuthUser) => {
+          const token = JSON.stringify(value);
+          this.authService.setLoggedIn(token).subscribe(v => {
+            this.toastService.success("successfully logged in", "Login");
+            this.router.navigate(['/home']);
+          })
+
+        },
+        error: (err: Error) => {
+          this.toastService.error(err.message, "Login");
+        }
       })
 
     }
-    
+
   }
 
   handleLogin(value: AuthUser) {
-    const token = JSON.stringify(value);
-    localStorage.setItem(environment.ACCESS_TOKEN, token);
-    this.authService.setLoggedIn();
 
-    this.toastService.success("successfully logged in", "Login").onHidden.subscribe(() => {
-      this.router.navigate(['/home']);
-    });
+
   }
 
-  handleError(err:any){
-    this.toastService.error("Error","Login");
+  handleError(err: any) {
+
   }
 }

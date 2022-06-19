@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import hark from "hark";
+import hark from 'hark';
 import Peer, { DataConnection, MediaConnection, PeerJSOption } from 'peerjs';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MeetingService } from "./meeting.service";

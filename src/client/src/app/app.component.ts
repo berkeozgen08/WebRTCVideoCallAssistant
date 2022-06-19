@@ -12,25 +12,25 @@ export class AppComponent implements OnInit {
 
   title = 'WebRTCVideoCallAssistant.Client';
   isHide:boolean=false;
+  isLoggedIn:boolean=false;
+  isAdmin:boolean=false;
   constructor(private authService:AuthService,private router:Router) {
   }
 
   ngOnInit(): void {
-    
-  }
+    this.authService.isLoggedIn().subscribe(v=>{
+      this.isLoggedIn=v;
+    })
 
-  get isLoggedIn(){
-    return this.authService.isLoggedIn();
-  }
+    this.authService.getUserInfo().subscribe(info=>{
+      this.isAdmin=info.role=='admin';
+    })
 
-  get isAdmin(){
-    return this.authService.getUser().role=='admin';
   }
 
   logout(){
-    this.authService.logout().subscribe(v=>{
-      this.router.navigate(['/login']);
-    })    
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   bindMeeting(componentRef){

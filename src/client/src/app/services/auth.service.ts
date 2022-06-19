@@ -20,30 +20,33 @@ export class AuthService {
   }
   
 
-  setLoggedIn(){
-    
-    const token=localStorage.getItem(environment.ACCESS_TOKEN);
+  setLoggedIn(token:string):Observable<void>{
+    localStorage.setItem(environment.ACCESS_TOKEN,token);
+
+    //const token=localStorage.getItem(environment.ACCESS_TOKEN);
     
     const user= JSON.parse(token) as AuthUser;
     
     this.userInfo$.next(user);
     
     this.isLogIn$.next(true);
-
+    return of(null);
   }
 
-  isLoggedIn():boolean {
+  isLoggedIn():Observable<boolean>{
 
     const token = localStorage.getItem(environment.ACCESS_TOKEN);
+
     if (!token) {
       this.isLogIn$.next(false);
-      return false;
     } else {
+
       let validToken = !this.jwtHelper.isTokenExpired(token);
       this.isLogIn$.next(validToken);
-      return validToken
+
     }
-  
+
+    return this.isLogIn$.asObservable();
   }
 
   getUserInfo():Observable<AuthUser>{
@@ -72,17 +75,12 @@ export class AuthService {
     return this.http.post<AuthUser>(`${environment.API_URL}Auth/SignInAdmin`,login);
   }
 
-  logout() {
-    return of(
-      ()=>{
-        
-        localStorage.removeItem(environment.ACCESS_TOKEN);
-        
-        this.isLogIn$.next(false);
-        this.userInfo$.next(null);
-        //this.router.navigate(['/login']);
-      }
-    );
+  logout() {  
+      localStorage.removeItem(environment.ACCESS_TOKEN);
+      this.isLogIn$.next(false);
+      this.userInfo$.next(null);
+      //this.router.navigate(['/login']);
+    
   }
 
 }

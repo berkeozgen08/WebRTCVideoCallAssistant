@@ -23,9 +23,9 @@ const routes: Routes = [{
   component: MeetingComponent,
   canActivate:[AuthGuard]
 }, {
-  path: 'meeting-stats',
+  path: 'meeting-stats/:id',
   component: MeetingStatsComponent,
-  canActivate:[AuthGuard,AdminGuard]
+  canActivate:[]
 }, {
   path: 'meetings/create',
   component: SetMeetingComponent,
