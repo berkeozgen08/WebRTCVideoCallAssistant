@@ -1,20 +1,23 @@
 <div class="container">
 
-    <h2>Yönetici</h2>
+	<h2>Yönetici</h2>
 
-    <form (ngSubmit)="onSubmit()" #adminForm="ngForm">
-        <div class="form-group">
-            <label for="userName">Kullanıcı adı</label>
-            <input type="text" required [(ngModel)]="admin.username" name="userName" class="form-control"
-                id="userName" placeholder="Kullanıcı Adı">
-        </div>
-        <div class="form-group">
-            <label for="password">Şifre</label>
-            <input type="password" [attr.required]="isNewRecord" [(ngModel)]="admin.password" name="password" [minlength]="8" class="form-control"
-                id="password" placeholder="Şifre">
-        </div>
+	<form (ngSubmit)="onSubmit()" #adminForm="ngForm">
+		<div class="form-group">
+			<label for="userName">Kullanıcı adı</label>
+			<input type="text" required [(ngModel)]="admin.username" name="userName" class="form-control" id="userName"
+				placeholder="Kullanıcı adı giriniz">
+		</div>
+		<div class="form-group">
+			<label for="password">Şifre</label>
+			<input type="password" [attr.required]="isNewRecord" [(ngModel)]="admin.password" name="password"
+				[minlength]="8" class="form-control" id="password" placeholder="Şifre giriniz">
+		</div>
 
-        <button type="submit" [disabled]="!adminForm.form.valid" class="btn btn-primary">Kaydet</button>
+		<button type="submit" [disabled]="!adminForm.form.valid" class="btn btn-primary">Kaydet</button>
 
-    </form>
+	</form>
 </div>
+<ngx-loading
+[show]="isloading"
+></ngx-loading>

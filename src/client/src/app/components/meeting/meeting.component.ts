@@ -4,6 +4,7 @@ import { filter, Observable, of } from 'rxjs';
 import { Customer } from "src/app/models/customer";
 import { Meeting } from "src/app/models/meeting";
 import { User } from "src/app/models/user";
+import { AuthService } from "src/app/services/auth.service";
 import { CallService } from 'src/app/services/call.service';
 import { MeetingService } from "src/app/services/meeting.service";
 
@@ -36,8 +37,13 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 	/**
 	 *
 	 */
-	constructor(public callService: CallService, private route: ActivatedRoute, private meetingService: MeetingService, private changeDetector: ChangeDetectorRef) {
-	}
+	constructor(
+		public callService: CallService,
+		private route: ActivatedRoute,
+		private meetingService: MeetingService,
+		private changeDetector: ChangeDetectorRef,
+		private authService: AuthService
+	) {}
 
 	ngOnInit(): void {
 		this.isloading = true;
@@ -45,9 +51,9 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 		this.isCallStarted$ = this.callService.isCallStarted$;
 		this.route.queryParams.subscribe({
 			next: (params) => {
-				// TODO:
-				// this.isUser = jwt.role == "user";
-				this.isUser = params["a"] == "u";
+				this.authService.isLoggedIn().subscribe({
+					next: (val) => this.isUser = val
+				});
 
 				this.meetingService.resolveSlug(slug).subscribe({
 					next: (meeting) => {
@@ -107,7 +113,8 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 		});
 
 		this.remoteVideo.nativeElement.addEventListener("play", () => {
-			this.callService.startStatInterval(this.callService.mediaCall.peerConnection);
+			if (this.isUser)
+				this.callService.startStatInterval(this.callService.mediaCall.peerConnection);
 		});
 	}
 
@@ -131,13 +138,13 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 				this.changeDetector.detectChanges();
 				this.localVideo.nativeElement.srcObject = stream;
 			}
-			this.callService.connection$.subscribe(conn => conn.send({ event: "video", status: this.isLocalCamOpen }));
 		});
+		this.callService.sendData("video", this.isLocalCamOpen);
 	}
 
 	toggleMicrophone() {
 		this.isLocalMicOpen = !this.isLocalMicOpen;
 		this.callService.localStream$.subscribe((stream) => stream.getAudioTracks()[0].enabled = this.isLocalMicOpen);
-		this.callService.connection$.subscribe(conn => conn.send({ event: "audio", status: this.isLocalMicOpen }));
+		this.callService.sendData("audio", this.isLocalMicOpen);
 	}
 }

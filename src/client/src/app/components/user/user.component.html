@@ -1,35 +1,38 @@
 <div class="container">
 
-    <h2>Kullanıcı</h2>
+    <h2>Çalışan</h2>
 
     <form (ngSubmit)="onSubmit()" #userForm="ngForm">
         <div class="form-group">
             <label for="firstName">İsim</label>
             <input type="text" required [(ngModel)]="user.firstName" name="firstName" class="form-control"
-                id="firstName" placeholder="Adı">
+                id="firstName" placeholder="Adı giriniz">
         </div>
         <div class="form-group">
             <label for="lastName">Soyisim</label>
             <input type="text" required [(ngModel)]="user.lastName" name="lastName" class="form-control" id="lastName"
-                placeholder="Soyisim">
+                placeholder="Soyisim giriniz">
         </div>
         <div class="form-group">
             <label for="email">E-Posta</label>
             <input type="email" required [(ngModel)]="user.email" name="email" class="form-control" id="email"
-                placeholder="E-Posta">
+                placeholder="E-Posta giriniz">
         </div>
         <div class="form-group">
             <label for="phone">Telefon</label>
             <input type="phone" required [(ngModel)]="user.phone" name="phone" class="form-control" id="phone"
-                placeholder="Telefon">
+                placeholder="Telefon giriniz">
         </div>
         <div class="form-group">
             <label for="password">Şifre</label>
             <input type="password" [attr.required]="isNewRecord" [(ngModel)]="user.password" name="password" [minlength]="8" class="form-control"
-                id="password" placeholder="Şifre">
+                id="password" placeholder="Şifre giriniz">
         </div>
 
         <button type="submit" [disabled]="!userForm.form.valid" class="btn btn-primary">Kaydet</button>
 
     </form>
 </div>
+<ngx-loading
+[show]="isloading"
+></ngx-loading>
