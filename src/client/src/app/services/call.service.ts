@@ -342,12 +342,15 @@ export class CallService {
 		if (this.isUser) {
 			this.stopStatInterval();
 			if (endMeeting) {
-				this.meetingService.createStat(this.stats).subscribe({
-					next: (s) => {
-						this.router.navigate(['/']);
-					},
-					error: console.error
-				});
+				if (this.statsInterval)
+					this.meetingService.createStat(this.stats).subscribe({
+						next: (s) => {
+							this.router.navigate(['/']);
+						},
+						error: console.error
+					});
+				else
+					this.router.navigate(['/']);
 			}
 			else {
 				this.disconnected = true;
