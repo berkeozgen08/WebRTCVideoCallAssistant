@@ -58,4 +58,18 @@ public class AuthService
 
 		return new JwtSecurityTokenHandler().WriteToken(token);
 	}
+
+	public dynamic GetUser(ClaimsPrincipal user)
+	{
+		try
+		{
+			return _userService.Get(int.Parse(user.FindFirst(Constants.Claims.ID)?.Value
+				?? throw new UnauthorizedAccessException("User does not exist")));
+		}
+		catch (KeyNotFoundException)
+		{
+			return _adminService.Get(int.Parse(user.FindFirst(Constants.Claims.ID)?.Value
+				?? throw new UnauthorizedAccessException("Admin does not exist")));
+		}
+	}
 }

@@ -19,7 +19,6 @@
                 <button type="button" *ngIf="!(!!meeting.statId)" [routerLink]="['/meetings',meeting.id]"
                     class="btn btn-sm btn-warning">Düzenle</button>
                 <button type="button" *ngIf="!(!!meeting.statId)" [routerLink]="['/j/' + meeting.slug]"
-					[queryParams]="{a: 'u'}"
                     class="btn btn-sm btn-primary">Katıl</button>
 
                 <button type="button" *ngIf="!(!!meeting.statId)" (click)="getInviteLink(meeting.slug)"

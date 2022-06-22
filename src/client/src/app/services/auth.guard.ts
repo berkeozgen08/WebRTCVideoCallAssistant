@@ -5,30 +5,29 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from './auth.service';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  
-  constructor(private authService: AuthService, private router: Router,private jwtHelper:JwtHelperService) {
+	constructor(
+		private authService: AuthService,
+		private router: Router,
+		private jwtHelper: JwtHelperService
+	) {}
 
-
-  }
-
-  canActivate(): boolean {
-    const token = localStorage.getItem(environment.ACCESS_TOKEN);
-    if (!token) {
-      
-      this.router.navigate(['/login']);
-      return false;
-    } else {
-      let validToken=!this.jwtHelper.isTokenExpired(token);
-      
-      if(!validToken){
+	canActivate(): boolean {
+		try {
+			const { token } = JSON.parse(localStorage.getItem(environment.ACCESS_TOKEN));
+			if (!token || this.jwtHelper.isTokenExpired(token)) {
         localStorage.removeItem(environment.ACCESS_TOKEN);
-      }
-
-      return validToken;
-    }
-  }
+				this.router.navigate(['/login']);
+				return false;
+			}
+		} catch (e) {
+      localStorage.removeItem(environment.ACCESS_TOKEN);
+			this.router.navigate(['/login']);
+			return false;
+		}
+		return true;
+	}
   
 }
