@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import hark from 'hark';
 import Peer, { DataConnection, MediaConnection, PeerJSOption } from 'peerjs';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -11,7 +12,7 @@ declare var cascade: any;
 })
 export class CallService {
 
-	constructor(private meetingService: MeetingService) { }
+	constructor(private meetingService: MeetingService,private router:Router) { }
 
 	private peer: Peer;
 
@@ -82,7 +83,7 @@ export class CallService {
 
 	public async establishMediaCall(remotePeerId: string) {
 		this.remoteId = remotePeerId;
-		console.log(remotePeerId);
+		this.isUser=false;
 		try {
 			const stream = await this.getUserMedia({ video: true, audio: true });
 
@@ -124,6 +125,7 @@ export class CallService {
 	}
 
 	public async enableCallAnswer() {
+		this.isUser=true;
 		try {
 			const stream = await this.getUserMedia({ video: true, audio: true });
 			this.localStreamBs.next(stream);
@@ -166,15 +168,22 @@ export class CallService {
 		this.localStreamBs.value!.getTracks().forEach(track => {
 			track.stop();
 		});
-		//this.snackBar.open('Call Ended', 'Close');
+
+		
+
 		if (this.isUser) {
 			this.stopStatInterval();
 			this.meetingService.createStat(this.stats).subscribe({
 				next: (s) => {
-					console.log(s);
+
+
+					this.router.navigate(['/']);
+
 				},
 				error: console.error
 			});
+		}else{
+			this.router.navigate(['/end']);
 		}
 	}
 
@@ -293,6 +302,7 @@ export class CallService {
 			this.onCallClose()
 		}
 		this.isCallStartedBs.next(false);
+		
 	}
 
 	public destroyPeer() {

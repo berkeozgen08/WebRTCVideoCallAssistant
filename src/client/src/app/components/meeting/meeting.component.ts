@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { filter, Observable, of } from 'rxjs';
 import { Customer } from "src/app/models/customer";
 import { Meeting } from "src/app/models/meeting";
@@ -36,7 +36,12 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 	/**
 	 *
 	 */
-	constructor(public callService: CallService, private route: ActivatedRoute, private meetingService: MeetingService, private changeDetector: ChangeDetectorRef) {
+	constructor(
+		public callService: CallService, 
+		private route: ActivatedRoute, 
+		private meetingService: MeetingService, 
+		private changeDetector: ChangeDetectorRef,
+		private router:Router) {
 	}
 
 	ngOnInit(): void {
@@ -51,6 +56,11 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 
 				this.meetingService.resolveSlug(slug).subscribe({
 					next: (meeting) => {
+						
+						if(meeting.stat!=null){
+							this.router.navigate(["/end/"+slug]);
+						}
+
 						this.meeting = meeting;
 						this.callService.stats.meetingId = meeting.id;
 						this.callService.isUser = this.isUser;
