@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit {
 		this.meetingService.delete(meeting.id).subscribe({
 			next: (v) => {
 				this.meetings.splice(absoluteIndex, 1);
-				this.toastService.success("Toplantı başarılı şekilde silindi.");
+				this.toastService.success("Toplantı başarıyla silindi.");
 			},
 			error: (err) => this.toastService.error(err?.error?.message)
 		});

@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
 					const token = JSON.stringify(value);
 					this.authService.setLoggedIn(token).subscribe(v => {
 						this.isloading = false;
-						this.toastService.success("Yönetici başarılı şekilde oturum açtı.");
+						this.toastService.success("Yönetici başarıyla oturum açtı.");
 						this.router.navigate(['/admins']);
 					});
 				},
@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
 					const token = JSON.stringify(value);
 					this.authService.setLoggedIn(token).subscribe(v => {
 						this.isloading = false;
-						this.toastService.success("Çalışan başarılı şekilde oturum açtı.");
+						this.toastService.success("Çalışan başarıyla oturum açtı.");
 						this.router.navigate(['/home']);
 					})
 				},

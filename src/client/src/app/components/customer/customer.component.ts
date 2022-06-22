@@ -43,7 +43,7 @@ export class CustomerComponent implements OnInit {
 			this.customerService.create(this.customer).subscribe({
 				next: (v) => {
 					this.router.navigate(["/"]);
-					this.toastService.success(`Müşteri başarılı şekilde oluşturuldu.`)
+					this.toastService.success(`Müşteri başarıyla oluşturuldu.`)
 				},
 				error: (err) => this.toastService.error(err?.error?.message),
 				complete: () => this.isloading = false
@@ -53,7 +53,7 @@ export class CustomerComponent implements OnInit {
 			this.customerService.update(this.customer).subscribe({
 				next: (v) => {
 					this.router.navigate(["/"]);
-					this.toastService.success(`Müşteri başarılı şekilde güncellendi.`)
+					this.toastService.success(`Müşteri başarıyla güncellendi.`)
 				},
 				error: (err) => this.toastService.error(err?.error?.message),
 				complete: () => this.isloading = false

@@ -47,7 +47,7 @@ export class UserComponent implements OnInit {
 			this.userService.create(this.user).subscribe({
 				next: (v) => {
 					this.router.navigate(["/"]);
-					this.toastService.success(`Kullanıcı başarılı şekilde oluşturuldu.`)
+					this.toastService.success(`Kullanıcı başarıyla oluşturuldu.`)
 				},
 				error: (err) => this.toastService.error(err?.error?.message),
 				complete: () => this.isloading = false
@@ -56,7 +56,7 @@ export class UserComponent implements OnInit {
 			this.userService.update(this.user).subscribe({
 				next: (v) => {
 					this.router.navigate(["/"]);
-					this.toastService.success(`Kullanıcı başarılı şekilde güncellendi.`)
+					this.toastService.success(`Kullanıcı başarıyla güncellendi.`)
 				},
 				error: (err) => this.toastService.error(err?.error?.message),
 				complete: () => this.isloading = false

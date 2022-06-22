@@ -24,6 +24,8 @@ import { AdminsComponent } from './components/admins/admins.component';
 import { registerLocaleData } from '@angular/common';
 import localeTr from '@angular/common/locales/tr';
 import { TotalTimePipe } from './components/total-time.pipe';
+
+import { MeetingEndComponent } from './components/meeting-end/meeting-end.component';
 import { AuthInterceptor } from "./services/auth.interceptor";
 registerLocaleData(localeTr);
 
@@ -41,7 +43,8 @@ registerLocaleData(localeTr);
 		LoginComponent,
 		AdminComponent,
 		AdminsComponent,
-		TotalTimePipe
+		TotalTimePipe,
+    MeetingEndComponent
 	],
 	imports: [
 		BrowserModule,

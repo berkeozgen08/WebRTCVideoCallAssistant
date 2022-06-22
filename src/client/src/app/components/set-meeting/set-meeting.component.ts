@@ -54,6 +54,7 @@ export class SetMeetingComponent implements OnInit {
 
 		this.user = this.authService.getUser();
 
+
 		if (!this.isNewRecord) {
 			this.meetingService.get(id).subscribe({
 				next: (v) => this.meeting = v
@@ -74,7 +75,7 @@ export class SetMeetingComponent implements OnInit {
 			this.meetingService.create(this.meeting).subscribe({
 				next: (v) => {
 					this.router.navigate(["/"]);
-					this.toastService.success(`Meeting created successfully.`)
+					this.toastService.success(`Görüşme başarıyla oluşturuldu.`);
 				},
 				error: (err) => this.toastService.error(err?.error?.message),
 				complete: () => this.isloading = false
@@ -83,7 +84,7 @@ export class SetMeetingComponent implements OnInit {
 			this.meetingService.update(this.meeting).subscribe({
 				next: (v) => {
 					this.router.navigate(["/"]);
-					this.toastService.success(`Meeting updated successfully.`)
+					this.toastService.success(`Görüşme başarıyla güncellendi.`);
 				},
 				error: (err) => this.toastService.error(err?.error?.message),
 				complete: () => this.isloading = false

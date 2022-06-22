@@ -13,6 +13,7 @@ import { AuthGuard } from './services/auth.guard';
 import { AdminGuard } from './services/admin.guard';
 import { AdminComponent } from './components/admin/admin.component';
 import { AdminsComponent } from './components/admins/admins.component';
+import { MeetingEndComponent } from './components/meeting-end/meeting-end.component';
 
 const routes: Routes = [{
   path: '',
@@ -82,6 +83,12 @@ const routes: Routes = [{
   path: 'admins/create',
   component: AdminComponent,
   canActivate:[AuthGuard]
+},{
+  path:'end',
+  component:MeetingEndComponent
+},{
+  path:'end/:slug',
+  component:MeetingEndComponent
 },{
   path: '**',
   redirectTo: ''

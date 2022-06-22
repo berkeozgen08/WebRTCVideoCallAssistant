@@ -44,7 +44,7 @@ export class AdminComponent implements OnInit {
 			this.adminService.create(this.admin).subscribe({
 				next: (v) => {
 					this.router.navigate(["/"]);
-					this.toastService.success(`Yönetici başarılı şekilde oluşturuldu.`)
+					this.toastService.success(`Yönetici başarıyla oluşturuldu.`)
 				},
 				error: (err) => this.toastService.error(err?.error?.message),
 				complete: () => this.isloading = false
@@ -54,12 +54,11 @@ export class AdminComponent implements OnInit {
 			this.adminService.update(this.admin).subscribe({
 				next: (v) => {
 					this.router.navigate(["/"]);
-					this.toastService.success(`Yönetici başarılı şekilde güncellendi.`)
+					this.toastService.success(`Yönetici başarıyla güncellendi.`)
 				},
 				error: (err) => this.toastService.error(err?.error?.message),
 				complete: () => this.isloading = false
 			});
 		}
 	}
-
 }
