@@ -46,8 +46,10 @@ export class AdminComponent implements OnInit {
 					this.router.navigate(["/"]);
 					this.toastService.success(`Yönetici başarıyla oluşturuldu.`)
 				},
-				error: (err) => this.toastService.error(err?.error?.message),
-				complete: () => this.isloading = false
+				error: (err) => {
+					this.toastService.error(err?.error?.message || err?.error?.title + "</br>" + Object.values(err?.error?.errors || {})?.reduce((acc, i) => acc + (i as any).reduce((acc2, j) => acc + j + " ") + "</br>", ""), "", { enableHtml: true });
+					this.isloading = false;
+				},
 			});
 
 		} else {
@@ -56,8 +58,10 @@ export class AdminComponent implements OnInit {
 					this.router.navigate(["/"]);
 					this.toastService.success(`Yönetici başarıyla güncellendi.`)
 				},
-				error: (err) => this.toastService.error(err?.error?.message),
-				complete: () => this.isloading = false
+				error: (err) => {
+					this.toastService.error(err?.error?.message || err?.error?.title + "</br>" + Object.values(err?.error?.errors || {})?.reduce((acc, i) => acc + (i as any).reduce((acc2, j) => acc + j + " ") + "</br>", ""), "", { enableHtml: true });
+					this.isloading = false;
+				},
 			});
 		}
 	}

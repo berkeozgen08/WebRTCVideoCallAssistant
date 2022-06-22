@@ -25,7 +25,7 @@ export class CustomerComponent implements OnInit {
 		private route: ActivatedRoute,
 		private toastService: ToastrService,
 		private router: Router
-	) {}
+	) { }
 
 	ngOnInit(): void {
 		let id = +this.route.snapshot.paramMap.get("id");
@@ -45,8 +45,10 @@ export class CustomerComponent implements OnInit {
 					this.router.navigate(["/"]);
 					this.toastService.success(`Müşteri başarıyla oluşturuldu.`)
 				},
-				error: (err) => this.toastService.error(err?.error?.message),
-				complete: () => this.isloading = false
+				error: (err) => {
+					this.toastService.error(err?.error?.message || err?.error?.title + "</br>" + Object.values(err?.error?.errors || {})?.reduce((acc, i) => acc + (i as any).reduce((acc2, j) => acc + j + " ") + "</br>", ""), "", { enableHtml: true });
+					this.isloading = false;
+				}
 			})
 
 		} else {
@@ -55,8 +57,10 @@ export class CustomerComponent implements OnInit {
 					this.router.navigate(["/"]);
 					this.toastService.success(`Müşteri başarıyla güncellendi.`)
 				},
-				error: (err) => this.toastService.error(err?.error?.message),
-				complete: () => this.isloading = false
+				error: (err) => {
+					this.toastService.error(err?.error?.message || err?.error?.title + "</br>" + Object.values(err?.error?.errors || {})?.reduce((acc, i) => acc + (i as any).reduce((acc2, j) => acc + j + " ") + "</br>", ""), "", { enableHtml: true });
+					this.isloading = false;
+				}
 			});
 		}
 	}

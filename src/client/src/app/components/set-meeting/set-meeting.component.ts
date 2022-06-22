@@ -82,8 +82,10 @@ export class SetMeetingComponent implements OnInit {
 					this.router.navigate(["/"]);
 					this.toastService.success(`Görüşme başarıyla oluşturuldu.`);
 				},
-				error: (err) => this.toastService.error(err?.error?.message),
-				complete: () => this.isloading = false
+				error: (err) => {
+					this.toastService.error(err?.error?.message || err?.error?.title + "</br>" + Object.values(err?.error?.errors || {})?.reduce((acc, i) => acc + (i as any).reduce((acc2, j) => acc + j + " ") + "</br>", ""), "", { enableHtml: true });
+					this.isloading = false;
+				},
 			});
 		} else {
 			this.meetingService.update(this.meeting).subscribe({
@@ -91,8 +93,10 @@ export class SetMeetingComponent implements OnInit {
 					this.router.navigate(["/"]);
 					this.toastService.success(`Görüşme başarıyla güncellendi.`);
 				},
-				error: (err) => this.toastService.error(err?.error?.message),
-				complete: () => this.isloading = false
+				error: (err) => {
+					this.toastService.error(err?.error?.message || err?.error?.title + "</br>" + Object.values(err?.error?.errors || {})?.reduce((acc, i) => acc + (i as any).reduce((acc2, j) => acc + j + " ") + "</br>", ""), "", { enableHtml: true });
+					this.isloading = false;
+				},
 			});
 		}
 	}

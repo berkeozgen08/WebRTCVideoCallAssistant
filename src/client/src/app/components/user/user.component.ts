@@ -49,8 +49,10 @@ export class UserComponent implements OnInit {
 					this.router.navigate(["/"]);
 					this.toastService.success(`Kullanıcı başarıyla oluşturuldu.`)
 				},
-				error: (err) => this.toastService.error(err?.error?.message),
-				complete: () => this.isloading = false
+				error: (err) => {
+					this.toastService.error(err?.error?.message || err?.error?.title + "</br>" + Object.values(err?.error?.errors || {})?.reduce((acc, i) => acc + (i as any).reduce((acc2, j) => acc + j + " ") + "</br>", ""), "", { enableHtml: true });
+					this.isloading = false;
+				}
 			});
 		} else {
 			this.userService.update(this.user).subscribe({
@@ -58,8 +60,10 @@ export class UserComponent implements OnInit {
 					this.router.navigate(["/"]);
 					this.toastService.success(`Kullanıcı başarıyla güncellendi.`)
 				},
-				error: (err) => this.toastService.error(err?.error?.message),
-				complete: () => this.isloading = false
+				error: (err) => {
+					this.toastService.error(err?.error?.message || err?.error?.title + "</br>" + Object.values(err?.error?.errors || {})?.reduce((acc, i) => acc + (i as any).reduce((acc2, j) => acc + j + " ") + "</br>", ""), "", { enableHtml: true });
+					this.isloading = false;
+				}
 			});
 		}
 	}

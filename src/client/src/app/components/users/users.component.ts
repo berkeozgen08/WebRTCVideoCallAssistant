@@ -39,7 +39,7 @@ export class UsersComponent implements OnInit {
 				this.users.splice(absoluteIndex, 1);
 				this.toastService.success("Kullanıcı başarıyla silindi.");
 			},
-			error: (err) => this.toastService.error(err?.error?.message)
+			error: (err) => this.toastService.error(err?.error?.message || err?.error?.title + "</br>" + Object.values(err?.error?.errors || {})?.reduce((acc, i) => acc + (i as any).reduce((acc2, j) => acc + j + " ") + "</br>", ""), "", { enableHtml: true })
 		});
 	}
 }
