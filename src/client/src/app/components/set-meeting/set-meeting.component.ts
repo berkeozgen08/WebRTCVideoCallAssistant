@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { AuthUser } from "src/app/models/auth";
 import { Customer } from 'src/app/models/customer';
 import { Meeting } from 'src/app/models/meeting';
+import { User } from "src/app/models/user";
 import { AuthService } from 'src/app/services/auth.service';
 import { CustomerService } from 'src/app/services/customer.service';
 import { MeetingService } from 'src/app/services/meeting.service';
+import { UserService } from "src/app/services/user.service";
 
 @Component({
 	selector: 'app-set-meeting',
@@ -30,7 +31,7 @@ export class SetMeetingComponent implements OnInit {
 		statId: null,
 		stat: null
 	};
-	user: AuthUser;
+	users: User[];
 	customers: Customer[];
 	isAdmin: boolean = false;
 	isloading: boolean = false;
@@ -41,8 +42,9 @@ export class SetMeetingComponent implements OnInit {
 		private customerService: CustomerService,
 		private toastService: ToastrService,
 		private authService: AuthService,
+		private userService: UserService,
 		private router: Router
-	) {}
+	) { }
 
 	ngOnInit(): void {
 		let id = +this.route.snapshot.paramMap.get("id");
@@ -51,8 +53,6 @@ export class SetMeetingComponent implements OnInit {
 		this.customerService.getAll().subscribe({
 			next: (v) => this.customers = v
 		});
-
-		this.user = this.authService.getUser();
 
 
 		if (!this.isNewRecord) {
@@ -65,6 +65,11 @@ export class SetMeetingComponent implements OnInit {
 			this.isAdmin = v.role == 'admin';
 			if (!this.isAdmin) {
 				this.meeting.createdById = v.id;
+				this.users = [this.authService.getUser() as any as User];
+			} else {
+				this.userService.getAll().subscribe({
+					next: (v) => this.users = v
+				});
 			}
 		});
 	}
