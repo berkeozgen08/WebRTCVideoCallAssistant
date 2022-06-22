@@ -281,6 +281,11 @@ export class CallService {
 		});
 	}
 
+	public sendData(event, status) {
+		console.log("sent", { event, status });
+		this.connectionBs.value?.send({ event, status });
+	}
+
 	public stopStatInterval() {
 		clearInterval(this.statsInterval);
 		this.localSpeech.stop();

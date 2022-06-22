@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using WebRTCVideoCallAssistant.Server.Helpers.Attributes;
 using WebRTCVideoCallAssistant.Server.Models;
 using WebRTCVideoCallAssistant.Server.Models.Dto;
 using WebRTCVideoCallAssistant.Server.Services;
 
 namespace WebRTCVideoCallAssistant.Server.Controllers;
 
+[User]
 [ApiController]
 [Route("[controller]/[action]")]
 public class CustomerController : ControllerBase

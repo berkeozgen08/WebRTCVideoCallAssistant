@@ -4,25 +4,24 @@ import { Meeting } from 'src/app/models/meeting';
 import { MeetingService } from 'src/app/services/meeting.service';
 
 @Component({
-  selector: 'app-meeting-stats',
-  templateUrl: './meeting-stats.component.html',
-  styleUrls: ['./meeting-stats.component.scss']
+	selector: 'app-meeting-stats',
+	templateUrl: './meeting-stats.component.html',
+	styleUrls: ['./meeting-stats.component.scss']
 })
 export class MeetingStatsComponent implements OnInit {
+	meeting: Meeting;
+	isloading: boolean = false;
 
-  meeting:Meeting;
-  constructor(
-    private meetingService:MeetingService,
-    private route:ActivatedRoute
-    ) { }
+	constructor(
+		private meetingService: MeetingService,
+		private route: ActivatedRoute
+	) {}
 
-  ngOnInit(): void {
-    let id=+this.route.snapshot.paramMap.get("id");
-    this.meetingService.get(id).subscribe({
-      next:(v)=>this.meeting=v
-    });
-
-    
-  }
+	ngOnInit(): void {
+		let id = +this.route.snapshot.paramMap.get("id");
+		this.meetingService.get(id).subscribe({
+			next: (v) => this.meeting = v
+		});
+	}
 
 }
