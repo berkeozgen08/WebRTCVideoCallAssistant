@@ -64,6 +64,9 @@ public class MeetingService
 
 	public Meeting Update(int id, UpdateMeetingDto dto)
     {
+		if (dto?.StartsAt < DateTime.Now)
+			throw new ApplicationException("Meeting cannot be created for a past time");
+
         var meeting = GetById(id);
 
         _mapper.Map(dto, meeting);
