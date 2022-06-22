@@ -1,5 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { filter, Observable, of } from 'rxjs';
 import { Customer } from "src/app/models/customer";
 import { Meeting } from "src/app/models/meeting";
@@ -37,11 +38,12 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 	 *
 	 */
 	constructor(
-		public callService: CallService, 
-		private route: ActivatedRoute, 
-		private meetingService: MeetingService, 
+		public callService: CallService,
+		private route: ActivatedRoute,
+		private meetingService: MeetingService,
 		private changeDetector: ChangeDetectorRef,
-		private router:Router) {
+		private router: Router,
+		private toastService: ToastrService) {
 	}
 
 	ngOnInit(): void {
@@ -56,9 +58,9 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 
 				this.meetingService.resolveSlug(slug).subscribe({
 					next: (meeting) => {
-						
-						if(meeting.stat!=null){
-							this.router.navigate(["/end/"+slug]);
+
+						if (meeting.stat != null) {
+							this.router.navigate(["/end/" + slug]);
 						}
 
 						this.meeting = meeting;
@@ -94,7 +96,11 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 						});
 						this.isloading = false;
 					},
-					error: console.error
+					error: (err) => {
+						this.toastService.error("Görüşme bulunamadı.").onHidden.subscribe(() => {
+							this.router.navigate(["/"]);
+						})
+					}
 				});
 			}
 		});
