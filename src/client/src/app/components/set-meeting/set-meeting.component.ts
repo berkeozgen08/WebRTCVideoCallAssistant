@@ -78,14 +78,14 @@ export class SetMeetingComponent implements OnInit {
   onSubmit(): void {
     if (this.isNewRecord) {
       this.meetingService.create(this.meeting).subscribe({
-        next: (v) => this.toastService.success(`Meeting created successfully.`),
-        error: (err) => this.toastService.error(err)
+        next: (v) => this.toastService.success(`Görüşme başarılı şekilde oluşturuldu.`),
+        error: (err) => this.toastService.error("Görüşme oluşturulamadı.")
       })
 
     } else {
       this.meetingService.update(this.meeting).subscribe({
-        next: (v) => this.toastService.success(`Meeting updated successfully.`),
-        error: (err) => this.toastService.error(err)
+        next: (v) => this.toastService.success(`Görüşme başarılı şekilde güncellendi`),
+        error: (err) => this.toastService.error("Görüşme güncellenemedi.")
       });
     }
   }
