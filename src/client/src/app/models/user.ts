@@ -6,8 +6,3 @@ export interface User {
     password: string;
     phone: string;
 }
-
-export interface UserUpdate{
-    password:string;
-    phone:string;
-}

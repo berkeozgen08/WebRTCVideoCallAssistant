@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from "src/environments/environment";
-import { User, UserUpdate } from "src/app/models/user";
+import { User } from "src/app/models/user";
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +23,7 @@ export class UserService {
   }
 
   public update(user: User) {
-    let update: UserUpdate = { password: user.password, phone: user.phone }
-    return this.http.patch(`${environment.API_URL}User/Update/${user.id}`, update);//we user in body id unnecessary
+    return this.http.patch(`${environment.API_URL}User/Update/${user.id}`, user);//we user in body id unnecessary
   }
 
   public delete(id: number) {

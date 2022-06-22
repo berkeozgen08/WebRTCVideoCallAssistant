@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Admin, AdminUpdate } from '../models/admin';
+import { Adm } from '../models/admin';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +23,7 @@ export class AdminService {
   }
 
   public update(admin: Admin) {
-    const adminUpdate: AdminUpdate = { password: admin.password };
-    return this.http.patch(`${environment.API_URL}Admin/Update/${admin.id}`, adminUpdate);
+    return this.http.patch(`${environment.API_URL}Admin/Update/${admin.id}`, admin);
   }
 
   public delete(id: number) {
