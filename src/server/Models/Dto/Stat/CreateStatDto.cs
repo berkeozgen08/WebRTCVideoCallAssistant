@@ -42,4 +42,7 @@ public class CreateStatDto
 
 	[Required]
 	public int Interval { get; set; }
+
+	[Required]
+	public DateTime StartedAt { get; set; }
 }

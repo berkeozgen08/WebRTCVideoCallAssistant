@@ -44,7 +44,7 @@ export class CallService {
 
 	private statsInterval;
 	private interval = 5000;
-	public stats = { local: { video: [], audio: [] }, remote: { video: [], audio: [] }, interval: this.interval, meetingId: 0 };
+	public stats = { local: { video: [], audio: [] }, remote: { video: [], audio: [] }, interval: this.interval, meetingId: 0, startedAt: null };
 	public localVideo: HTMLVideoElement;
 	public remoteVideo: HTMLVideoElement;
 	public localVideoActive = false;

@@ -122,6 +122,8 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 		this.callService.remoteStream$.subscribe(stream => {
 			if (!!stream) {
 				this.remoteVideo.nativeElement.srcObject = stream;
+				if (!this.callService.stats.startedAt)
+					this.callService.stats.startedAt = new Date().toISOString();
 				this.callService.disconnected = false;
 				if (this.callService.reconnectInterval) {
 					clearInterval(this.callService.reconnectInterval);

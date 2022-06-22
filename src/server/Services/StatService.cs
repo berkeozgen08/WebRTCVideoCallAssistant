@@ -22,6 +22,7 @@ public class StatService
 		var meeting = _meetingService.Get(dto.MeetingId)
 			?? throw new KeyNotFoundException($"Meeting with ID {dto.MeetingId} does not exist");
 		
+		var startedAt = dto.StartedAt + TimeSpan.FromHours(3);
 		var interval = dto.Interval;
 		var local = dto.Local;
 		var remote = dto.Remote;
@@ -35,6 +36,7 @@ public class StatService
 			UserSpeakTime = localAudioTime,
 			CustomerVideoTime = remoteVideoTime,
 			CustomerSpeakTime = remoteAudioTime,
+			StartedAt = startedAt,
 			EndedAt = DateTime.Now
 		};
         var res = _db.Stats.Add(stat).Entity;
