@@ -100,14 +100,12 @@ namespace WebRTCVideoCallAssistant.Server.Models
                 entity.HasOne(d => d.CreatedBy)
                     .WithMany(p => p.Meetings)
                     .HasForeignKey(d => d.CreatedById)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Meeting__Created__5CA1C101");
+                    .HasConstraintName("FK__Meeting__Created__6166761E");
 
                 entity.HasOne(d => d.CreatedFor)
                     .WithMany(p => p.Meetings)
                     .HasForeignKey(d => d.CreatedForId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Meeting__Created__5BAD9CC8");
+                    .HasConstraintName("FK__Meeting__Created__607251E5");
 
                 entity.HasOne(d => d.Stat)
                     .WithMany(p => p.Meetings)

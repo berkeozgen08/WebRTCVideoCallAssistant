@@ -1,35 +1,44 @@
 <div class="container">
-    <h2>Görüşme</h2>
+	<h2>Görüşme</h2>
 
-    <form class="create-meeting-form" #meetingForm="ngForm" (submit)="onSubmit()">
+	<form class="create-meeting-form" #meetingForm="ngForm" (submit)="onSubmit()">
 
-        <div class="form-group">
-            <label for="user-list" class="form-label font-weight-bold">Müşteri</label>
-            <div class="input-group mb-3">
-                <select [(ngModel)]="meeting.createdForId" required name="customer" class="form-select user-select form-control" id="user-list" aria-label="Default select example">
-                    <option *ngFor="let customer of customers" [value]="customer.id" [selected]="customer.id==meeting.createdForId">{{customer.firstName}} {{customer.lastName}}</option>
-                </select>
-            </div>
-        </div>
+		<div class="form-group">
+			<label for="user-list" class="form-label font-weight-bold">Müşteri</label>
+			<div class="input-group mb-3">
+				<select [(ngModel)]="meeting.createdForId" required name="customer"
+					class="form-select user-select form-control" id="user-list" aria-label="Default select example">
+					<option *ngFor="let customer of customers" [value]="customer.id"
+						[selected]="customer.id==meeting.createdForId">{{customer.firstName}} {{customer.lastName}}
+					</option>
+				</select>
+			</div>
+		</div>
 
-        <div class="form-group">
-            <label for="user-list" class="form-label font-weight-bold">Çalışan</label>
-            <div class="input-group mb-3">
-                <select [(ngModel)]="meeting.createdById" [attr.disabled]="!isAdmin ? '': null" required name="user" class="form-select user-select form-control" id="user-list" aria-label="Default select example">
-                    <option *ngFor="let user of users" [value]="user.id" [selected]="user.id==meeting.createdById">{{user.firstName}} {{user.lastName}}</option>
-                </select>
-            </div>
-        </div>
+		<div class="form-group">
+			<label for="user-list" class="form-label font-weight-bold">Çalışan</label>
+			<div class="input-group mb-3">
+				<select [(ngModel)]="meeting.createdById" [attr.disabled]="!isAdmin ? '': null" required name="user"
+					class="form-select user-select form-control" id="user-list" aria-label="Default select example">
+					<option [value]="user.id" [selected]="user.id == meeting.createdById">{{user.firstName}}
+						{{user.lastName}}</option>
+				</select>
+			</div>
+		</div>
 
-        <div class="form-group">
-            <label for="start-date" class="form-label font-weight-bold">Başlangıç Tarihi</label>
-            <div class="input-group mb-3">
-                <input type="datetime-local" required [(ngModel)]="meeting.startsAt" name="start-date" class="form-control" id="start-date">
-            </div>
-        </div>
-        <div class="form-group">
-            <button type="submit" [disabled]="!meetingForm.form.valid" class="btn btn-primary">Kaydet</button>
-        </div>
-        
-    </form>
+		<div class="form-group">
+			<label for="start-date" class="form-label font-weight-bold">Başlangıç Tarihi</label>
+			<div class="input-group mb-3">
+				<input type="datetime-local" required [(ngModel)]="meeting.startsAt" name="start-date"
+					class="form-control" id="start-date">
+			</div>
+		</div>
+		<div class="form-group">
+			<button type="submit" [disabled]="isNewRecord && !meetingForm.form.valid" class="btn btn-primary">Kaydet</button>
+		</div>
+
+	</form>
 </div>
+<ngx-loading
+[show]="isloading"
+></ngx-loading>

@@ -4,5 +4,7 @@ namespace WebRTCVideoCallAssistant.Server.Models.Dto;
 
 public class UpdateMeetingDto
 {
-	public DateTime StartsAt { get; set; }
+	public int? CreatedById { get; set; }
+	public int? CreatedForId { get; set; }
+	public DateTime? StartsAt { get; set; }
 }
