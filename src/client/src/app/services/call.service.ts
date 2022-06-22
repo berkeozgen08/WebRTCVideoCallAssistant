@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import hark from 'hark';
 import Peer, { DataConnection, MediaConnection, PeerJSOption } from 'peerjs';
@@ -12,7 +12,7 @@ declare var cascade: any;
 })
 export class CallService {
 
-	constructor(private meetingService: MeetingService,private router:Router) { }
+	constructor(private meetingService: MeetingService, private router: Router, private ngZone: NgZone) { }
 
 	private peer: Peer;
 
@@ -54,6 +54,9 @@ export class CallService {
 	public localSpeech: hark.Harker;
 	public remoteSpeech: hark.Harker;
 	public isUser: boolean;
+	public disconnected = false;
+	public exited = false;
+	public reconnectInterval;
 
 	initPeer(id: string): string {
 		if (!this.peer || !this.peer.disconnected) {
@@ -83,7 +86,7 @@ export class CallService {
 
 	public async establishMediaCall(remotePeerId: string) {
 		this.remoteId = remotePeerId;
-		this.isUser=false;
+		this.isUser = false;
 		try {
 			const stream = await this.getUserMedia({ video: true, audio: true });
 
@@ -91,8 +94,12 @@ export class CallService {
 			this.connectionBs.subscribe({
 				next: (conn) => {
 					conn.on('error', err => {
-						console.error(err);
-						//this.snackBar.open(err, 'Close');
+						this.ngZone.run(() => this.closeMediaCall());
+						console.log(0);
+					});
+					conn.on('close', () => {
+						this.ngZone.run(() => this.closeMediaCall());
+						console.log(1);
 					});
 					this.isConnectionStartedBs.next(true);
 				}
@@ -113,9 +120,25 @@ export class CallService {
 			this.mediaCall.on('error', (err) => {
 				//this.snackBar.open(err, 'Close');
 				console.error(err);
-				this.isCallStartedBs.next(false);
+				this.ngZone.run(() => this.closeMediaCall(true));
+				console.log(2);
 			});
-			this.mediaCall.on('close', () => this.onCallClose());
+			this.mediaCall.on('close', () => {
+				this.ngZone.run(() => this.closeMediaCall(true));
+				console.log(3);
+			});
+			this.peer.on("close", () => {
+				this.ngZone.run(() => this.closeMediaCall(true));
+				console.log(4);
+			});
+			this.peer.on("disconnected", () => {
+				this.ngZone.run(() => this.closeMediaCall(true));
+				console.log(5);
+			});
+			this.peer.on("error", () => {
+				this.ngZone.run(() => this.closeMediaCall(true));
+				console.log(6);
+			});
 		}
 		catch (ex) {
 			console.error(ex);
@@ -125,13 +148,21 @@ export class CallService {
 	}
 
 	public async enableCallAnswer() {
-		this.isUser=true;
+		this.isUser = true;
 		try {
 			const stream = await this.getUserMedia({ video: true, audio: true });
 			this.localStreamBs.next(stream);
 			this.peer.on("connection", (conn) => {
 				this.connectionBs.next(conn);
 				this.isConnectionStartedBs.next(true);
+				conn.on('error', err => {
+					this.ngZone.run(() => this.closeMediaCall());
+					console.log(7);
+				});
+				conn.on('close', () => {
+					this.ngZone.run(() => this.closeMediaCall());
+					console.log(8);
+				});
 			});
 			this.peer.on('call', async (call) => {
 				this.mediaCall = call;
@@ -145,45 +176,33 @@ export class CallService {
 				});
 				this.mediaCall.on('error', err => {
 					//this.snackBar.open(err, 'Close');
+					this.ngZone.run(() => this.closeMediaCall());
+					console.log(9);
 					this.isCallStartedBs.next(false);
 					console.error(err);
 				});
 				this.mediaCall.on('close', () => {
-					this.onCallClose()
-					this.stopStatInterval();
+					this.ngZone.run(() => this.closeMediaCall());
+					console.log(10);
 				});
+			});
+			this.peer.on("close", () => {
+				this.ngZone.run(() => this.closeMediaCall());
+				console.log(11);
+			});
+			this.peer.on("disconnected", () => {
+				this.ngZone.run(() => this.closeMediaCall());
+				console.log(12);
+			});
+			this.peer.on("error", () => {
+				this.ngZone.run(() => this.closeMediaCall());
+				console.log(13);
 			});
 		}
 		catch (ex) {
 			console.error(ex);
 			//this.snackBar.open(ex, 'Close');
 			this.isCallStartedBs.next(false);
-		}
-	}
-
-	private onCallClose() {
-		this.remoteStreamBs.value!.getTracks().forEach(track => {
-			track.stop();
-		});
-		this.localStreamBs.value!.getTracks().forEach(track => {
-			track.stop();
-		});
-
-		
-
-		if (this.isUser) {
-			this.stopStatInterval();
-			this.meetingService.createStat(this.stats).subscribe({
-				next: (s) => {
-
-
-					this.router.navigate(['/']);
-
-				},
-				error: console.error
-			});
-		}else{
-			this.router.navigate(['/end']);
 		}
 	}
 
@@ -225,7 +244,7 @@ export class CallService {
 				this.remoteVideoActive = true;
 			}
 		}
-		
+
 		this.stats.local.video.push({
 			date: new Date().toISOString(),
 			visible: this.localVideoActive
@@ -237,14 +256,14 @@ export class CallService {
 		});
 
 		if (this.stats.local.video.length >= 2
-		 && (this.stats.local.video[this.stats.local.video.length - 1].visible
-		 || this.stats.local.video[this.stats.local.video.length - 2].visible)) {
+			&& (this.stats.local.video[this.stats.local.video.length - 1].visible
+				|| this.stats.local.video[this.stats.local.video.length - 2].visible)) {
 			this.localVideoActive = true;
 		}
 
 		if (this.stats.remote.video.length >= 2
-		 && (this.stats.remote.video[this.stats.remote.video.length - 1].visible
-		 || this.stats.remote.video[this.stats.remote.video.length - 2].visible)) {
+			&& (this.stats.remote.video[this.stats.remote.video.length - 1].visible
+				|| this.stats.remote.video[this.stats.remote.video.length - 2].visible)) {
 			this.remoteVideoActive = true;
 		}
 	}
@@ -297,17 +316,49 @@ export class CallService {
 
 	public stopStatInterval() {
 		clearInterval(this.statsInterval);
-		this.localSpeech.stop();
-		this.remoteSpeech.stop();
+		this.localSpeech?.stop();
+		this.remoteSpeech?.stop();
 	}
 
-	public closeMediaCall() {
-		this.mediaCall?.close();
-		if (!this.mediaCall) {
-			this.onCallClose()
+	public closeMediaCall(endMeeting = false) {
+		if (this.exited) return;
+		if (endMeeting) this.exited = true;
+		console.log(endMeeting);
+		if (!this.isUser || endMeeting) {
+			this.peer?.destroy();
+
+			this.remoteStreamBs.value?.getTracks().forEach(track => {
+				track.stop();
+			});
+			this.localStreamBs.value?.getTracks().forEach(track => {
+				track.stop();
+			});
+			if (this.reconnectInterval) {
+				clearInterval(this.reconnectInterval);
+				this.reconnectInterval = null;
+			}
 		}
+
+		if (this.isUser) {
+			this.stopStatInterval();
+			if (endMeeting) {
+				this.meetingService.createStat(this.stats).subscribe({
+					next: (s) => {
+						this.router.navigate(['/']);
+					},
+					error: console.error
+				});
+			}
+			else {
+				this.disconnected = true;
+				if (!this.reconnectInterval)
+					this.reconnectInterval = setInterval(() => this.peer.reconnect(), 2000);
+			}
+		} else {
+			this.router.navigate(['/end']);
+		}
+
 		this.isCallStartedBs.next(false);
-		
 	}
 
 	public destroyPeer() {

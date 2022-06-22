@@ -16,12 +16,15 @@
 			</div>
 		</div>
 		<div class="remote-video-wrapper">
-			<div *ngIf="!isRemoteCamOpen" class="offline-remote-video d-flex justify-content-center align-items-center">
-				<div class="user-initial text-center">
+			<div *ngIf="!isRemoteCamOpen || callService.disconnected" class="offline-remote-video d-flex justify-content-center align-items-center">
+				<div *ngIf="!callService.disconnected" class="user-initial text-center">
 					<h1>{{ remote.firstName.charAt(0) }}</h1>
 				</div>
+				<div *ngIf="callService.disconnected" class="text-white text-center">
+					<h1>Disconnected</h1>
+				</div>				
 			</div>
-			<video #remoteVideo [hidden]="!isRemoteCamOpen" class="remote-video" autoplay playsinline>
+			<video #remoteVideo [hidden]="!isRemoteCamOpen || callService.disconnected" class="remote-video" autoplay playsinline>
 			</video>
 			<div class="client-name">
 				<h3>{{ remote.firstName + " " + remote.lastName }}</h3>

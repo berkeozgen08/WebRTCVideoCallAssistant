@@ -71,6 +71,7 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 						this.local = this.isUser ? meeting.createdBy : meeting.createdFor;
 						this.remote = this.isUser ? meeting.createdFor : meeting.createdBy;
 						const { userConnId, customerConnId } = meeting;
+						this.callService.exited = false;
 						if (this.isUser) {
 							this.peerID = this.callService.initPeer(userConnId);
 							of(this.callService.enableCallAnswer()).subscribe();
@@ -121,6 +122,11 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 		this.callService.remoteStream$.subscribe(stream => {
 			if (!!stream) {
 				this.remoteVideo.nativeElement.srcObject = stream;
+				this.callService.disconnected = false;
+				if (this.callService.reconnectInterval) {
+					clearInterval(this.callService.reconnectInterval);
+					this.callService.reconnectInterval = null;
+				}
 			}
 		});
 
@@ -139,7 +145,7 @@ export class MeetingComponent implements OnDestroy, AfterViewInit, OnInit {
 	}
 
 	public endCall() {
-		this.callService.closeMediaCall();
+		this.callService.closeMediaCall(this.isUser);
 	}
 
 	toggleVideo() {
