@@ -37,7 +37,7 @@ export class UsersComponent implements OnInit {
 		this.userService.delete(user.id).subscribe({
 			next: (v) => {
 				this.users.splice(absoluteIndex, 1);
-				this.toastService.success("Kullanıcı başarılı şekilde silindi.");
+				this.toastService.success("Kullanıcı başarıyla silindi.");
 			},
 			error: (err) => this.toastService.error(err?.error?.message)
 		});

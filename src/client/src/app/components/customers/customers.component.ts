@@ -36,7 +36,7 @@ export class CustomersComponent implements OnInit {
 		this.cusomerService.delete(customer.id).subscribe({
 			next: (v) => {
 				this.customers.splice(absoluteIndex, 1);
-				this.toastService.success("Müşteri başarılı şekilde silindi.");
+				this.toastService.success("Müşteri başarıyla silindi.");
 			},
 			error: (err) => this.toastService.error(err?.error?.message)
 		});
