@@ -2,6 +2,14 @@
 
     <h2>Görüşmeler</h2>
 
+	<div *ngIf="isAdmin" class="input-group mb-3" >
+		<select class="form-select user-select form-control" id="user-list" aria-label="Default select example" (change)="filterUser()" [(ngModel)]="selectedUser">
+
+			<option value="-1"></option>
+			<option *ngFor="let user of users" [value]="user.id">
+				{{user.firstName}} {{user.lastName}}</option>
+		</select>
+	</div>
     <ul class="list-group mb-2">
 
         <li *ngFor="let meeting of meetings | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage,totalItems: meetings.length } ;index as i;"
