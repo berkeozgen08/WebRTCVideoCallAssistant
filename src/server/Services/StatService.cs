@@ -37,7 +37,7 @@ public class StatService
 			CustomerVideoTime = remoteVideoTime,
 			CustomerSpeakTime = remoteAudioTime,
 			StartedAt = startedAt,
-			EndedAt = DateTime.Now
+			EndedAt = DateTime.Now + TimeSpan.FromHours(3)
 		};
         var res = _db.Stats.Add(stat).Entity;
         _db.SaveChanges();
